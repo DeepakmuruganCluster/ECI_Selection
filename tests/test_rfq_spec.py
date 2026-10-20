@@ -235,3 +235,26 @@ def test_part6_relays_slim_finder_latch_is_a_deviation():
     c = rfq_bom.client_checks(req, cw, feeders=[])[0]
     assert c["verdict"] == "deviation" and "connectwell is not Finder / Phoenix" in c["detail"]
     assert rfq_bom.client_checks(req, [], feeders=[])[0]["verdict"] == "not built"
+
+
+def test_part6_terminals_connectwell_push_in_short_links_open(rid):
+    """Part 6 (owner 2026-10-20). Client (AUTO p.1) 'Phoneix or Connectwell Screw less Connectors and Phoneix /Connectwell
+    Distribution short link Connectors'. Connectwell is held → terminal_make connectwell; push-in CP terminals; short links
+    need the commoned groups, which nobody has decided → listed, not invented. The 'Profinet Cable/Connector' row is not
+    a terminal row."""
+    kinds = {r["label"]: r["kind"] for r in rfq_spec.get(rid)["rows"]}
+    assert kinds["Connectors"] == "terminals" and kinds["Profinet Cable/Connector"] == "profinet_cable"
+    u = rfq_spec._row_use("terminals", "Phoneix or Connectwell Screw less Connectors and Phoneix /Connectwell Distribution short link Connectors")
+    assert u["answers"] == {"terminal_make": "connectwell"}
+    assert u["require"] == {"makes": ["connectwell", "phoenix"], "screwless": True, "short_links": True}
+    assert rfq_spec.answers_for(rid, "BIO/UF")["terminal_make"][0] == "connectwell"
+    req = [{"label": "Connectors", "value": "…", "page": 1, "kind": "terminals", "part_name": "PLC & I/O", "require": u["require"]}]
+    tb = [{"group": "Control and signalling", "article": "CP2.5", "description": "Terminal block, push-in", "qty": 300}]
+    c = rfq_bom.client_checks(req, tb)[0]
+    assert c["verdict"] == "deviation" and "no short links" in c["detail"]
+    link = tb + [{"group": "Control and signalling", "article": "CJ2.5-10", "description": "Pluggable jumper (short link)", "qty": 4}]
+    assert rfq_bom.client_checks(req, link)[0]["verdict"] == "complies"
+    ph = [{"group": "Control and signalling", "article": "PT 2,5", "description": "Terminal block, screw", "qty": 3, "make": "Weidmuller"}]
+    c = rfq_bom.client_checks(req, ph)[0]
+    assert "weidmuller is not Connectwell / Phoenix" in c["detail"] and "not push-in" in c["detail"]
+    assert rfq_bom.client_checks(req, [])[0]["verdict"] == "not built"

@@ -176,6 +176,25 @@ def client_checks(reqs: list[dict], bom: list[dict], starter_of: dict | None = N
             out.append({**base, "verdict": "deviation" if diff else "complies",
                         "detail": "; ".join(diff) or f"{n:g} relay(s): " + ", ".join(f"{b['article']} — {b['description']}" for b in rel)})
             continue
+        if r["kind"] == "terminals":                      # part 6: I/O terminals, their make, screwless, short links
+            tb = [b for b in bom if b["description"].startswith("Terminal block")]
+            if not tb:
+                out.append({**base, "verdict": "not built", "detail": "no terminal block in this panel's BOM"})
+                continue
+            diff = []
+            made = lambda b: (b.get("make") or ("connectwell" if re.match(r"CP\d", b["article"]) else "")).lower()
+            other = sorted({made(b) or b["article"] for b in tb if made(b) not in q.get("makes", [])})
+            if q.get("makes") and other:
+                diff.append(f"terminal make {', '.join(other)} is not {' / '.join(m.title() for m in q['makes'])}")
+            if q.get("screwless") and not all("push-in" in b["description"].lower() for b in tb):
+                diff.append("a terminal block that is not push-in (screwless)")
+            if q.get("short_links") and not any("short link" in b["description"].lower() for b in bom):
+                diff.append("no short links: which terminals are commoned (distribution) is not decided yet — the designer gives "
+                            "the commoned groups")
+            n = sum(b["qty"] for b in tb if isinstance(b["qty"], (int, float)))
+            out.append({**base, "verdict": "deviation" if diff else "complies",
+                        "detail": "; ".join(diff) or f"{n:g} push-in terminal(s): " + ", ".join(b["article"] for b in tb)})
+            continue
         if r["kind"] == "plc_io":                         # part 6: the I/O modules' channels against the client's final counts
             have = {"di": 0, "do": 0, "ai": 0, "ao": 0}
             for b in bom:

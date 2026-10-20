@@ -30,8 +30,8 @@ ROW_KINDS = [
     (r"energy\s*meter", "meter", 1), (r"current\s*transformer", "ct", 1), (r"bus\s*bar", "busbar", 1),
     (r"earthing", "earthing", 1),
     (r"plc\s*cpu", "plc_cpu", 6), (r"etherent|ethernet\s*hub|ethernet", "network", 6), (r"power\s*supply", "smps", 5),
-    (r"relay", "relays", 6), (r"connector", "terminals", 6), (r"panel\s*wiring", "wiring", 8),
-    (r"profinet\s*cable", "profinet_cable", 6), (r"tower\s*lamp", "tower_lamp", 5),
+    (r"relay", "relays", 6), (r"profinet\s*cable", "profinet_cable", 6), (r"connector", "terminals", 6),
+    (r"panel\s*wiring", "wiring", 8), (r"tower\s*lamp", "tower_lamp", 5),
     (r"inverter|vfd", "vfd", 2), (r"^dol", "dol", 3), (r"soft\s*star", "soft_starter", 4), (r"^mccb", "mccb", 3),
     (r"scada|pc\s*config|display|^ups$|panel\s*requirement|panel\s*size|panel\s*stand", "out_of_scope", None),
 ]
@@ -116,6 +116,11 @@ def _row_use(kind: str, value: str) -> dict:
         pick = "finder" if "finder" in makes else makes[0] if len(makes) == 1 else None
         return {"answers": {"relay_make": pick} if pick else {},
                 "require": {"makes": makes, "latch_dol": bool(re.search(r"dol.*latch", v)), "slim_other": "slim" in v}}
+    if kind == "terminals":                          # part 6 (owner 2026-10-20): screwless terminals of a held make + short links
+        makes = sorted({m for k, m in (("phoenix", "phoenix"), ("phoneix", "phoenix"), ("connectwell", "connectwell")) if k in v})
+        pick = "connectwell" if "connectwell" in makes else makes[0] if len(makes) == 1 else None
+        return {"answers": {"terminal_make": pick} if pick else {},
+                "require": {"makes": makes, "screwless": bool(re.search(r"screw\s*less", v)), "short_links": "short link" in v}}
     if kind == "busbar":
         return {"lines": [{"group": "Client-specified", "item": "Busbar", "description": f"Busbar: {value}"}]}
     if kind == "earthing":
