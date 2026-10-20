@@ -1,6 +1,7 @@
 # PLC and I/O module rules: Omron CP2E + CP1W (AutoBOM databases, R-PLC-01 … 06) and Siemens S7-200 SMART
 # (system manual V2.7, R-PLC-07 … 12).
-# Authority: OWN = AutoBOM database / logic sheet (owner decisions PLC-1 … PLC-5); PHYS = physics; RULE = our decision.
+# Authority: OWN = AutoBOM database / logic sheet (owner decisions PLC-1 … PLC-5); PHYS = physics; RULE = our decision;
+# CLIENT = the client's specification.
 
 component: plc
 
@@ -29,6 +30,7 @@ rules:
   R-PLC-22: {authority: MFR,  text: "24 V DC for the PLC electronics: CPU 1513-1 PN 0.56 A rated (equipment manual p.44) + 350 mA per IM 155-6 PN ST (ST 70 p.1374) + each module's 'Current consumption, max.' (equipment manuals). Output loads are not included (relay coils are counted by the project). A module or CPU without a held figure → partial (warning)."}
   R-PLC-23: {authority: MFR,  text: "DQ 16x24VDC/0.5A ST total output current ≤ the derating curve (manual Figure 7-1): horizontal 8 A up to 40 °C, 6 A at 50 °C, 4 A at 60 °C; vertical 8 A up to 30 °C, 6 A at 40 °C, 4 A at 50 °C. Between grid points the next higher temperature is used (safe, as V-1); above the curve's end → cannot select. Ambient not given → horizontal, up to 40 °C assumed (noted)."}
   R-PLC-24: {authority: MFR,  text: "24 V DC the PLC draws from the panel's 24 V supply (for control power): S7-200 SMART ST CPUs at 'CPU with all expansion accessories at max. load' (includes the 300 mA sensor supply; Power supply table) plus any sensor-supply shortfall (R-PLC-10); S7-1200 G2 DC CPUs at 'Input current (with all accessories)' (Tables A-12 / A-30) plus the signal modules' L+ current (R-PLC-16); S7-1500 + ET 200SP = R-PLC-22; AC-fed CPUs (SR, AC/DC/RLY) draw 0 A from it."}
+  R-PLC-25: {authority: CLIENT, text: "When the client states the final I/O count per type (spare included), the required count of that type is at least that number (owner 2026-10-20, RFQ part 6); signals × spare factor (R-PLC-08) still applies when higher. Siemens families only; Omron → cannot select."}
 
 params:
   spare_factor: 1.4

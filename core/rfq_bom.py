@@ -25,7 +25,7 @@ GENERAL = ("smps_brand", "smps_split", "smps_cpu_min_a", "smps_io_min_a", "smps_
            "spd", "pmr", "spd_make", "spd_config", "spd_signalling", "meter", "meter_comm", "meter_supply", "ct_make", "vfd_protection",
            "cu_fieldbus", "cu_safety", "cu_encoder", "emc_filter", "mc_copy_parameters", "fuse_holder", "line_reactor_up_to_kw", "contactor_suppressor",
            "ss_comm", "ss_hmi", "ss_hmi_mounting", "ss_hmi_cable_m", "ss_protection", "ss_line_contactor",
-           "ss_thermistor", "plc_cpu", "plc_mc_mb", "plc_spare_pct", "panel_signals", "relay_make", "terminal_make",
+           "ss_thermistor", "plc_cpu", "plc_mc_mb", "plc_spare_pct", "plc_io_min", "panel_signals", "relay_make", "terminal_make",
            "io_conductor_mm2", "control_supply", "estop", "reset_pb", "phase_lamps", "lamp_va", "smps_input",
            "wire_insulation", "wire_circuits", "cable_other", "cable_make")
 # the panel's functional sections (the RFQ structure, core/rfq_trial.SECTIONS), in build order
@@ -153,6 +153,20 @@ def client_checks(reqs: list[dict], bom: list[dict], starter_of: dict | None = N
                             "(the required current decides when it is larger — R-CP-09)")
             out.append({**base, "verdict": "deviation" if diff else "complies",
                         "detail": "; ".join(diff) or ", ".join(f"{b['article']} — {b['description']}" for b in ps)})
+            continue
+        if r["kind"] == "plc_io":                         # part 6: the I/O modules' channels against the client's final counts
+            have = {"di": 0, "do": 0, "ai": 0, "ao": 0}
+            for b in bom:
+                m = re.search(r"\b(DI|DQ|AI|AQ) (\d+)x", b["description"]) if b["group"] == "PLC" else None
+                if m and isinstance(b["qty"], (int, float)):
+                    have[{"DI": "di", "DQ": "do", "AI": "ai", "AQ": "ao"}[m[1]]] += int(m[2]) * int(b["qty"])
+            if not any(have.values()):
+                out.append({**base, "verdict": "not built", "detail": "no PLC I/O module in this panel's BOM"})
+                continue
+            short = [f"{k.upper()} {have[k]} < {v}" for k, v in q["final"].items() if have.get(k, 0) < v]
+            out.append({**base, "verdict": "deviation" if short else "complies",
+                        "detail": ("fewer channels than the client's final count: " + ", ".join(short)) if short else
+                        "channels " + ", ".join(f"{k.upper()} {have[k]} ≥ {q['final'][k]}" for k in q["final"])})
             continue
         if r["kind"] == "soft_starter":                   # part 4: 3RW52, display, communication; the RFQ's protection range
             ss = [b for b in bom if b["group"] == "Feeders" and b["article"].startswith("3RW5") and not b["article"].startswith("3RW59")]

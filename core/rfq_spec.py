@@ -35,7 +35,7 @@ ROW_KINDS = [
     (r"inverter|vfd", "vfd", 2), (r"^dol", "dol", 3), (r"soft\s*star", "soft_starter", 4), (r"^mccb", "mccb", 3),
     (r"scada|pc\s*config|display|^ups$|panel\s*requirement|panel\s*size|panel\s*stand", "out_of_scope", None),
 ]
-PARTS_DONE = {1, 2, 3, 4, 5}          # the parts whose rows answer questions and are checked (owner 2026-10-20: part by part)
+PARTS_DONE = {1, 2, 3, 4, 5, 6}          # the parts whose rows answer questions and are checked (owner 2026-10-20: part by part)
 PART = {1: "Incoming & distribution", 2: "VFD section", 3: "DOL / MCC section", 4: "Soft starter section",
         5: "Control supply & control circuit", 6: "PLC & I/O", 7: "Motor cables", 8: "Internal wiring"}
 MAKES = {"phoenix": "Phoenix", "phoneix": "Phoenix", "obo": "OBO", "siemens": "Siemens"}
@@ -215,6 +215,18 @@ def get(rid: str) -> dict | None:
     return d
 
 
+def io_final(block: dict | None) -> dict:
+    """Part 6 (owner 2026-10-20): the client's final I/O per type (spare included) from a panel's PLC block —
+    {di, do, ai, ao}; the analog inputs of every kind are added. A type whose final is not printed is left out."""
+    out = {}
+    for label, x in ((block or {}).get("io") or {}).items():
+        m = re.match(r"(digital|analog)\s*(input|output)", label, re.I)
+        if m and x.get("final") is not None:
+            k = ("d" if m[1].lower() == "digital" else "a") + ("i" if m[2].lower() == "input" else "o")
+            out[k] = out.get(k, 0) + int(x["final"])
+    return out
+
+
 def answers_for(rid: str, panel: str) -> dict:
     """{key: (value, 'client spec p.N: <label>')} — the answers the client's specification gives for one panel; and the
     RFQ's own protection column (owner 2026-10-20, part 3): every drive row 'MPCB…' → drives protected by an MSP."""
@@ -230,6 +242,12 @@ def answers_for(rid: str, panel: str) -> dict:
             out["ss_protection"] = ("mpcb", f"RFQ {panel}: protection column 'MPCB-3RV' on every soft-starter row")
     except (StopIteration, ValueError):
         pass
+    blk = ((d or {}).get("plc") or {}).get(panel)
+    fin = io_final(blk)
+    if 6 in PARTS_DONE and fin:                     # the client's finals include their spare: no spare on top of them
+        why = f"client spec p.{blk['page']}: {blk['label']} (final I/O incl. spare)"
+        out["plc_io_min"] = (fin, why)
+        out["plc_spare_pct"] = (0, why)
     for r in (d or {}).get("rows", []):
         if r.get("part") in PARTS_DONE and panel in r["panels"]:
             for k, v in {**(r.get("answers") or {}), **((r.get("panel_answers") or {}).get(panel) or {})}.items():
@@ -245,4 +263,11 @@ def lines_for(rid: str, panel: str) -> list[dict]:
 
 def requirements_for(rid: str, panel: str) -> list[dict]:
     d = get(rid)
-    return [r for r in (d or {}).get("rows", []) if panel in r["panels"] and r.get("require")]
+    out = [r for r in (d or {}).get("rows", []) if panel in r["panels"] and r.get("require")]
+    blk = ((d or {}).get("plc") or {}).get(panel)
+    fin = io_final(blk)
+    if 6 in PARTS_DONE and fin:                     # part 6: the PLC block's final I/O, checked against the modules
+        out.append({"label": blk["label"], "value": ", ".join(f"{k.upper()} {v}" for k, v in fin.items()) + " (final, spare included)",
+                    "page": blk["page"], "kind": "plc_io", "part": 6, "part_name": PART[6], "panels": [panel],
+                    "require": {"final": fin}})
+    return out

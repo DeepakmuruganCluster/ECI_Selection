@@ -378,6 +378,7 @@ def select(text: str, kw: float | None = None, qty: int | None = None, starter: 
            contactor_suppressor: str | None = None, ss_comm: str | None = None, ss_hmi: str | None = None,
            ss_hmi_mounting: str | None = None, ss_hmi_cable_m: float | None = None, smps_split: str | None = None,
            smps_cpu_min_a: float | None = None, smps_io_min_a: float | None = None, smps_min_a: float | None = None,
+           plc_io_min: dict | None = None,
            confirmed: bool = False) -> Result:
     inputs = {k: v for k, v in locals().items() if v is not None}
     res = Result(COMPONENT, inputs)
@@ -418,7 +419,8 @@ def select(text: str, kw: float | None = None, qty: int | None = None, starter: 
                                      fuse_holder=fuse_holder, line_reactor_up_to_kw=line_reactor_up_to_kw,
                                      contactor_suppressor=contactor_suppressor, ss_comm=ss_comm, ss_hmi=ss_hmi,
                                      ss_hmi_mounting=ss_hmi_mounting, ss_hmi_cable_m=ss_hmi_cable_m, smps_split=smps_split,
-                                     smps_cpu_min_a=smps_cpu_min_a, smps_io_min_a=smps_io_min_a, smps_min_a=smps_min_a).items()
+                                     smps_cpu_min_a=smps_cpu_min_a, smps_io_min_a=smps_io_min_a, smps_min_a=smps_min_a,
+                                     plc_io_min=plc_io_min).items()
                if v is not None}
     per_all = {k: v for k, v in dict(kw=kw, qty=qty, starter=starter, duty=duty, cable_m=cable_m,
                                      flc_a=flc_a, removed=removed, kit=kit).items() if v is not None}
@@ -485,6 +487,11 @@ def select(text: str, kw: float | None = None, qty: int | None = None, starter: 
             if not lo <= x <= hi or (intg and x != int(x)):
                 return res.invalid(f"{k} must be {'a whole number ' if intg else ''}from {lo:g} to {hi:g} (got {general[k]})")
             general[k] = int(x) if intg else x
+    if "plc_io_min" in general:                      # R-REQ-36: the client's final I/O count per type (spare included)
+        m = general["plc_io_min"]
+        if not isinstance(m, dict) or set(m) - {"di", "do", "ai", "ao"} or any(
+                isinstance(v, bool) or not isinstance(v, (int, float)) or v < 0 or v != int(v) for v in m.values()):
+            return res.invalid(f"plc_io_min must be {{di, do, ai, ao: whole number ≥ 0}} (got {m})")
     PLCS = ("omron", "siemens_s7200smart", "siemens_s71200g2", "siemens_s71500", "other", "none")
     if "plc_make" in general and general["plc_make"] not in PLCS:
         return res.invalid(f"plc_make must be one of {', '.join(PLCS)} (got {plc_make})")
@@ -1009,8 +1016,11 @@ def _run(res: Result, value: dict, g: dict, mv: list[dict], prm: dict, edits: li
         pr = plc_select(di=iv["io_di"], do=iv["io_do"], ai=iv["io_ai"], ao=iv["io_ao"], fieldbus=fb, make=make, family=family,
                         fieldbus_devices=iv.get("io_pn") if fb == "profinet" else None,
                         ambient_c=g.get("panel_internal_c") if family else None, spare_pct=g.get("plc_spare_pct"),
-                        cpu=g.get("plc_cpu"), memory_card_mb=g.get("plc_mc_mb"))
+                        cpu=g.get("plc_cpu"), memory_card_mb=g.get("plc_mc_mb"), io_min=g.get("plc_io_min"))
         log("PLC", pr)
+        if g.get("plc_io_min"):
+            res.add("R-REQ-36", "PLC I/O at least the client's final count per type (spare included)",
+                    ", ".join(f"{k.upper()} {v}" for k, v in g["plc_io_min"].items()), INFO, "client specification")
         if pr.status not in ("cannot_select", "invalid"):
             plc_a = pr.value.get("supply_24v_a", pr.value.get("i24_a"))
             plc_cpu = pr.value["cpu"]

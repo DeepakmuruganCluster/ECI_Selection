@@ -247,3 +247,17 @@ def test_reading_is_fast_on_hostile_text(text):
 
 def test_overlong_text_is_refused():
     assert select(text="11 kW pump DOL. " + "x" * 5000).status == "invalid"
+
+
+def test_plc_is_sized_to_the_clients_final_io_count():
+    """Owner 2026-10-20 (RFQ part 6, R-REQ-36 / R-PLC-25): the client's final I/O per type (spare included) is a minimum;
+    a higher spare % still wins."""
+    kw = dict(text="2 x 11 kW pumps DOL, 30 m cable. 400 V, 25 kA", panel_internal_c=40, cable_ambient_c=30,
+              plc_make="siemens_s71500", plc_cpu="CPU 1513-1 PN", plc_mc_mb=12, spd=False, pmr=False,
+              control_supply="phase_neutral", confirmed=True)
+    mods = lambda r: {b["article"]: b["qty"] for b in r.value["bom"] if b["group"] == "PLC" and "I/O module" in b["description"]}
+    r = answered(select, plc_spare_pct=0, plc_io_min={"di": 32, "do": 16, "ai": 8, "ao": 4}, **kw)
+    assert mods(r) == {"6ES7131-6BH01-0BA0": 2, "6ES7132-6BH01-0BA0": 1, "6ES7134-6HD01-0BA1": 2, "6ES7135-6HD00-0BA1": 1}, mods(r)
+    assert any(c.rule == "R-REQ-36" for c in r.checks)
+    big = answered(select, plc_spare_pct=0, plc_io_min={"di": 1}, **kw)
+    assert mods(big)["6ES7131-6BH01-0BA0"] >= 1 and "6ES7135-6HD00-0BA1" not in mods(big)

@@ -178,3 +178,38 @@ def test_part5_sitop_per_panel_and_tower_lamps(rid):
     assert lamp["qty"] == 3 and lamp["section"] == "Control supply & control circuit"
     chk = next(c for c in b["client_checks"] if c["requirement"].startswith("Power Supply"))
     assert chk["verdict"] == "complies"
+
+
+def test_part6_plc_io_at_the_clients_final_count(rid):
+    """Part 6 (owner 2026-10-20). Client (AUTO p.1) 'BIO_UF Panel Requirements': final I/O incl. spare DI 272, DO 80,
+    AI 40 (4-20 mA) + 4 (0-10 V / 4-20 mA), AO 16. The PLC is sized to at least those counts, no spare % on top (the client's
+    spare is in them; a designer's answer still wins): 17 × DI16, 5 × DQ16, 11 × AI4, 4 × AQ4; the check complies."""
+    from tests.test_rfq import ALL
+    assert rfq_spec.io_final(rfq_spec.get(rid)["plc"]["BIO/UF"]) == {"di": 272, "do": 80, "ai": 44, "ao": 16}
+    assert rfq_spec.io_final(rfq_spec.get(rid)["plc"]["RO"]) == {"di": 336, "do": 96, "ai": 60, "ao": 32}
+    sp = rfq_spec.answers_for(rid, "BIO/UF")
+    assert sp["plc_io_min"][0] == {"di": 272, "do": 80, "ai": 44, "ao": 16} and sp["plc_spare_pct"][0] == 0
+    skip = ("spd_make", "meter", "meter_comm", "incomer_release", "incomer_series", "duty", "line_reactor_up_to_kw",
+            "vfd_protection", "fuse_holder", "contactor_suppressor", "ss_protection", "ss_comm", "plc_spare_pct")
+    for k, v in {**{k: v for k, v in ALL.items() if k not in skip}, "fault_ka": 55, "pmr": "false", "smps_input": "3P"}.items():
+        rfq_answers.answer(rid, "project", k, v, "QA designer")
+    g = rfq_answers.questions(rid)["rule_groups"]
+    rfq_answers.set_rules(rid, {"running": {str(x): 1 for x in g}, "feed": "outside", "flc": "rfq", "units": "starters"}, "QA designer")
+    b = rfq_bom.build(rid, "BIO/UF")
+    mods = {x["article"]: x["qty"] for x in b["bom"] if x["group"] == "PLC" and "I/O module" in x["description"]}
+    assert mods == {"6ES7131-6BH01-0BA0": 17, "6ES7132-6BH01-0BA0": 5, "6ES7134-6HD01-0BA1": 11, "6ES7135-6HD00-0BA1": 4}, mods
+    chk = next(c for c in b["client_checks"] if c["requirement"].startswith("BIO_UF Panel Requirements"))
+    assert chk["verdict"] == "complies" and chk["part"] == "PLC & I/O"
+    rfq_answers.answer(rid, "project", "plc_spare_pct", 20, "QA designer")           # the designer's spare wins where it gives more
+    mods = {x["article"]: x["qty"] for x in rfq_bom.build(rid, "BIO/UF")["bom"] if x["group"] == "PLC" and "I/O module" in x["description"]}
+    assert mods["6ES7131-6BH01-0BA0"] == 20 and mods["6ES7135-6HD00-0BA1"] == 4
+
+
+def test_plc_io_check_reports_a_shortfall():
+    reqs = [{"label": "X Panel Requirements", "value": "", "page": 1, "kind": "plc_io", "part_name": "PLC & I/O",
+             "require": {"final": {"di": 32, "ao": 8}}}]
+    bom = [{"group": "PLC", "article": "6ES7131-6BH01-0BA0", "description": "I/O module: DI 16x24VDC ST", "qty": 2},
+           {"group": "PLC", "article": "6ES7135-6HD00-0BA1", "description": "I/O module: AQ 4xU/I ST", "qty": 1}]
+    c = rfq_bom.client_checks(reqs, bom)[0]
+    assert c["verdict"] == "deviation" and "AO 4 < 8" in c["detail"]
+    assert rfq_bom.client_checks(reqs, [])[0]["verdict"] == "not built"

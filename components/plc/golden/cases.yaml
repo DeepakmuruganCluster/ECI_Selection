@@ -196,3 +196,20 @@ cases:
     in: {make: siemens, di: 0, do: 0}
     expect: {status: invalid}
     oracle: "no wired I/O and no PROFINET devices: nothing to control"
+  # --- R-PLC-25 the client's final I/O count per type (owner 2026-10-20, RFQ part 6), written before the code was run
+  - id: P47
+    in: {make: siemens, family: s7-1500-et200sp, di: 261, do: 70, ai: 34, ao: 10, spare_pct: 0, io_min: {di: 272, do: 80, ai: 44, ao: 16}, cpu: CPU 1513-1 PN, memory_card_mb: 12}
+    expect: {status: ok, cpu: CPU 1513-1 PN, n_di16: 17, n_dq16: 5, n_ai4: 11, n_aq4: 4, n_modules: 37, n_stations: 2}
+    oracle: "client's finals (BIO/UF spec p.1): 272/16 = 17 DI16, 80/16 = 5 DQ16, 44/4 = 11 AI4, 16/4 = 4 AQ4 = 37 modules > 32 per IM (ST 70 p.1374) → 2 stations"
+  - id: P48
+    in: {make: siemens, family: s7-1500-et200sp, di: 261, do: 70, ai: 34, ao: 10, spare_pct: 20, io_min: {di: 272, do: 80, ai: 44, ao: 16}, cpu: CPU 1513-1 PN, memory_card_mb: 12}
+    expect: {status: ok, n_di16: 20, n_dq16: 6, n_ai4: 11, n_aq4: 4}
+    oracle: "× 1.2: DI 314 > 272 → 20 DI16; DO 84 > 80 → 6 DQ16; AI 41 < 44 → 44 → 11 AI4; AO 12 < 16 → 16 → 4 AQ4 (the higher of the two per type)"
+  - id: P49
+    in: {make: siemens, family: s7-1500-et200sp, di: 10, do: 10, io_min: {di: 16, dx: 4}}
+    expect: {status: invalid}
+    oracle: "io_min key dx is not an I/O type"
+  - id: P50
+    in: {make: omron, di: 10, do: 10, io_min: {di: 16}}
+    expect: {status: cannot_select, rule: R-PLC-25}
+    oracle: "a minimum per type is built for the Siemens families only"

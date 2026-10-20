@@ -32,6 +32,24 @@ def _spare(prm: dict) -> float:
     return getattr(_SPARE, "f", None) or prm["spare_factor"]
 
 
+def _need(res: Result, prm: dict, di, do, ai, ao) -> dict:
+    """R-PLC-08 required I/O = signals × spare factor; R-PLC-25 at least the client's final count per type (spare included)."""
+    f = _spare(prm)
+    need = {k: math.ceil(v * f - 1e-9) for k, v in (("di", di), ("do", do), ("ai", ai), ("aq", ao))}
+    res.add("R-PLC-08", f"required I/O = signals × {f:g} ({round((f - 1) * 100, 1):g} % spare)",
+            f"DI {need['di']}, DO {need['do']}, AI {need['ai']}, AO {need['aq']}", INFO, "OWN-AB-PLCIO 'logic' row 1")
+    io_min = getattr(_SPARE, "io_min", None)
+    if io_min:
+        lifted = {k: io_min[k] for k in need if io_min.get(k, 0) > need[k]}
+        need.update(lifted)
+        name = lambda k: "AO" if k == "aq" else k.upper()
+        res.add("R-PLC-25", "at least the client's final I/O count per type (their spare included)",
+                ", ".join(f"{name(k)} {io_min.get(k, 0)}" for k in need) + " → "
+                + (", ".join(f"{name(k)} raised to {v}" for k, v in lifted.items()) or "no type raised"),
+                INFO, "client specification (passed as io_min)")
+    return need
+
+
 @lru_cache(maxsize=None)
 def _cpus() -> dict:
     return load_sourced_table(data_file("ab_plc.yaml"), ("model", "series", "max_io", "di", "do", "max_ext"))
@@ -100,10 +118,7 @@ def _siemens(res: Result, di: int, do: int, ai: int, ao: int, do_type: str, fiel
     if do_type not in ("sourcing", "relay"):
         return res.refuse("R-PLC-07", "S7-200 SMART output type", f"{do_type}: the family has sourcing (ST) and relay (SR) "
                           "outputs only", "SIE-S7-200SMART-SYS pp.806, 847")
-    f = _spare(prm)
-    need = {k: math.ceil(v * f - 1e-9) for k, v in (("di", di), ("do", do), ("ai", ai), ("aq", ao))}
-    res.add("R-PLC-08", f"required I/O = signals × {f:g} ({round((f - 1) * 100, 1):g} % spare)",
-            f"DI {need['di']}, DO {need['do']}, AI {need['ai']}, AO {need['aq']}", INFO, "OWN-AB-PLCIO 'logic' row 1")
+    need = _need(res, prm, di, do, ai, ao)
     if fieldbus and fieldbus != "none" and fieldbus != "profinet":
         return res.refuse("R-PLC-12", f"S7-200 SMART with {fieldbus}", "only PROFINET (controller) is on the CPU",
                           "SIE-S7-200SMART-SYS p.801")
@@ -229,10 +244,7 @@ def _s71200g2(res: Result, di, do, ai, ao, do_type, fieldbus, fieldbus_devices, 
     else:
         cpus = [c for c in rows if c["kind"] == "cpu" and c["do_type"].startswith("dc")]
     cpus.sort(key=lambda c: (c["di"] + c["do"], c["page"]))
-    f = _spare(prm)
-    need = {k: math.ceil(v * f - 1e-9) for k, v in (("di", di), ("do", do), ("ai", ai), ("aq", ao))}
-    res.add("R-PLC-08", f"required I/O = signals × {f:g} ({round((f - 1) * 100, 1):g} % spare)",
-            f"DI {need['di']}, DO {need['do']}, AI {need['ai']}, AO {need['aq']}", INFO, "OWN-AB-PLCIO 'logic' row 1")
+    need = _need(res, prm, di, do, ai, ao)
     mods = [m for m in rows if m["kind"] == "sm" and (not m.get("do") or m["do_type"] == do_type)]
     g = lambda u, k: u.get(k) or 0
     for cpu in cpus:
@@ -356,10 +368,7 @@ def _s71500(res: Result, di, do, ai, ao, do_type, fieldbus, fieldbus_devices, cp
                 " — not given: default (PLC-S4)"), INFO, src(cpu))
         res.add("R-PLC-18", "SIMATIC Memory Card required", f"{mc['model']}" + ("" if mc_mb is not None else
                 " — size not given: default (PLC-S5)"), INFO, src(mc))
-    f = _spare(prm)
-    need = {k: math.ceil(v * f - 1e-9) for k, v in (("di", di), ("do", do), ("ai", ai), ("aq", ao))}
-    res.add("R-PLC-08", f"required I/O = signals × {f:g} ({round((f - 1) * 100, 1):g} % spare)",
-            f"DI {need['di']}, DO {need['do']}, AI {need['ai']}, AO {need['aq']}", INFO, "OWN-AB-PLCIO 'logic' row 1")
+    need = _need(res, prm, di, do, ai, ao)
     # R-PLC-19: modules per signal type
     io = {r["model"]: r for r in rows if r["kind"] == "io"}
     plan, counts = [], {}
@@ -476,17 +485,23 @@ def select(di: int, do: int, ai: int = 0, ao: int = 0, do_type: str | None = Non
            series: str | None = None, make: str | None = None, fieldbus_devices: int | None = None,
            family: str | None = None, cpu_supply: str | None = None, ambient_c: float | None = None,
            cpu: str | None = None, memory_card_mb: int | None = None, dq_load_a: float | None = None,
-           mounting: str | None = None, spare_pct: float | None = None) -> Result:
+           mounting: str | None = None, spare_pct: float | None = None, io_min: dict | None = None) -> Result:
     inputs = {k: v for k, v in locals().items() if v is not None}
     res = Result(COMPONENT, inputs)
     if spare_pct is not None and not 0 <= float(spare_pct) <= 100:
         return res.invalid(f"spare_pct must be from 0 to 100 (got {spare_pct})")
+    if io_min is not None:
+        if not isinstance(io_min, dict) or set(io_min) - {"di", "do", "ai", "ao"} or any(
+                isinstance(v, bool) or not isinstance(v, (int, float)) or v < 0 or v != int(v) for v in io_min.values()):
+            return res.invalid(f"io_min must be {{di, do, ai, ao: whole number ≥ 0}} (got {io_min})")
+        io_min = {("aq" if k == "ao" else k): int(v) for k, v in io_min.items()}
     _SPARE.f = 1 + float(spare_pct) / 100 if spare_pct is not None else None
+    _SPARE.io_min = io_min
     try:
         return _select(res, di, do, ai, ao, do_type, fieldbus, series, make, fieldbus_devices, family, cpu_supply, ambient_c,
                        cpu, memory_card_mb, dq_load_a, mounting)
     finally:
-        _SPARE.f = None
+        _SPARE.f = _SPARE.io_min = None
 
 
 def _select(res, di, do, ai, ao, do_type, fieldbus, series, make, fieldbus_devices, family, cpu_supply, ambient_c,
@@ -523,6 +538,8 @@ def _select(res, di, do, ai, ao, do_type, fieldbus, series, make, fieldbus_devic
             "(NX1P / NX: no current or I/O count)", INFO, "OWN-AB-PLC, OWN-AB-PLCIO")
     if ai or ao:
         return res.refuse("R-PLC-02", "analog I/O", f"{ai} AI / {ao} AO: analog module selection is not built yet")
+    if getattr(_SPARE, "io_min", None):
+        return res.refuse("R-PLC-25", "a minimum I/O count per type", "not built for the Omron database selection")
     f = _spare(prm)
     need_di, need_do = math.ceil(di * f - 1e-9), math.ceil(do * f - 1e-9)
     res.add("R-PLC-02", f"required I/O = signals × {f:g} ({round((f - 1) * 100, 1):g} % spare)", f"DI {di} → {need_di}, DO {do} → {need_do}", INFO,

@@ -504,3 +504,18 @@ cases:
          smps_brand: Siemens, smps_input: 3P, smps_split: cpu_io, smps_cpu_min_a: 10, smps_io_min_a: 20}
     expect: {status: warning, selected: 1, smps: 6EP3434-7SB00-3AX0 + 6EP3436-7SB00-3AX0}
     oracle: "R-REQ-35 / R-CP-08 / R-CP-09: CPU 1513-1 PN 0.56 A (SIE-CPU1513-MAN p.44) × 1.25 = 0.7 A, the client's 10 A → PSU6200 3-phase 10 A 6EP3434-7SB00-3AX0; the I/O stations, inputs and relays × 1.25 → the client's 20 A → 6EP3436-7SB00-3AX0 (KT 10.1 p.3/21)"
+  # --- 2026-10-20 (owner, RFQ part 6): the client's final I/O count per type, R-REQ-36 → R-PLC-25
+  - id: Q106
+    in: {estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0,
+         incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell,
+         io_conductor_mm2: 1.5, emc_filter: none, contactor_suppressor: none, plc_spare_pct: 0,
+         text: "2 x 11 kW pumps DOL, 30 m cable. 400 V, 25 kA", panel_internal_c: 40, cable_ambient_c: 30,
+         plc_make: siemens_s71500, plc_cpu: CPU 1513-1 PN, plc_mc_mb: 12, spd: false, pmr: false, control_supply: phase_neutral,
+         dol_source: siemens, kit_accessories: false, confirmed: true, smps_brand: Siemens, smps_input: 3P,
+         plc_io_min: {di: 32, do: 16, ai: 8, ao: 4}}
+    expect: {status: warning, selected: 1, plc_cpu: CPU 1513-1 PN}
+    oracle: "R-REQ-36 → R-PLC-25: the client's finals DI 32, DO 16, AI 8, AO 4 → 2 × DI16, 1 × DQ16, 2 × AI4, 1 × AQ4 (the panel's own signals are fewer); see tests/test_requirement.py for the module lines"
+  - id: Q107
+    in: {text: "2 x 11 kW pumps DOL, 30 m cable. 400 V, 25 kA", plc_io_min: {di: 32, aq: 4}}
+    expect: {status: invalid}
+    oracle: "aq is not a plc_io_min key (di, do, ai, ao)"
