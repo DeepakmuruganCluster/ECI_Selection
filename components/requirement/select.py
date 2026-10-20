@@ -376,7 +376,8 @@ def select(text: str, kw: float | None = None, qty: int | None = None, starter: 
            wire_insulation: str | None = None, meter: bool | None = None, meter_supply: str | None = None,
            incomer_series: str | None = None, fuse_holder: str | None = None, line_reactor_up_to_kw: float | None = None,
            contactor_suppressor: str | None = None, ss_comm: str | None = None, ss_hmi: str | None = None,
-           ss_hmi_mounting: str | None = None, ss_hmi_cable_m: float | None = None,
+           ss_hmi_mounting: str | None = None, ss_hmi_cable_m: float | None = None, smps_split: str | None = None,
+           smps_cpu_min_a: float | None = None, smps_io_min_a: float | None = None, smps_min_a: float | None = None,
            confirmed: bool = False) -> Result:
     inputs = {k: v for k, v in locals().items() if v is not None}
     res = Result(COMPONENT, inputs)
@@ -416,7 +417,8 @@ def select(text: str, kw: float | None = None, qty: int | None = None, starter: 
                                      meter=meter, meter_supply=meter_supply, incomer_series=incomer_series,
                                      fuse_holder=fuse_holder, line_reactor_up_to_kw=line_reactor_up_to_kw,
                                      contactor_suppressor=contactor_suppressor, ss_comm=ss_comm, ss_hmi=ss_hmi,
-                                     ss_hmi_mounting=ss_hmi_mounting, ss_hmi_cable_m=ss_hmi_cable_m).items()
+                                     ss_hmi_mounting=ss_hmi_mounting, ss_hmi_cable_m=ss_hmi_cable_m, smps_split=smps_split,
+                                     smps_cpu_min_a=smps_cpu_min_a, smps_io_min_a=smps_io_min_a, smps_min_a=smps_min_a).items()
                if v is not None}
     per_all = {k: v for k, v in dict(kw=kw, qty=qty, starter=starter, duty=duty, cable_m=cable_m,
                                      flc_a=flc_a, removed=removed, kit=kit).items() if v is not None}
@@ -465,6 +467,7 @@ def select(text: str, kw: float | None = None, qty: int | None = None, starter: 
                        ("plc_cpu", ("CPU 1511-1 PN", "CPU 1513-1 PN", "CPU 1515-2 PN")), ("incomer_release", ("TM210", "TM220")), ("incomer_series", ("3VM", "3VA")), ("fuse_holder", ("switch_disconnector",)), ("contactor_suppressor", ("varistor", "none")),
                        ("ss_comm", ("profinet", "profibus", "ethernet_ip", "modbus_rtu", "modbus_tcp", "none")),
                        ("ss_hmi", ("standard", "high_feature", "none")), ("ss_hmi_mounting", ("door", "device")),
+                       ("smps_split", ("single", "cpu_io")),
                        ("breaking_basis", ("icu", "ics")), ("spd_config", ("3Ph+N+PE", "3Ph+PE")),
                        ("relay_make", ("finder", "phoenix", "connectwell")), ("terminal_make", ("connectwell", "phoenix")),
                        ("smps_input", ("1P+N", "3P")), ("wire_insulation", ("70", "90"))):
@@ -472,7 +475,8 @@ def select(text: str, kw: float | None = None, qty: int | None = None, starter: 
             return res.invalid(f"{k} must be one of {', '.join(allowed)} (got {general[k]})")
     for k, lo, hi, intg in (("wire_circuits", 1, 50, True), ("cable_other", 0, 50, True), ("plc_spare_pct", 0, 100, False),
                             ("plc_mc_mb", 1, 32768, True), ("io_conductor_mm2", 0.5, 4, False),
-                            ("line_reactor_up_to_kw", 0, 1000, False), ("ss_hmi_cable_m", 0.5, 5, False)):
+                            ("line_reactor_up_to_kw", 0, 1000, False), ("ss_hmi_cable_m", 0.5, 5, False),
+                            ("smps_cpu_min_a", 0.1, 100, False), ("smps_io_min_a", 0.1, 100, False), ("smps_min_a", 0.1, 100, False)):
         if k in general:
             try:
                 x = float(general[k])
@@ -1035,13 +1039,52 @@ def _run(res: Result, value: dict, g: dict, mv: list[dict], prm: dict, edits: li
             res.add("R-REQ-23", "24 V supply sized with the designer's 24 V row edits",
                     f"{extra_dc:+g} A" + (" (a lower load does not make the supply smaller: it is sized on the rows the tool counts)"
                                           if extra_dc < 0 else ""), INFO)
-    cp = control_power(di=iv["io_di"], relays=iv["io_do"], plc_a=plc_a, input=g.get("smps_input", sd["smps_input"]),
-                       brand=g.get("smps_brand") or sd["smps_brand"], other_a=max(extra_dc, 0.0)) \
-        if scope["smps"] and scope["plc"] else None        # R-REQ-31: no 24 V supply listed (or nothing of the PLC to feed)
+    cp_in, cp_brand = g.get("smps_input", sd["smps_input"]), g.get("smps_brand") or sd["smps_brand"]
+    # R-REQ-35 (owner 2026-10-20, RFQ part 5): a separate supply for the CPU and one for the I/O stations and field signals
+    cpu_row = next((r for r in ((pr.value or {}).get("i24_rows") or []) if plc_cpu and r["item"] == plc_cpu), None) \
+        if g.get("smps_split") == "cpu_io" and pr is not None else None
+    split = None
+    if g.get("smps_split") == "cpu_io" and scope["smps"] and scope["plc"]:
+        if cpu_row is None or cpu_row.get("unit_a") is None:
+            res.add("R-REQ-35", "24 V split: a supply for the CPU and one for the I/O",
+                    "no CPU with a printed 24 V current in this panel (remote I/O only, or the CPU's current not held): one supply",
+                    WARN, "owner 2026-10-20")
+        else:
+            cpu_a = round(cpu_row["unit_a"] * cpu_row["qty"], 4)
+            c1 = control_power(plc_a=cpu_a, input=cp_in, brand=cp_brand, min_a=g.get("smps_cpu_min_a"))
+            c2 = control_power(di=iv["io_di"], relays=iv["io_do"], plc_a=round(plc_a - cpu_a, 4), input=cp_in, brand=cp_brand,
+                               other_a=max(extra_dc, 0.0), min_a=g.get("smps_io_min_a"))
+            log("control power (CPU)", c1)
+            log("control power (I/O)", c2)
+            split = (c1, c2)
+    cp = control_power(di=iv["io_di"], relays=iv["io_do"], plc_a=plc_a, input=cp_in, brand=cp_brand, other_a=max(extra_dc, 0.0),
+                       min_a=g.get("smps_min_a")) \
+        if scope["smps"] and scope["plc"] and split is None else None   # R-REQ-31: no 24 V supply listed (or nothing to feed)
     if cp is not None:
         log("control power", cp)
     smps = None
-    if cp is not None and cp.status not in ("cannot_select", "invalid"):
+    if split is not None:
+        c1, c2 = split
+        bad = [c for c in split if c.status in ("cannot_select", "invalid")]
+        if not bad:
+            for c, who in ((c1, "the CPU"), (c2, "the I/O stations, inputs and relays")):
+                add("Control power", f"{c.value['smps_brand']} {c.value['smps']}", f"24 V DC power supply {c.value['smps_a']:g} A for {who} "
+                    f"(needs {c.value['required_a']:g} A)", 1, "no", who, "control power (10), R-REQ-35", make=c.value["smps_brand"])
+            smps = f"{c1.value['smps']} + {c2.value['smps']}"
+            res.add("R-REQ-35", "24 V split: a supply for the CPU and one for the I/O",
+                    f"CPU {c1.value['load_a']:g} A → {c1.value['smps']} {c1.value['smps_a']:g} A; I/O {c2.value['load_a']:g} A → "
+                    f"{c2.value['smps']} {c2.value['smps_a']:g} A", INFO, "owner 2026-10-20")
+            cp = c2                                     # the pair as one 24 V source for the budget and the power calculation
+            cp.value = {**c2.value, "smps": smps, "smps_a": c1.value["smps_a"] + c2.value["smps_a"],
+                        "required_a": round(c1.value["required_a"] + c2.value["required_a"], 4),
+                        "load_a": round(c1.value["load_a"] + c2.value["load_a"], 4),
+                        "smps_efficiency": min(x for x in (c1.value.get("smps_efficiency"), c2.value.get("smps_efficiency")) if x)
+                        if c1.value.get("smps_efficiency") and c2.value.get("smps_efficiency") else None,
+                        "split": [{"for": "CPU", **{k: c1.value[k] for k in ("smps", "smps_a", "required_a", "load_a")}},
+                                  {"for": "I/O", **{k: c2.value[k] for k in ("smps", "smps_a", "required_a", "load_a")}}]}
+        else:
+            cp = bad[0]
+    elif cp is not None and cp.status not in ("cannot_select", "invalid"):
         smps = cp.value["smps"]
         add("Control power", f"{cp.value['smps_brand']} {smps}", f"24 V DC power supply {cp.value['smps_a']:g} A "
             f"(needs {cp.value['required_a']:g} A)", 1, "no", "PLC, I/O, relays", "control power (10)", make=cp.value["smps_brand"])

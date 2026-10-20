@@ -59,7 +59,8 @@ def _coil() -> dict:
 
 
 def select(di: int = 0, do: int = 0, relays: int = 0, plc_a: float | None = None, other_a: float = 0.0,
-           input: str = "1P+N", voltage_dc: float = 24.0, brand: str = "Omron", communication: bool = False) -> Result:
+           input: str = "1P+N", voltage_dc: float = 24.0, brand: str = "Omron", communication: bool = False,
+           min_a: float | None = None) -> Result:
     inputs = {k: v for k, v in locals().items() if v is not None}
     res = Result(COMPONENT, inputs)
     if min(di, do, relays) < 0 or other_a < 0:
@@ -85,6 +86,13 @@ def select(di: int = 0, do: int = 0, relays: int = 0, plc_a: float | None = None
     fos = m["smps_fos"]["value"]
     need = load * fos
     res.add("R-CP-04", "required output = load × FOS", f"{load:.3f} A × {fos:g} = {need:.3f} A", INFO, src("smps_fos"))
+    if min_a is not None:                             # R-CP-09 (owner 2026-10-20): the client's stated rating, at least
+        if min_a <= 0:
+            return res.invalid(f"min_a must be > 0 (got {min_a})")
+        res.add("R-CP-09", "the client's stated rating as the minimum", f"{min_a:g} A" + (
+            f" (covers the required {need:.2f} A)" if min_a >= need else f" < required {need:.2f} A: the required current decides"),
+            PASS if min_a >= need else WARN, "client specification")
+    pick_a = need if min_a is None else max(need, min_a)          # the selection threshold; 'required' stays the load × FOS
     siemens = _norm(brand)[:6] == "siemen"            # R-CP-08: SITOP from the Siemens catalogue, not the AutoBOM list
     table = _sitop() if siemens else _smps()
     rows = [r for r in table["rows"] if _norm(r["brand"])[:6] == _norm(brand)[:6]]
@@ -96,12 +104,12 @@ def select(di: int = 0, do: int = 0, relays: int = 0, plc_a: float | None = None
     rows = [r for r in rows if r["model"].upper().endswith("-EIP") == bool(communication)]
     res.add("R-CP-07", "network port on the supply", "asked: port supplies only" if communication
             else "not asked: supplies with a network port left out", INFO)
-    fit = [r for r in rows if r["network"] == input and r["vout_min"] <= voltage_dc <= r["vout_max"] and r["i_out_a"] >= need]
+    fit = [r for r in rows if r["network"] == input and r["vout_min"] <= voltage_dc <= r["vout_max"] and r["i_out_a"] >= pick_a]
     if not fit:
-        return res.refuse("R-CP-05", f"{input} supply, {voltage_dc:g} V, ≥ {need:.2f} A", "none in the database",
+        return res.refuse("R-CP-05", f"{input} supply, {voltage_dc:g} V, ≥ {pick_a:.2f} A", "none in the database",
                           _smps()["source"]["ref"])
     best = min(fit, key=lambda r: (r["i_out_a"], order[id(r)]))
-    res.add("R-CP-05", f"smallest {brand} {input} supply ≥ {need:.2f} A",
+    res.add("R-CP-05", f"smallest {brand} {input} supply ≥ {pick_a:.2f} A",
             f"{best['brand']} {best['model']} {best['i_out_a']:g} A", PASS,
             f"SIE-KT10-1-2022 p.{best['page']}" if siemens else f"OWN-AB-SMPS sheet {best['sheet']} row {best['row']}")
     v = None if siemens else _verified(best)

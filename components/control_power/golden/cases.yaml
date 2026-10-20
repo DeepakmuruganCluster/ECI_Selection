@@ -51,3 +51,11 @@ cases:
     in: {plc_a: 17.0, input: 3P, brand: Siemens}
     expect: {status: cannot_select, rule: R-CP-05}
     oracle: "17 × 1.25 = 21.25 A > the largest PSU6200 transcribed (20 A): refused — several supplies (the panel splits the load)"
+  - id: C13
+    in: {plc_a: 0.5, input: 3P, brand: Siemens, min_a: 10}
+    expect: {status: ok, smps: 6EP3434-7SB00-3AX0, smps_a: 10}
+    oracle: "R-CP-09: 0.5 × 1.25 = 0.625 A, the client's 10 A is the minimum → PSU6200 3-phase 10 A (KT 10.1 p.3/21)"
+  - id: C14
+    in: {plc_a: 9.0, input: 3P, brand: Siemens, min_a: 10}
+    expect: {status: warning, smps: 6EP3436-7SB00-3AX0, smps_a: 20, warnings: [R-CP-09]}
+    oracle: "9 × 1.25 = 11.25 A > the client's 10 A: the required current decides → 20 A; warning (tell the client)"
