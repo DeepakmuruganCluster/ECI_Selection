@@ -121,6 +121,25 @@ def _row_use(kind: str, value: str) -> dict:
         pick = "connectwell" if "connectwell" in makes else makes[0] if len(makes) == 1 else None
         return {"answers": {"terminal_make": pick} if pick else {},
                 "require": {"makes": makes, "screwless": bool(re.search(r"screw\s*less", v)), "short_links": "short link" in v}}
+    if kind in ("network", "profinet_cable"):        # part 6 (owner 2026-10-20): client lines, no article until data sheets are held
+        sec, lines = "PLC & I/O", []
+        make = next((m for m in ("Siemens", "Phoenix", "Hirschmann", "Moxa") if m.lower() in v or (m == "Phoenix" and "phoneix" in v)), "")
+        if (m := re.search(r"(\d+)\s*port\s*ethernet\s*(?:hub|switch)\s*-?\s*(\d+)\s*no", v)):
+            lines.append({"item": "Ethernet switch", "description": f"Ethernet switch (hub), {m[1]} ports{', ' + make if make else ''}",
+                          "qty": int(m[2]), "unit": "no", "section": sec})
+        if (m := re.search(r"ethernet\s*surge\s*protector\s*-?\s*(\d+)\s*no", v)):
+            lines.append({"item": "Ethernet surge protector", "description": "Ethernet (RJ45) surge protector", "qty": int(m[1]),
+                          "unit": "no", "section": sec})
+        if (m := re.search(r"(\d+)\s*(?:m|mtr|mtrs|meter|metre|meters|metres)\b", v)):
+            lines.append({"item": "PROFINET cable", "description": "PROFINET cable, loose supply for site", "qty": int(m[1]),
+                          "unit": "m", "section": sec})
+        if (m := re.search(r"(\d+)\s*no'?s?\s*of\s*profinet\s*connector", v)):
+            lines.append({"item": "PROFINET connector", "description": "PROFINET (RJ45) connector, loose supply for site",
+                          "qty": int(m[1]), "unit": "no", "section": sec})
+        if not lines:                                # e.g. the panel's internal PROFINET cable: no quantity printed
+            lines.append({"item": "Network item", "description": f"{value} (quantity not stated by the client: as needed in the panel)",
+                          "qty": 1, "unit": "lot", "section": sec})
+        return {"lines": lines}
     if kind == "busbar":
         return {"lines": [{"group": "Client-specified", "item": "Busbar", "description": f"Busbar: {value}"}]}
     if kind == "earthing":
@@ -177,7 +196,8 @@ def read_pdf(data: bytes, filename: str, panels: list[str]) -> dict:
 def _per_panel(rows: list[dict], plc: dict, panels: list[str]) -> None:
     """Part 5 (owner 2026-10-20). The 'Power Supply' row's ratings per panel — '(BIO Panel 10A-1No, 20A-1No) (RO Panel - 20A
     -1 NO)': two ratings → a supply for the CPU (the smaller) and one for the I/O; one rating → one supply of at least that.
-    Plant items (tower lamps) → the panel holding the PLC CPU (the client's PLC block)."""
+    Plant items (tower lamps; part 6: network switches, surge protectors, PROFINET cable) → the panel holding the PLC CPU
+    (the client's PLC block)."""
     cpu_panels = [p for p, b in plc.items() if p in panels and any(k.upper().startswith("CPU") and v for k, v in b["counts"].items())]
     for r in rows:
         if r["kind"] == "smps":
@@ -191,7 +211,7 @@ def _per_panel(rows: list[dict], plc: dict, panels: list[str]) -> None:
                     per[hit[0]]["_ratings"] = amps
             r["panel_answers"] = {p: {k: v for k, v in a.items() if not k.startswith("_")} for p, a in per.items()}
             r["require"] = {**r.get("require", {}), "ratings": {p: a["_ratings"] for p, a in per.items()}}
-        if r["kind"] == "tower_lamp" and len(cpu_panels) == 1:
+        if r["kind"] in ("tower_lamp", "network", "profinet_cable") and len(cpu_panels) == 1:
             r["panels"] = cpu_panels
 
 

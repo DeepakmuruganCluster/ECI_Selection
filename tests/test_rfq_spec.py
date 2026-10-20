@@ -258,3 +258,18 @@ def test_part6_terminals_connectwell_push_in_short_links_open(rid):
     c = rfq_bom.client_checks(req, ph)[0]
     assert "weidmuller is not Connectwell / Phoenix" in c["detail"] and "not push-in" in c["detail"]
     assert rfq_bom.client_checks(req, [])[0]["verdict"] == "not built"
+
+
+def test_part6_network_items_as_client_lines_in_the_cpu_panel(rid):
+    """Part 6 (owner 2026-10-20). Client (AUTO): 'Siemens 8 Port Ethernet Hub -4No's and Ethernet Surge Protector -
+    6No's', 'Profinet Cable/Connector: 250mtr for Site purpose/20No's of Profinet Connector', 'Panel Internal Profinet Cable:
+    Phoneix Ethernet cable with Ethernet Connector' (pp.1-2). No data sheet held → client lines (as written, no article), once, in the
+    panel holding the CPU (BIO/UF); the internal cable has no printed quantity → a lot, said so."""
+    lines = {ln["item"]: ln for ln in rfq_spec.lines_for(rid, "BIO/UF") if ln.get("section") == "PLC & I/O"}
+    assert {k: (v["qty"], v["unit"]) for k, v in lines.items()} == {
+        "Ethernet switch": (4, "no"), "Ethernet surge protector": (6, "no"), "PROFINET cable": (250, "m"),
+        "PROFINET connector": (20, "no"), "Network item": (1, "lot")}
+    assert "8 ports, Siemens" in lines["Ethernet switch"]["description"]
+    assert "quantity not stated" in lines["Network item"]["description"]
+    assert all(ln["source"].startswith(("client spec p.1:", "client spec p.2:")) for ln in lines.values())   # rows on pp.1-2
+    assert not [ln for ln in rfq_spec.lines_for(rid, "RO") if ln.get("section") == "PLC & I/O"]
