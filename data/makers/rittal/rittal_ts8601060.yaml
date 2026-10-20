@@ -1,0 +1,21 @@
+# Rittal TS 8601.060 base/plinth trim panels, side, 100 mm — data sheet (pdf-creator, 3 pages). PDF page = printed.
+# These are SIDE trim panels mounted between the front and rear base/plinth components — not the plinth corner
+# pieces or front/rear trims (no data sheet held for those, R-ACC-14).
+# "To fit Enclosure type: TS: = 600 mm" (p.2) is "for W: 600 mm" in the p.3 product description; on the side of
+# the plinth this width is the enclosure depth (our reading, R-ACC-13).
+# p.2: "At 200 mm height, two 100 mm base/plinth trim panels may be used." — the only heights named are 100 / 200 mm.
+
+source:
+  ref: RITTAL-8601060
+  section: "TS 8601.060 side base/plinth trim panels 100 mm: features (pp. 2–3)"
+
+article: "TS 8601.060"
+
+rows:
+  - {quantity: height_mm,       value: 100, printed: "Height: 100 mm", page: 2}
+  - {quantity: fits_width_mm,   value: 600, printed: "Enclosure type: TS: = 600 mm", page: 2}
+  - {quantity: fits_width_mm,   value: 600, printed: "TS Trim panel, sides, H: 100 mm, for W: 600 mm", page: 3}
+  - {quantity: pieces_per_pack, value: 2, printed: "Packs of 2 pc(s).", page: 2}
+  - {quantity: supply_includes, value: "2 base/plinth trim panels", page: 2}
+  - {quantity: two_100_for_200, value: "At 200 mm height, two 100 mm base/plinth trim panels may be used.", page: 2}
+  - {quantity: colour,          value: "RAL 7022", page: 2}

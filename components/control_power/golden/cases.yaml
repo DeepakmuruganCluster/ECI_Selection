@@ -1,0 +1,40 @@
+# Golden cases for control_power — written BEFORE the code (G4).
+# Oracle: hand arithmetic with FINDER-S38 p.13 (10.4 mA) and the template values; SMPS.csv lines.
+
+cases:
+  - id: C01
+    in: {di: 64, relays: 32, plc_a: 1.5}
+    expect: {status: warning, load_a: 3.75, required_a: 4.69, smps: S8VK-S12024, smps_a: 5}
+    oracle: "64 × 0.03 + 32 × 0.0104 + 1.5 = 3.7528 A × 1.25 = 4.691 A → OWN-AB-SMPS db1 row 4: S8VK-S12024 5 A (1P+N; first of the 5 A Omron rows)"
+  - id: C02
+    in: {di: 64, relays: 32}
+    expect: {status: cannot_select, rule: R-CP-03}
+    oracle: "no PLC current"
+  - id: C03
+    in: {di: 10, plc_a: 24, input: "3P"}
+    expect: {status: warning, required_a: 30.38, smps: S8VK-T96024, smps_a: 40}
+    oracle: "(10 × 0.03 + 24) × 1.25 = 30.375 A → OWN-AB-SMPS db1 row 14: S8VK-T96024 40 A (3P)"
+  - id: C04
+    in: {di: 10, plc_a: 24}
+    expect: {status: cannot_select, rule: R-CP-05}
+    oracle: "30.4 A > largest Omron 1P+N (20 A)"
+  - id: C05
+    in: {do: 10, plc_a: 1}
+    expect: {status: warning, load_a: 1.5, required_a: 1.88, smps: S8VK-S06024}
+    oracle: "10 × 0.05 + 1 = 1.5 A × 1.25 = 1.875 → db1 row 3: S8VK-S06024 2.5 A (first 2.5 A row)"
+  - id: C06
+    in: {di: -1, plc_a: 1}
+    expect: {status: invalid}
+    oracle: "negative count"
+  - id: C07
+    in: {di: 64, relays: 32, plc_a: 1.5, brand: Phoenix}
+    expect: {status: warning, warnings: [R-CP-05, R-CP-06]}
+    oracle: "Phoenix series are not marked verified in the AutoBOM Logsheet (rows 13–15) → R-CP-06 warning"
+  - id: C08
+    in: {di: 64, relays: 32, plc_a: 1.5, brand: Siemens}
+    expect: {status: cannot_select, rule: R-CP-05}
+    oracle: "no Siemens supplies in the AutoBOM database (SITOP waits for KT 10.1)"
+  - id: C09
+    in: {di: 64, relays: 32, plc_a: 1.5, communication: true}
+    expect: {status: warning, smps: S8VK-X12024A-EIP}
+    oracle: "R-CP-07 communication asked → only …-EIP supplies; 4.69 A → Omron sheet row 11 S8VK-X12024A-EIP 5 A (first 5 A port supply)"

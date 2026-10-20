@@ -1,0 +1,38 @@
+# Siemens S7-1500 standard CPUs (central) + SIMATIC ET 200SP distributed I/O (Standard modules) from Catalog ST 70 · 2026.
+#
+# Transcribed 2026-10-13 from "Selection and ordering data" / "Technical specifications" (page = PDF page), read in the
+# text layer and checked on the rendered pages where tables have many columns (p.1410 total output current).
+# Architecture (owner 2026-10-13, option 1): S7-1500 CPU in the panel, ET 200SP stations on PROFINET (IM 155-6 PN ST).
+# The catalogue prints NO current consumption for the ET 200SP I/O modules (backplane or L+) and none for the S7-1500 CPUs;
+# the CPU 1513-1 PN figures are in s71500_cpu1513_power.yaml (equipment manual).
+#   kind cpu:   program / data work memory, profinet_max_devices ("Number of connectable IO Devices, max.")
+#   kind mc:    SIMATIC Memory Card ("SIMATIC Memory Card required for operation of the CPU", p.524)
+#   kind rail:  S7-1500 mounting rail
+#   kind im:    interface module incl. BusAdapter BA 2xRJ45 and server module; current_ma = "Current consumption (rated
+#               value)", max_modules = "Quantity of operable ET 200SP modules, max."
+#   kind bu:    BaseUnit type A0; light = "for starting a new potential group (max. 10 A)", dark = "for continuing"
+#   kind io:    Standard (ST) I/O modules, BU type as printed, width 15 mm; DQ: rated output current per channel and
+#               "Total current of the outputs – current per module, max."
+
+source:
+  ref: SIE-ST70-2026
+  section: "5 SIMATIC S7-1500 standard CPUs; 10 SIMATIC ET 200SP interface modules, BaseUnits, digital and analog I/O modules"
+
+rows:
+  - {article: 6ES7511-1AL03-0AB0, model: CPU 1511-1 PN, kind: cpu, program_kb: 300, data_kb: 1500, profinet_max_devices: 128, page: 519, spec_page: 522}
+  - {article: 6ES7513-1AM03-0AB0, model: CPU 1513-1 PN, kind: cpu, program_kb: 600, data_kb: 2500, profinet_max_devices: 128, page: 524, spec_page: 527}
+  - {article: 6ES7515-2AN03-0AB0, model: CPU 1515-2 PN, kind: cpu, program_kb: 1000, data_kb: 4500, profinet_max_devices: 256, page: 529, spec_page: 532}
+  - {article: 6ES7954-8LC04-0AA0, model: SIMATIC Memory Card 4 MB, kind: mc, size_mb: 4, page: 524}
+  - {article: 6ES7954-8LE04-0AA0, model: SIMATIC Memory Card 12 MB, kind: mc, size_mb: 12, page: 524}
+  - {article: 6ES7954-8LF04-0AA0, model: SIMATIC Memory Card 24 MB, kind: mc, size_mb: 24, page: 524}
+  - {article: 6ES7954-8LL04-0AA0, model: SIMATIC Memory Card 256 MB, kind: mc, size_mb: 256, page: 524}
+  - {article: 6ES7590-1AB60-0AA0, model: S7-1500 mounting rail 160 mm, kind: rail, length_mm: 160, page: 524}
+  - {article: 6ES7155-6AA02-0BN0, model: IM 155-6 PN ST incl. BA 2xRJ45 and server module, kind: im, current_ma: 350, max_modules: 32, page: 1372, spec_page: 1374}
+  - {article: 6ES7193-6BP00-0DA0, model: BU15-P16+A0+2D (light), kind: bu, bu_type: A0, starts_group: true, group_max_a: 10, page: 1395}
+  - {article: 6ES7193-6BP00-0BA0, model: BU15-P16+A0+2B (dark), kind: bu, bu_type: A0, starts_group: false, page: 1395}
+  - {article: 6ES7131-6BF01-0BA0, model: DI 8x24VDC ST, kind: io, di: 8, bu_type: A0, width_mm: 15, page: 1395, spec_page: 1397}
+  - {article: 6ES7131-6BH01-0BA0, model: DI 16x24VDC ST, kind: io, di: 16, bu_type: A0, width_mm: 15, page: 1395, spec_page: 1397}
+  - {article: 6ES7132-6BF01-0BA0, model: DQ 8x24VDC/0.5A ST, kind: io, do: 8, do_type: sourcing, bu_type: A0, width_mm: 15, out_a_per_channel: 0.5, out_a_per_module: 4, page: 1407, spec_page: 1410}
+  - {article: 6ES7132-6BH01-0BA0, model: DQ 16x24VDC/0.5A ST, kind: io, do: 16, do_type: sourcing, bu_type: A0, width_mm: 15, out_a_per_channel: 0.5, out_a_per_module: 8, note: "8 A; see Equipment Manual 'Derating curve'", page: 1407, spec_page: 1410}
+  - {article: 6ES7134-6HD01-0BA1, model: AI 4xU/I 2-wire ST, kind: io, ai: 4, bu_type: "A0 or A1", width_mm: 15, page: 1431, spec_page: 1433}
+  - {article: 6ES7135-6HD00-0BA1, model: AQ 4xU/I ST, kind: io, aq: 4, bu_type: "A0 or A1", width_mm: 15, page: 1449, spec_page: 1451}

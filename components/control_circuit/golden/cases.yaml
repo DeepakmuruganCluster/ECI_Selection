@@ -1,0 +1,64 @@
+# Golden cases for control_circuit — written BEFORE the code (G4).
+# Oracles: hand arithmetic; company transformers 150 / 250 / 350 / 500 / 750 / 1000 / 1500 VA (costing sheet; the 1500 VA
+# unit was missed in the first hand count and added after the code showed it — checked in the sheet);
+# MCB.csv line 276 (Siemens 2P D 0.5 A 5SY72058CC), line 212 (2P C 2 A 5SL42027RC), line 211 (2P C 0.5 A 5SL42057RC).
+
+cases:
+  - id: T01
+    in: {supply: transformer, coils: 4, coil_va: 10, lamps: 6, lamp_va: 1}
+    expect: {status: ok, load_va: 46, required_va: 69, transformer_va: 150, primary_mcb: 5SY72058CC, secondary_mcb: 5SL42027RC}
+    oracle: "4 × 10 + 6 × 1 = 46 VA × 1.5 = 69 → 150 VA; 150 / 415 = 0.36 A → 2P D 0.5 A; 150 / 230 = 0.65 A → 2P C 2 A"
+  - id: T02
+    in: {supply: transformer, coils: 4, lamps: 6, lamp_va: 1}
+    expect: {status: warning, transformer_va: null, warnings: [R-CC-01, R-CC-02]}
+    oracle: "coil VA not given → load partial (R-CC-01) and the transformer not sized (R-CC-02)"
+  - id: T03
+    in: {supply: phase_neutral, coils: 4, coil_va: 10, lamps: 6, lamp_va: 1}
+    expect: {status: ok, transformer_va: null, control_mcb: 5SL42057RC}
+    oracle: "46 VA / 230 V = 0.2 A → 2P C 0.5 A"
+  - id: T04
+    in: {supply: transformer, other_va: 700}
+    expect: {status: ok, required_va: 1050, transformer_va: 1500}
+    oracle: "700 × 1.5 = 1050 VA → 1500 VA (the next company size above 1000 VA)"
+  - id: T07
+    in: {supply: transformer, other_va: 1100}
+    expect: {status: warning, required_va: 1650, transformer_va: null, warnings: [R-CC-02]}
+    oracle: "1650 VA > largest company transformer 1500 VA"
+  - id: T05
+    in: {supply: transformer, coils: 2, coil_va: 10, estop: 1, reset: 1, phase_lamps: true}
+    expect: {status: ok, n_devices: 8}
+    oracle: "E-stop: XB5AS442N + hood + ZBE102N; reset: XB5AA61N + ZBE101N; lamps XB7EV04/05/06MPN = 8 lines"
+  - id: T06
+    in: {supply: battery}
+    expect: {status: invalid}
+    oracle: "supply must be transformer or phase_neutral"
+  # --- coils from the catalogue (R-CC-06), written 2026-10-13 before the code -----------------------------------
+  - id: T08
+    in: {supply: transformer, coil_power: [{close_va: 77, hold_va: 9.8, qty: 2}, {close_va: 27, hold_va: 4.2, qty: 3}]}
+    expect: {status: ok, load_va: 99.4, required_va: 149.1, transformer_va: 150, primary_mcb: 5SY72058CC, secondary_mcb: 5SL42027RC}
+    oracle: "IC 10 3RT2027 AC 50 Hz 77 / 9.8 VA (p.158) × 2, 3RT2015 27 / 4.2 VA (p.155) × 3: Σ hold 19.6 + 12.6 = 32.2; largest step 77 − 9.8 = 67.2 → 99.4 VA × 1.5 = 149.1 → 150 VA"
+  - id: T09
+    in: {supply: transformer, coil_power: [{close_va: 77, hold_va: 9.8, qty: 2}, {close_va: 27, hold_va: 4.2, qty: 3}], lamps: 6, lamp_va: 1}
+    expect: {status: ok, load_va: 105.4, required_va: 158.1, transformer_va: 250}
+    oracle: "99.4 + 6 × 1 = 105.4 × 1.5 = 158.1 → 250 VA"
+  - id: T10
+    in: {supply: transformer, coil_power: [{close_va: 77, hold_va: 9.8, qty: 2}, {close_va: null, hold_va: null, qty: 4}]}
+    expect: {status: warning, transformer_va: null, warnings: [R-CC-01, R-CC-02]}
+    oracle: "4 coils without catalogue power (e.g. company-kit contactors) → partial load, transformer not sized"
+  - id: T11
+    in: {supply: transformer, coils: 2, coil_va: 10, coil_power: [{close_va: 77, hold_va: 9.8, qty: 2}]}
+    expect: {status: invalid}
+    oracle: "coil VA from the designer and from the catalogue together: ambiguous"
+  # --- test-agent findings 2026-10-14, written before the fix ---------------------------------------------------
+  - id: T12
+    in: {supply: transformer, coil_power: [{close_va: 1, hold_va: 50, qty: 2}]}
+    expect: {status: invalid}
+    oracle: "a coil's closing power is never below its holding power: closing 1 < holding 50 VA is a data error (gave a negative step and an undersized transformer)"
+  - id: T13
+    in: {supply: transformer, coil_power: [{close_va: 77, hold_va: 9.8, qty: 2}, {close_va: 900, hold_va: 50, qty: 0}]}
+    expect: {status: ok, load_va: 86.8}
+    oracle: "R-CC-06: a coil with qty 0 is not in the panel: no holding, no step. Σ hold 2 × 9.8 = 19.6 + step 77 − 9.8 = 67.2 → 86.8 VA (gave 869.6)"
+  - id: T14
+    in: {supply: transformer, coil_power: [{close_va: 77, hold_va: -9.8, qty: 2}]}
+    expect: {status: invalid}
+    oracle: "negative coil power"

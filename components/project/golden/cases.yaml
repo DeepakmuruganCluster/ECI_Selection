@@ -1,0 +1,41 @@
+# Golden cases for project — written BEFORE the code (G4).
+# Oracles: component results already verified (load list counts, ECI I/O table, component golden cases), hand arithmetic.
+# Common design inputs (stated on every case): fault 50 kA, 35 °C inside, motor pf 0.85, cable 50 m in air at 40 °C.
+
+cases:
+  - id: J01
+    in: {panel: BIO_UF, fault_ka: 50, panel_internal_c: 35, motor_pf: 0.85, cable_ambient_c: 40, default_cable_m: 50,
+         cu_safety: sto, relays: latching, vfd_protection: fuse, cable_make: polycab, ct_make: rishabh, wire_insulation: "70", terminals_per_channel: 1, mc_copy_parameters: true, control_supply: transformer}
+    expect: {status: warning, qty_cu: 22, qty_bop: 22, qty_latch: 36, qty_slim: 44, qty_ct: 3, qty_io_terminals: 412, io_di: 74, io_do: 73, io_pn: 22, io_safety: 22, spd_article: "VAL-MS 320/3+1/FM", plc_cpu: CPU 1513-1 PN, plc_stations: 2, plc_modules: 45, plc_i24_a: 5.514, load_24v_a: 14.924, n_client_plant: 15, n_out_of_scope: 4, coverage_open_lines: 7}
+    oracle: "load list: 22 drive units, 36 DOL units (component 14); CU240E-2 PN (STO, V46) × 22; BOP-2 × 22; latching 13.12 × 36; slim = 80 DO − 36 = 44; CTs 3 (metering); terminals 272+80+40+4+16 = 412; I/O list: DI 36×2 + 1×2 = 74, DO 36×2 (latching) + 1 = 73, 22 drives on PROFINET with STO; client Phoenix 3-phase SPD → sa.csv line 4 VAL-MS 320/3+1/FM; PLC (2026-10-13, R-PRJ-14): required 259 / 68 / 34 / 10 × 1.4 = 363 / 96 / 48 / 14 → 23 DI16 + 6 DQ16 + 12 AI4 + 4 AQ4 = 45 → 2 IM ST (ECI: 2), CPU 1513-1 PN + 12 MB (ECI), 24 V 0.56 + 0.7 + 2.07 + 0.18 + 1.404 + 0.6 = 5.514 A; power calculation 24 V: 272 × 0.03 + 80 × 0.0104 + 0.418 + 5.514 = 14.924 A; coverage (R-PRJ-16, 2026-10-14): 15 plant items carried here (plant_items_panel), out of scope enclosure / fans / door switch + light / stand = 4, open load lines 7 (P104A/B 1.9 kW and K202 3.7 kW not in the guide table; 5 single-phase 0.25 kW tags; E101 soft starter selected since 2026-10-14: 3RW5214 + 3RV2032-4DA10, IC 10 p. 6/59, 6/63 — was 8)"
+  - id: J02
+    in: {panel: RO, fault_ka: 50, panel_internal_c: 35, motor_pf: 0.85, cable_ambient_c: 40, default_cable_m: 50,
+         cu_safety: sto, relays: latching, vfd_protection: fuse, cable_make: polycab, ct_make: rishabh, wire_insulation: "70", terminals_per_channel: 1, mc_copy_parameters: true, control_supply: transformer}
+    expect: {status: warning, qty_cu: 16, qty_latch: 39, qty_slim: 57, qty_io_terminals: 524, plc_cpu: none, plc_stations: 2, plc_modules: 63, plc_i24_a: 6.856, load_24v_a: 18.462, n_client_plant: 0, n_out_of_scope: 5, coverage_open_lines: 9}
+    oracle: "RO: 16 drive units, 39 DOL units; slim = 96 − 39 = 57; terminals 336+96+56+4+32 = 524; PLC: remote I/O of BIO_UF (project.yaml); 330 / 83 / 49 / 22 × 1.4 = 462 / 117 / 69 / 31 → 29 + 8 + 18 + 8 = 63 → 2 IM (ECI: 2); 24 V 0.7 + 2.61 + 0.24 + 2.106 + 1.2 = 6.856 A; power calculation 24 V: 336 × 0.03 + 96 × 0.0104 + 0.528 + 6.856 = 18.462 A; coverage: plant items in the BIO_UF BOM (pointer only), out of scope 4 client items + heater HT401 = 5, open load lines 9 (9 single-phase 0.25 kW tags; P301A/B soft starter selected since 2026-10-14: 3RW5215 + 3RV2032-4EA10 — was 10)"
+  - id: J03
+    in: {panel: BIO_UF, fault_ka: 50, panel_internal_c: 35, motor_pf: 0.85, cable_ambient_c: 40, default_cable_m: 50, relays: slim,
+         cu_safety: sto, vfd_protection: fuse, cable_make: polycab, ct_make: rishabh, wire_insulation: "70", terminals_per_channel: 1, mc_copy_parameters: true, control_supply: transformer}
+    expect: {status: warning, qty_latch: 0, qty_slim: 80, io_do: 37}
+    oracle: "option: slim relays on every output → 80 (ECI DO count), no latching relays; I/O list DO 36 + 1 = 37"
+  - id: J04
+    in: {panel: BIO_UF, fault_ka: 50, panel_internal_c: 35, motor_pf: 0.85, cable_ambient_c: 40, default_cable_m: 50, terminals_per_channel: 2,
+         cu_safety: sto, relays: latching, vfd_protection: fuse, cable_make: polycab, ct_make: rishabh, wire_insulation: "70", mc_copy_parameters: true, control_supply: transformer}
+    expect: {status: warning, qty_io_terminals: 824}
+    oracle: "2 × 412"
+  - id: J05
+    in: {panel: XYZ, fault_ka: 50, panel_internal_c: 35, motor_pf: 0.85, cable_ambient_c: 40,
+         cu_safety: sto, relays: latching, vfd_protection: fuse, cable_make: polycab, ct_make: rishabh, wire_insulation: "70", terminals_per_channel: 1, mc_copy_parameters: true, control_supply: transformer}
+    expect: {status: invalid}
+    oracle: "panel must be BIO_UF or RO"
+  - id: J06
+    in: {panel: BIO_UF, panel_internal_c: 35, motor_pf: 0.85, cable_ambient_c: 40,
+         cu_safety: sto, relays: latching, vfd_protection: fuse, cable_make: polycab, ct_make: rishabh, wire_insulation: "70", terminals_per_channel: 1, mc_copy_parameters: true, control_supply: transformer}
+    expect: {status: warning, selected: 0, n_questions: 2}
+    oracle: "R-PRJ-20 (owner 2026-10-17, audit: ask each one): the fault level and the default cable length are asked (project page), never assumed — no saved value for BIO_UF"
+  - id: J07
+    in: {panel: BIO_UF, fault_ka: 50, panel_internal_c: 35, motor_pf: 0.85, cable_ambient_c: 40, default_cable_m: 50,
+         edits: [{action: replace, article: 6ES7954-8LF04-0AA0, line: {group: PLC, article: 6ES7954-8LE04-0AA0, description: "Memory card: SIMATIC Memory Card 12 MB"}}],
+         cu_safety: sto, relays: latching, vfd_protection: fuse, cable_make: polycab, ct_make: rishabh, wire_insulation: "70", terminals_per_channel: 1, mc_copy_parameters: true, control_supply: transformer}
+    expect: {status: warning, n_edits: 1, plc_cpu: CPU 1513-1 PN}
+    oracle: "R-PRJ-17: the designer swaps the 12 MB card for 24 MB (6ES7954-8LF04-0AA0, in the catalog from ST 70 p.524): one edit applied, the PLC selection itself unchanged"

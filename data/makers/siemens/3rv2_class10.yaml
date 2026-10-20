@@ -1,0 +1,100 @@
+# Siemens SIRIUS 3RV2 motor starter protectors, class 10, without auxiliary switches, screw terminals: setting range,
+# instantaneous release and short-circuit breaking capacity Icu at 400 V AC (owner 2026-10-20, RFQ part 3: the drives'
+# MPCBs). Catalog IC 10 · 2026, PDF pp.639-642 (printed 7/25-7/28), 'Selection and ordering data'. Standard rows only
+# (the -0BA0 special-condition rows and spring-loaded terminals are not transcribed). Generated from the page text,
+# each row checked to read 'rated current, kW, setting range, instantaneous, Icu, article'.
+
+source:
+  ref: SIE-IC10-2026
+  section: "SIRIUS 3RV2 motor starter protectors, class 10 (7/25-7/28)"
+
+rows:
+  - {article: 3RV2011-0AA10, family: "3RV2011", size: S00, lo: 0.11, hi: 0.16, ii_a: 2.1, icu_ka: 100, page: 639}
+  - {article: 3RV2011-0BA10, family: "3RV2011", size: S00, lo: 0.14, hi: 0.2, ii_a: 2.6, icu_ka: 100, page: 639}
+  - {article: 3RV2011-0CA10, family: "3RV2011", size: S00, lo: 0.18, hi: 0.25, ii_a: 3.3, icu_ka: 100, page: 639}
+  - {article: 3RV2011-0DA10, family: "3RV2011", size: S00, lo: 0.22, hi: 0.32, ii_a: 4.2, icu_ka: 100, page: 639}
+  - {article: 3RV2011-0EA10, family: "3RV2011", size: S00, lo: 0.28, hi: 0.4, ii_a: 5.2, icu_ka: 100, page: 639}
+  - {article: 3RV2011-0FA10, family: "3RV2011", size: S00, lo: 0.35, hi: 0.5, ii_a: 6.5, icu_ka: 100, page: 639}
+  - {article: 3RV2011-0GA10, family: "3RV2011", size: S00, lo: 0.45, hi: 0.63, ii_a: 8.2, icu_ka: 100, page: 639}
+  - {article: 3RV2011-0HA10, family: "3RV2011", size: S00, lo: 0.55, hi: 0.8, ii_a: 10, icu_ka: 100, page: 639}
+  - {article: 3RV2011-0JA10, family: "3RV2011", size: S00, lo: 0.7, hi: 1, ii_a: 13, icu_ka: 100, page: 639}
+  - {article: 3RV2011-0KA10, family: "3RV2011", size: S00, lo: 0.9, hi: 1.25, ii_a: 16, icu_ka: 100, page: 639}
+  - {article: 3RV2011-1AA10, family: "3RV2011", size: S00, lo: 1.1, hi: 1.6, ii_a: 21, icu_ka: 100, page: 639}
+  - {article: 3RV2011-1BA10, family: "3RV2011", size: S00, lo: 1.4, hi: 2, ii_a: 26, icu_ka: 100, page: 639}
+  - {article: 3RV2011-1CA10, family: "3RV2011", size: S00, lo: 1.8, hi: 2.5, ii_a: 33, icu_ka: 100, page: 639}
+  - {article: 3RV2011-1DA10, family: "3RV2011", size: S00, lo: 2.2, hi: 3.2, ii_a: 42, icu_ka: 100, page: 639}
+  - {article: 3RV2011-1EA10, family: "3RV2011", size: S00, lo: 2.8, hi: 4, ii_a: 52, icu_ka: 100, page: 639}
+  - {article: 3RV2011-1FA10, family: "3RV2011", size: S00, lo: 3.5, hi: 5, ii_a: 65, icu_ka: 100, page: 639}
+  - {article: 3RV2011-1GA10, family: "3RV2011", size: S00, lo: 4.5, hi: 6.3, ii_a: 82, icu_ka: 100, page: 639}
+  - {article: 3RV2011-1HA10, family: "3RV2011", size: S00, lo: 5.5, hi: 8, ii_a: 104, icu_ka: 100, page: 639}
+  - {article: 3RV2011-1JA10, family: "3RV2011", size: S00, lo: 7, hi: 10, ii_a: 130, icu_ka: 100, page: 639}
+  - {article: 3RV2011-1KA10, family: "3RV2011", size: S00, lo: 9, hi: 12.5, ii_a: 163, icu_ka: 100, page: 639}
+  - {article: 3RV2011-4AA10, family: "3RV2011", size: S00, lo: 10, hi: 16, ii_a: 208, icu_ka: 55, page: 639}
+  - {article: 3RV2021-0AA10, family: "3RV2021", size: S0, lo: 0.11, hi: 0.16, ii_a: 2.1, icu_ka: 100, page: 640}
+  - {article: 3RV2021-0BA10, family: "3RV2021", size: S0, lo: 0.14, hi: 0.2, ii_a: 2.6, icu_ka: 100, page: 640}
+  - {article: 3RV2021-0CA10, family: "3RV2021", size: S0, lo: 0.18, hi: 0.25, ii_a: 3.3, icu_ka: 100, page: 640}
+  - {article: 3RV2021-0DA10, family: "3RV2021", size: S0, lo: 0.22, hi: 0.32, ii_a: 4.2, icu_ka: 100, page: 640}
+  - {article: 3RV2021-0EA10, family: "3RV2021", size: S0, lo: 0.28, hi: 0.4, ii_a: 5.2, icu_ka: 100, page: 640}
+  - {article: 3RV2021-0FA10, family: "3RV2021", size: S0, lo: 0.35, hi: 0.5, ii_a: 6.5, icu_ka: 100, page: 640}
+  - {article: 3RV2021-0GA10, family: "3RV2021", size: S0, lo: 0.45, hi: 0.63, ii_a: 8.2, icu_ka: 100, page: 640}
+  - {article: 3RV2021-0HA10, family: "3RV2021", size: S0, lo: 0.55, hi: 0.8, ii_a: 10, icu_ka: 100, page: 640}
+  - {article: 3RV2021-0JA10, family: "3RV2021", size: S0, lo: 0.7, hi: 1, ii_a: 13, icu_ka: 100, page: 640}
+  - {article: 3RV2021-0KA10, family: "3RV2021", size: S0, lo: 0.9, hi: 1.25, ii_a: 16, icu_ka: 100, page: 640}
+  - {article: 3RV2021-1AA10, family: "3RV2021", size: S0, lo: 1.1, hi: 1.6, ii_a: 21, icu_ka: 100, page: 640}
+  - {article: 3RV2021-1BA10, family: "3RV2021", size: S0, lo: 1.4, hi: 2, ii_a: 26, icu_ka: 100, page: 640}
+  - {article: 3RV2021-1CA10, family: "3RV2021", size: S0, lo: 1.8, hi: 2.5, ii_a: 33, icu_ka: 100, page: 640}
+  - {article: 3RV2021-1DA10, family: "3RV2021", size: S0, lo: 2.2, hi: 3.2, ii_a: 42, icu_ka: 100, page: 640}
+  - {article: 3RV2021-1EA10, family: "3RV2021", size: S0, lo: 2.8, hi: 4, ii_a: 52, icu_ka: 100, page: 640}
+  - {article: 3RV2021-1FA10, family: "3RV2021", size: S0, lo: 3.5, hi: 5, ii_a: 65, icu_ka: 100, page: 640}
+  - {article: 3RV2021-1GA10, family: "3RV2021", size: S0, lo: 4.5, hi: 6.3, ii_a: 82, icu_ka: 100, page: 640}
+  - {article: 3RV2021-1HA10, family: "3RV2021", size: S0, lo: 5.5, hi: 8, ii_a: 104, icu_ka: 100, page: 640}
+  - {article: 3RV2021-1JA10, family: "3RV2021", size: S0, lo: 7, hi: 10, ii_a: 130, icu_ka: 100, page: 640}
+  - {article: 3RV2021-1KA10, family: "3RV2021", size: S0, lo: 9, hi: 12.5, ii_a: 163, icu_ka: 100, page: 640}
+  - {article: 3RV2021-4AA10, family: "3RV2021", size: S0, lo: 10, hi: 16, ii_a: 208, icu_ka: 55, page: 640}
+  - {article: 3RV2021-4BA10, family: "3RV2021", size: S0, lo: 13, hi: 20, ii_a: 260, icu_ka: 55, page: 640}
+  - {article: 3RV2021-4CA10, family: "3RV2021", size: S0, lo: 16, hi: 22, ii_a: 286, icu_ka: 55, page: 640}
+  - {article: 3RV2021-4DA10, family: "3RV2021", size: S0, lo: 18, hi: 25, ii_a: 325, icu_ka: 55, page: 640}
+  - {article: 3RV2021-4NA10, family: "3RV2021", size: S0, lo: 23, hi: 28, ii_a: 364, icu_ka: 55, page: 640}
+  - {article: 3RV2021-4EA10, family: "3RV2021", size: S0, lo: 27, hi: 32, ii_a: 400, icu_ka: 55, page: 640}
+  - {article: 3RV2021-4PA10, family: "3RV2021", size: S0, lo: 30, hi: 36, ii_a: 432, icu_ka: 20, page: 640}
+  - {article: 3RV2021-4FA10, family: "3RV2021", size: S0, lo: 34, hi: 40, ii_a: 480, icu_ka: 20, page: 640}
+  - {article: 3RV2031-4SA10, family: "3RV2031", size: S2, lo: 9.5, hi: 14, ii_a: 208, icu_ka: 65, page: 641}
+  - {article: 3RV2031-4TA10, family: "3RV2031", size: S2, lo: 12, hi: 17, ii_a: 260, icu_ka: 65, page: 641}
+  - {article: 3RV2031-4BA10, family: "3RV2031", size: S2, lo: 14, hi: 20, ii_a: 260, icu_ka: 65, page: 641}
+  - {article: 3RV2031-4DA10, family: "3RV2031", size: S2, lo: 18, hi: 25, ii_a: 325, icu_ka: 65, page: 641}
+  - {article: 3RV2031-4EA10, family: "3RV2031", size: S2, lo: 22, hi: 32, ii_a: 416, icu_ka: 65, page: 641}
+  - {article: 3RV2031-4PA10, family: "3RV2031", size: S2, lo: 28, hi: 36, ii_a: 520, icu_ka: 65, page: 641}
+  - {article: 3RV2031-4UA10, family: "3RV2031", size: S2, lo: 32, hi: 40, ii_a: 585, icu_ka: 65, page: 641}
+  - {article: 3RV2031-4VA10, family: "3RV2031", size: S2, lo: 35, hi: 45, ii_a: 650, icu_ka: 65, page: 641}
+  - {article: 3RV2031-4WA10, family: "3RV2031", size: S2, lo: 42, hi: 52, ii_a: 741, icu_ka: 65, page: 641}
+  - {article: 3RV2031-4XA10, family: "3RV2031", size: S2, lo: 49, hi: 59, ii_a: 845, icu_ka: 65, page: 641}
+  - {article: 3RV2031-4JA10, family: "3RV2031", size: S2, lo: 54, hi: 65, ii_a: 845, icu_ka: 65, page: 641}
+  - {article: 3RV2031-4KA10, family: "3RV2031", size: S2, lo: 62, hi: 73, ii_a: 949, icu_ka: 65, page: 641}
+  - {article: 3RV2031-4RA10, family: "3RV2031", size: S2, lo: 70, hi: 80, ii_a: 1040, icu_ka: 65, page: 641}
+  - {article: 3RV2032-4SA10, family: "3RV2032", size: S2, lo: 9.5, hi: 14, ii_a: 208, icu_ka: 100, page: 641}
+  - {article: 3RV2032-4TA10, family: "3RV2032", size: S2, lo: 12, hi: 17, ii_a: 260, icu_ka: 100, page: 641}
+  - {article: 3RV2032-4BA10, family: "3RV2032", size: S2, lo: 14, hi: 20, ii_a: 260, icu_ka: 100, page: 641}
+  - {article: 3RV2032-4DA10, family: "3RV2032", size: S2, lo: 18, hi: 25, ii_a: 325, icu_ka: 100, page: 641}
+  - {article: 3RV2032-4EA10, family: "3RV2032", size: S2, lo: 22, hi: 32, ii_a: 416, icu_ka: 100, page: 641}
+  - {article: 3RV2032-4PA10, family: "3RV2032", size: S2, lo: 28, hi: 36, ii_a: 520, icu_ka: 100, page: 641}
+  - {article: 3RV2032-4UA10, family: "3RV2032", size: S2, lo: 32, hi: 40, ii_a: 585, icu_ka: 100, page: 641}
+  - {article: 3RV2032-4VA10, family: "3RV2032", size: S2, lo: 35, hi: 45, ii_a: 650, icu_ka: 100, page: 641}
+  - {article: 3RV2032-4WA10, family: "3RV2032", size: S2, lo: 42, hi: 52, ii_a: 741, icu_ka: 100, page: 641}
+  - {article: 3RV2032-4XA10, family: "3RV2032", size: S2, lo: 49, hi: 59, ii_a: 845, icu_ka: 100, page: 641}
+  - {article: 3RV2032-4JA10, family: "3RV2032", size: S2, lo: 54, hi: 65, ii_a: 845, icu_ka: 100, page: 641}
+  - {article: 3RV2032-4KA10, family: "3RV2032", size: S2, lo: 62, hi: 73, ii_a: 949, icu_ka: 100, page: 641}
+  - {article: 3RV2032-4RA10, family: "3RV2032", size: S2, lo: 70, hi: 80, ii_a: 1040, icu_ka: 100, page: 641}
+  - {article: 3RV2041-4FA10, family: "3RV2041", size: S3, lo: 28, hi: 40, ii_a: 520, icu_ka: 65, page: 642}
+  - {article: 3RV2041-4HA10, family: "3RV2041", size: S3, lo: 36, hi: 50, ii_a: 650, icu_ka: 65, page: 642}
+  - {article: 3RV2041-4JA10, family: "3RV2041", size: S3, lo: 45, hi: 63, ii_a: 819, icu_ka: 65, page: 642}
+  - {article: 3RV2041-4KA10, family: "3RV2041", size: S3, lo: 57, hi: 75, ii_a: 975, icu_ka: 65, page: 642}
+  - {article: 3RV2041-4RA10, family: "3RV2041", size: S3, lo: 65, hi: 84, ii_a: 1170, icu_ka: 65, page: 642}
+  - {article: 3RV2041-4YA10, family: "3RV2041", size: S3, lo: 75, hi: 93, ii_a: 1300, icu_ka: 65, page: 642}
+  - {article: 3RV2041-4MA10, family: "3RV2041", size: S3, lo: 80, hi: 100, ii_a: 1300, icu_ka: 65, page: 642}
+  - {article: 3RV2042-4FA10, family: "3RV2042", size: S3, lo: 28, hi: 40, ii_a: 520, icu_ka: 100, page: 642}
+  - {article: 3RV2042-4HA10, family: "3RV2042", size: S3, lo: 36, hi: 50, ii_a: 650, icu_ka: 100, page: 642}
+  - {article: 3RV2042-4JA10, family: "3RV2042", size: S3, lo: 45, hi: 63, ii_a: 819, icu_ka: 100, page: 642}
+  - {article: 3RV2042-4KA10, family: "3RV2042", size: S3, lo: 57, hi: 75, ii_a: 975, icu_ka: 100, page: 642}
+  - {article: 3RV2042-4RA10, family: "3RV2042", size: S3, lo: 65, hi: 84, ii_a: 1170, icu_ka: 100, page: 642}
+  - {article: 3RV2042-4YA10, family: "3RV2042", size: S3, lo: 75, hi: 93, ii_a: 1300, icu_ka: 100, page: 642}
+  - {article: 3RV2042-4MA10, family: "3RV2042", size: S3, lo: 80, hi: 100, ii_a: 1300, icu_ka: 100, page: 642}

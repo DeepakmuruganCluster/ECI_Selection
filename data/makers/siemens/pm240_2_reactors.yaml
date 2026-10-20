@@ -1,0 +1,46 @@
+# Line and output reactors assigned to the 400 V PM240-2 Power Modules (IP20).
+# Line reactors: Table 8-4 "Assignment table", p. 146 (FSA … FSC only).
+# Output reactors: Table 8-11 (FSA … FSC, p. 163) and Table 8-15 (FSD … FSF, p. 165).
+# `module` is the article-number stem printed in the table (without the filter / version suffix);
+# merged cells in the PDF (one reactor for several modules) are written out per module.
+
+source:
+  ref: SIE-PM240-2
+  section: "8.8 Line reactor (Table 8-4); 8.11 Output reactor (Tables 8-11, 8-15)"
+
+rows:
+  # line reactors (Table 8-4)
+  - {kind: line,   module: 6SL3210-1PE11-8, article: 6SL3203-0CE13-2AA0, page: 146}
+  - {kind: line,   module: 6SL3210-1PE12-3, article: 6SL3203-0CE13-2AA0, page: 146}
+  - {kind: line,   module: 6SL3210-1PE13-2, article: 6SL3203-0CE13-2AA0, page: 146}
+  - {kind: line,   module: 6SL3210-1PE14-3, article: 6SL3203-0CE21-0AA0, page: 146}
+  - {kind: line,   module: 6SL3210-1PE16-1, article: 6SL3203-0CE21-0AA0, page: 146}
+  - {kind: line,   module: 6SL3210-1PE18-0, article: 6SL3203-0CE21-0AA0, page: 146}
+  - {kind: line,   module: 6SL3210-1PE21-1, article: 6SL3203-0CE21-8AA0, page: 146}
+  - {kind: line,   module: 6SL3210-1PE21-4, article: 6SL3203-0CE21-8AA0, page: 146}
+  - {kind: line,   module: 6SL3210-1PE21-8, article: 6SL3203-0CE21-8AA0, page: 146}
+  - {kind: line,   module: 6SL3210-1PE22-7, article: 6SL3203-0CE23-8AA0, page: 146}
+  - {kind: line,   module: 6SL3210-1PE23-3, article: 6SL3203-0CE23-8AA0, page: 146}
+  # output reactors (Table 8-11, FSA … FSC)
+  - {kind: output, module: 6SL3210-1PE11-8, article: 6SL3202-0AE16-1CA0, page: 163}
+  - {kind: output, module: 6SL3210-1PE12-3, article: 6SL3202-0AE16-1CA0, page: 163}
+  - {kind: output, module: 6SL3210-1PE13-2, article: 6SL3202-0AE16-1CA0, page: 163}
+  - {kind: output, module: 6SL3210-1PE14-3, article: 6SL3202-0AE16-1CA0, page: 163}
+  - {kind: output, module: 6SL3210-1PE16-1, article: 6SL3202-0AE16-1CA0, page: 163}
+  - {kind: output, module: 6SL3210-1PE18-0, article: 6SL3202-0AE18-8CA0, page: 163}
+  - {kind: output, module: 6SL3210-1PE21-1, article: 6SL3202-0AE21-8CA0, page: 163}
+  - {kind: output, module: 6SL3210-1PE21-4, article: 6SL3202-0AE21-8CA0, page: 163}
+  - {kind: output, module: 6SL3210-1PE21-8, article: 6SL3202-0AE21-8CA0, page: 163}
+  - {kind: output, module: 6SL3210-1PE22-7, article: 6SL3202-0AE23-8CA0, page: 163}
+  - {kind: output, module: 6SL3210-1PE23-3, article: 6SL3202-0AE23-8CA0, page: 163}
+  # output reactors (Table 8-15, FSD … FSF)
+  - {kind: output, module: 6SL3210-1PE23-8, article: 6SE6400-3TC07-5ED0, page: 165}
+  - {kind: output, module: 6SL3210-1PE24-5, article: 6SE6400-3TC07-5ED0, page: 165}
+  - {kind: output, module: 6SL3210-1PE26-0, article: 6SE6400-3TC07-5ED0, page: 165}
+  - {kind: output, module: 6SL3210-1PE27-5, article: 6SE6400-3TC07-5ED0, page: 165}
+  - {kind: output, module: 6SL3210-1PE28-8, article: 6SE6400-3TC14-5FD0, page: 165}
+  - {kind: output, module: 6SL3210-1PE31-1, article: 6SE6400-3TC14-5FD0, page: 165}
+  - {kind: output, module: 6SL3210-1PE31-5, article: 6SE6400-3TC14-5FD0, page: 165}
+  - {kind: output, module: 6SL3210-1PE31-8, article: 6SE6400-3TC14-5FD0, page: 165}
+  - {kind: output, module: 6SL3210-1PE32-1, article: 6SL3000-2BE32-1AA0, page: 165}
+  - {kind: output, module: 6SL3210-1PE32-5, article: 6SL3000-2BE32-6AA0, page: 165}

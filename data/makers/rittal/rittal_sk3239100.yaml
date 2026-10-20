@@ -1,0 +1,46 @@
+# Rittal SK 3239.100 TopTherm filter fan — data sheet (pdf-creator, 5 pages, "State: 11/10/2026").
+# Page numbers are PDF pages = the number printed at the bottom right ("© Rittal 2026 2").
+# Read from the text layer and checked on the rendered page images (pp. 2, 3, 5).
+# - The "with outlet filter" airflow is printed without Hz labels ("1 x 3239200: 74/87 m³/h"). The order 50/60 Hz
+#   is taken from the same data sheet: p.4 "100/115 m³/h, 230 V, 1~, 50/60 Hz" = p.2 "At 50 Hz: 100 / At 60 Hz: 115".
+# - The data sheet contradicts itself on power and current: features table p.2 16.5 W / 14 W, 0.12 A / 0.09 A;
+#   tender text p.5 19 / 18 W, 0.12 / 0.11 A (50 / 60 Hz). Both are recorded; R-ACC-10 uses the higher.
+# - Frame 204 × 204 mm = 8.03 inch → the "8 inch" fan of the ECI specification (R-ACC-02).
+
+source:
+  ref: RITTAL-3239100
+  section: "SK 3239.100 TopTherm filter fan: features (pp. 2–4), tender text (p. 5)"
+
+article: "SK 3239.100"
+outlet_filter: "SK 3239.200"
+
+rows:
+  - {quantity: frame_width_mm,     value: 204, printed: "Width: 204 mm", page: 3}
+  - {quantity: frame_height_mm,    value: 204, printed: "Height: 204 mm", page: 3}
+  - {quantity: installation_depth_mm, value: 90, printed: "Installation depth 90 mm", page: 3}
+  - {quantity: cutout_width_mm,    value: 177, printed: "Cut-out width: 177 mm", page: 3}
+  - {quantity: cutout_height_mm,   value: 177, printed: "Cut-out height: 177 mm", page: 3}
+  - {quantity: rated_voltage_v,    value: 230, printed: "230 V, 1~, 50 Hz/60 Hz", page: 2}
+  - {quantity: phases,             value: 1,   printed: "230 V, 1~, 50 Hz/60 Hz", page: 2}
+  - {quantity: airflow_free_m3h,   value: 110, hz: 50, filter: pleated, page: 2}
+  - {quantity: airflow_free_m3h,   value: 125, hz: 60, filter: pleated, page: 2}
+  - {quantity: airflow_free_m3h,   value: 100, hz: 50, filter: chopped_fibre, page: 2}
+  - {quantity: airflow_free_m3h,   value: 115, hz: 60, filter: chopped_fibre, page: 2}
+  - {quantity: airflow_outlet_m3h, value: 74,  hz: 50, outlet_filters: 1, filter: chopped_fibre, printed: "1 x 3239200: 74/87 m³/h", page: 2}
+  - {quantity: airflow_outlet_m3h, value: 87,  hz: 60, outlet_filters: 1, filter: chopped_fibre, printed: "1 x 3239200: 74/87 m³/h", page: 2}
+  - {quantity: airflow_outlet_m3h, value: 84,  hz: 50, outlet_filters: 2, filter: chopped_fibre, printed: "2 x 3239200: 84/98 m³/h", page: 2}
+  - {quantity: airflow_outlet_m3h, value: 98,  hz: 60, outlet_filters: 2, filter: chopped_fibre, printed: "2 x 3239200: 84/98 m³/h", page: 2}
+  - {quantity: power_w,            value: 16.5, hz: 50, where: features, page: 2}
+  - {quantity: power_w,            value: 14,   hz: 60, where: features, page: 2}
+  - {quantity: power_w,            value: 19,   hz: 50, where: tender_text, printed: "Power consumption: 19 / 18 W", page: 5}
+  - {quantity: power_w,            value: 18,   hz: 60, where: tender_text, printed: "Power consumption: 19 / 18 W", page: 5}
+  - {quantity: current_a,          value: 0.12, hz: 50, where: features, page: 2}
+  - {quantity: current_a,          value: 0.09, hz: 60, where: features, page: 2}
+  - {quantity: current_a,          value: 0.12, hz: 50, where: tender_text, printed: "Rated current: 0,12 / 0,11 A", page: 5}
+  - {quantity: current_a,          value: 0.11, hz: 60, where: tender_text, printed: "Rated current: 0,12 / 0,11 A", page: 5}
+  - {quantity: noise_dba,          value: 46, hz: 50, page: 3}
+  - {quantity: noise_dba,          value: 49, hz: 60, page: 3}
+  - {quantity: operating_temp_min_c, value: -15, printed: "-15 °C...55 °C", page: 3}
+  - {quantity: operating_temp_max_c, value: 55,  printed: "-15 °C...55 °C", page: 3}
+  - {quantity: ip_standard,        value: 54, printed: "IP 54 with chopped-fibre filter/pleated filter", page: 3}
+  - {quantity: prefuse_a,          value: 2, printed: "Miniature circuit-breaker/fuse: 2 A", page: 3}

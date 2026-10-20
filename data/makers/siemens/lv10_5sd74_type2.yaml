@@ -1,0 +1,50 @@
+# Siemens 5SD74 surge arresters, type 2, standard design (Catalog LV 10 · 2026, printed 6/16–6/17).
+#
+# Transcribed 2026-10-13 from the rendered page images, PDF p.518 (left half of the spread) and p.519 (right half:
+# the TN-S / TT 3+1 column, 5SD7464). Ordering grid + "Further technical specifications".
+# Values printed once across several columns (no white cell separator between them) apply to every column they span;
+# the spans were read on a zoomed image. The PV fuse-base types 5SD7483-0KK01/-0KK02 (DC) are not included.
+#   system / protection_paths / un / uc / circuit / width: header and ordering grid as printed
+#   up_*:   protection level Up (kV, "≤" as printed); None where the table prints "–"
+#   in_*:   rated discharge surge current In (8/20 µs), kA; imax_*: max. discharge surge current Imax, kA
+#   backup_fuse_*: max. back-up fuse acc. to IEC 61643-1 (gL/gG), A
+#   sc_strength_ka: short-circuit strength with max. back-up fuse
+
+source:
+  ref: SIE-LV10-2026
+  section: "6 Overvoltage Protection Devices, basic units: 5SD74 surge arresters, type 2, standard design"
+
+common: {standards: "IEC 61643-11; DIN EN 61643-11", conductor_mm2: "finely stranded 1.5 ... 25; solid 1.5 ... 35",
+         degree_of_protection: "IP20, with connected conductors", temperature: "-40 ... +80 °C", page: 518}
+
+rows:
+  - {article: 5SD7481-0, system: "TN and TT", protection_paths: "N-PE", un: "240/415 V AC", uc: "260 V AC", circuit: "1+0", width: "1 MW",
+     remote_signalling: false, up_ln_kv: null, up_lpe_kv: null, up_npe_kv: 1.50, in_ln_ka: null, in_npe_ka: 20, imax_ln_ka: null, imax_npe_ka: 40,
+     response_ln: null, response_npe: "≤ 100 ns", backup_fuse_stub_a: null, backup_fuse_v_a: null, sc_strength_ka: 25, approvals: "KEMA", page: 518}
+  - {article: 5SD7461-0, system: "TN and TT", protection_paths: "L-PEN and L-N", un: "240/415 V AC", uc: "350 V AC", circuit: "1+0", width: "1 MW",
+     remote_signalling: false, up_ln_kv: 1.50, up_lpe_kv: null, up_npe_kv: null, in_ln_ka: 20, in_npe_ka: null, imax_ln_ka: 40, imax_npe_ka: null,
+     response_ln: "≤ 25 ns", response_npe: null, backup_fuse_stub_a: 125, backup_fuse_v_a: null, sc_strength_ka: 25, approvals: "KEMA", page: 518}
+  - {article: 5SD7461-1, system: "TN and TT", protection_paths: "L-PEN and L-N", un: "240/415 V AC", uc: "350 V AC", circuit: "1+0", width: "1 MW",
+     remote_signalling: true, up_ln_kv: 1.50, up_lpe_kv: null, up_npe_kv: null, in_ln_ka: 20, in_npe_ka: null, imax_ln_ka: 40, imax_npe_ka: null,
+     response_ln: "≤ 25 ns", response_npe: null, backup_fuse_stub_a: 125, backup_fuse_v_a: null, sc_strength_ka: 25, approvals: "KEMA", page: 518}
+  - {article: 5SD7481-1, system: "TN-C and IT", protection_paths: "L-PEN and L-N", un: "400/690 V AC", uc: "800 V AC", circuit: "1+0", width: "2 MW",
+     remote_signalling: true, up_ln_kv: 5, up_lpe_kv: null, up_npe_kv: null, in_ln_ka: 15, in_npe_ka: null, imax_ln_ka: 30, imax_npe_ka: null,
+     response_ln: "≤ 100 ns", response_npe: null, backup_fuse_stub_a: 100, backup_fuse_v_a: 80, sc_strength_ka: 25, approvals: "KEMA", page: 518}
+  - {article: 5SD7463-0, system: "TN-C", protection_paths: "L-PEN", un: "240/415 V AC", uc: "350 V AC", circuit: "3+0", width: "3 MW",
+     remote_signalling: false, up_ln_kv: 1.50, up_lpe_kv: null, up_npe_kv: null, in_ln_ka: 20, in_npe_ka: null, imax_ln_ka: 40, imax_npe_ka: null,
+     response_ln: "≤ 25 ns", response_npe: null, backup_fuse_stub_a: 125, backup_fuse_v_a: 80, sc_strength_ka: 25, approvals: "KEMA", page: 518}
+  - {article: 5SD7463-1, system: "TN-C", protection_paths: "L-PEN", un: "240/415 V AC", uc: "350 V AC", circuit: "3+0", width: "3 MW",
+     remote_signalling: true, up_ln_kv: 1.50, up_lpe_kv: null, up_npe_kv: null, in_ln_ka: 20, in_npe_ka: null, imax_ln_ka: 40, imax_npe_ka: null,
+     response_ln: "≤ 25 ns", response_npe: null, backup_fuse_stub_a: 125, backup_fuse_v_a: 80, sc_strength_ka: 25, approvals: "KEMA", page: 518}
+  - {article: 5SD7464-0, system: "TN-S and TT", protection_paths: "L-N, L-PE and N-PE", un: "240/415 V AC", uc: "350 V AC (L-N, L-PE); 260 V AC (N-PE)", circuit: "3+1", width: "4 MW",
+     remote_signalling: false, up_ln_kv: 1.60, up_lpe_kv: 1.90, up_npe_kv: 1.50, in_ln_ka: 20, in_npe_ka: 20, imax_ln_ka: 40, imax_npe_ka: 40,
+     response_ln: "≤ 25 ns", response_npe: "≤ 100 ns", backup_fuse_stub_a: 125, backup_fuse_v_a: 80, sc_strength_ka: 25, approvals: "KEMA", page: 519}
+  - {article: 5SD7464-1, system: "TN-S and TT", protection_paths: "L-N, L-PE and N-PE", un: "240/415 V AC", uc: "350 V AC (L-N, L-PE); 260 V AC (N-PE)", circuit: "3+1", width: "4 MW",
+     remote_signalling: true, up_ln_kv: 1.60, up_lpe_kv: 1.90, up_npe_kv: 1.50, in_ln_ka: 20, in_npe_ka: 20, imax_ln_ka: 40, imax_npe_ka: 40,
+     response_ln: "≤ 25 ns", response_npe: "≤ 100 ns", backup_fuse_stub_a: 125, backup_fuse_v_a: 80, sc_strength_ka: 25, approvals: "KEMA", page: 519}
+  - {article: 5SD7473-1, system: "IT", protection_paths: "L-PEN and L-PE", un: "400/690 V AC", uc: "580 V AC", circuit: "3+0", width: "3 MW",
+     remote_signalling: true, up_ln_kv: 2.50, up_lpe_kv: null, up_npe_kv: null, in_ln_ka: 15, in_npe_ka: null, imax_ln_ka: 30, imax_npe_ka: null,
+     response_ln: "≤ 25 ns", response_npe: null, backup_fuse_stub_a: 125, backup_fuse_v_a: 80, sc_strength_ka: 25, approvals: null, page: 518}
+  - {article: 5SD7483-5, system: "IT", protection_paths: "L-PEN and L-PE", un: "554/960 V AC", uc: "760 V AC", circuit: "3+0", width: "3 MW",
+     remote_signalling: true, up_ln_kv: 2.90, up_lpe_kv: null, up_npe_kv: null, in_ln_ka: 15, in_npe_ka: null, imax_ln_ka: 30, imax_npe_ka: null,
+     response_ln: "≤ 25 ns", response_npe: null, backup_fuse_stub_a: 100, backup_fuse_v_a: 80, sc_strength_ka: 25, approvals: "KEMA, UL/cUL", page: 518}

@@ -1,0 +1,103 @@
+# Company drawing conventions, read from the sample drawing set AVELCPSDL08WPLC rev 08 (OWN-PROPEL-SCH160).
+# 'page' = PDF page. Used for the document pack: drawing index, tag names, wire colours and ferrules.
+source:
+  ref: OWN-PROPEL-SCH160
+  note: "index sheet p.2; legends, abbreviations & symbols p.3; BOM column layout p.14"
+rows:
+  # drawing index (p.2)
+  - {kind: index, item: 1, title: "Cover sheet", made_by_tool: "yes (drawing set)", page: 2}
+  - {kind: index, item: 2, title: "Index sheet", made_by_tool: "yes", page: 2}
+  - {kind: index, item: 3, title: "Legends, abbreviations & symbols", made_by_tool: "yes (drawing set: tags used, symbols, wire colours)", page: 2}
+  - {kind: index, item: 4, title: "Technical details", made_by_tool: "yes (drawing set: electrical; enclosure out of scope)", page: 2}
+  - {kind: index, item: 5, title: "General arrangement drawing - external & internal view", made_by_tool: "no (draw in EPLAN)", page: 2}
+  - {kind: index, item: 6, title: "Power wiring drawing", made_by_tool: "yes (drawing set: R, Y, B, N, every feeder)", page: 2}
+  - {kind: index, item: 7, title: "Control wiring drawing", made_by_tool: "yes (drawing set: control supply and coil ladders)", page: 2}
+  - {kind: index, item: 8, title: "Digital input & output", made_by_tool: "yes (I/O list and drawing set)", page: 2}
+  - {kind: index, item: 9, title: "Analog input", made_by_tool: "yes (I/O list, analog rows)", page: 2}
+  - {kind: index, item: 10, title: "Bill of material", made_by_tool: "yes (drawing-format BOM with tag names)", page: 2}
+  - {kind: index, item: 11, title: "Terminal details", made_by_tool: "yes (drawing set: 1X1, X2, 9X1, 9X2)", page: 2}
+  - {kind: index, item: 12, title: "Block diagram & sensor pin wire colour code details", made_by_tool: "no", page: 2}
+  # device tag letters (p.3)
+  - {kind: tag, device: "Moulded case circuit breaker", tag: "1SQ", page: 3}
+  - {kind: tag, device: "Motor protection circuit breaker", tag: "Q", page: 3}
+  - {kind: tag, device: "Power contactor", tag: "K", page: 3}
+  - {kind: tag, device: "Miniature circuit breaker", tag: "2Q", page: 3}
+  - {kind: tag, device: "Current transformer", tag: "CT", page: 3}
+  - {kind: tag, device: "Push button", tag: "PB", page: 3}
+  - {kind: tag, device: "Illuminated push button", tag: "IPB", page: 3}
+  - {kind: tag, device: "Fuse", tag: "1F", page: 3}
+  - {kind: tag, device: "Indication lamp", tag: "H", page: 3}
+  - {kind: tag, device: "Control transformer", tag: "TRA", page: 3}
+  # control wiring colours and ferrules (p.3)
+  - {kind: wire, circuit: "230 V AC control supply (phase)", colour: "Red (0.75 mm²)", ferrules: "01-99, 101-199", page: 3}
+  - {kind: wire, circuit: "0 V AC control supply (neutral)", colour: "Black (0.75 mm²)", ferrules: "100, 100A", page: 3}
+  - {kind: wire, circuit: "+24 V DC control supply", colour: "Blue (0.75 mm²)", ferrules: "201-299", page: 3}
+  - {kind: wire, circuit: "0 V DC control supply", colour: "White (0.75 mm²)", ferrules: "200, 200A", page: 3}
+  - {kind: wire, circuit: "Potential-free contact", colour: "Orange (0.75 mm²)", ferrules: "401-499", page: 3}
+  - {kind: wire, circuit: "Power wiring cable", colour: "Black (as required)", ferrules: "R, Y, B, U, V, W", page: 3}
+  # BOM columns (p.14)
+  - {kind: bom_column, column: "S.NO", page: 14}
+  - {kind: bom_column, column: "DESCRIPTION", page: 14}
+  - {kind: bom_column, column: "TAG NAME", page: 14}
+  - {kind: bom_column, column: "PART NO.", page: 14}
+  - {kind: bom_column, column: "SAP PART CODE", page: 14}
+  - {kind: bom_column, column: "MAKE", page: 14}
+  - {kind: bom_column, column: "QTY", page: 14}
+  - {kind: bom_column, column: "UOM", page: 14}
+  # article → company SAP part code (BOM pages 14–15)
+  - {kind: sap, article: "LV540306", sap_code: "AVELCAMCCB3614", page: 14}
+  - {kind: sap, article: "32492", sap_code: "AVELCASP3P002", page: 14}
+  - {kind: sap, article: "LV432598", sap_code: "AVELCAROHL004", page: 14}
+  - {kind: sap, article: "LC1E1210M7", sap_code: "AVELCAPCTR12A", page: 14}
+  - {kind: sap, article: "LC1E2510M7", sap_code: "AVELCPC25ASCH", page: 14}
+  - {kind: sap, article: "LC1E160M5", sap_code: "AVELCAPCTR160A", page: 14}
+  - {kind: sap, article: "LC1E200M5", sap_code: "AVELCAPCTR200A", page: 14}
+  - {kind: sap, article: "LAEN11", sap_code: "AVELCAAOBNONC", page: 14}
+  - {kind: sap, article: "LAEN22", sap_code: "AVELCAAOB2NO2NC", page: 14}
+  - {kind: sap, article: "GZ1E06", sap_code: "AVELCAMPCB1E06", page: 14}
+  - {kind: sap, article: "GZ1E08", sap_code: "AVELCAMPCB1E08", page: 14}
+  - {kind: sap, article: "GZ1E14", sap_code: "AVELCCMPCB1E14", page: 14}
+  - {kind: sap, article: "GZ1E10", sap_code: "AVELCAMPCB1E10", page: 14}
+  - {kind: sap, article: "GZ1AN11", sap_code: "AVELCMPCBAOB11", page: 14}
+  - {kind: sap, article: "A9KF71210BQ", sap_code: "AVELCCMCB7210", page: 14}
+  - {kind: sap, article: "A9KF71206BQ", sap_code: "AVELCAMCB7206", page: 14}
+  - {kind: sap, article: "A9KF71332BQ", sap_code: "AVELCMCB003015", page: 14}
+  - {kind: sap, article: "MPRD2", sap_code: "AVELCMPRD2", page: 14}
+  - {kind: sap, article: "SM501MG53BH", sap_code: "AVELCAUVOVRLY01", page: 14}
+  - {kind: sap, article: "2ASDT0", sap_code: "AVELCASDTIMER", page: 14}
+  - {kind: sap, article: "TRANSFORMER1000VA", sap_code: "AVELCT1KVA", page: 14}
+  - {kind: sap, article: "5005A", sap_code: "AVELCCTCOIL003", page: 14}
+  - {kind: sap, article: "4005A", sap_code: "AVELCCTCOIL002", page: 14}
+  - {kind: sap, article: "KUT2.5KUT4", sap_code: "AVELCATBTSPAP4", page: 14}
+  - {kind: sap, article: "KUT4", sap_code: "AVELCATBTSPAP4", page: 14}
+  - {kind: sap, article: "ET4", sap_code: "AVELCATBTSPAE4", page: 14}
+  - {kind: sap, article: "KUT6", sap_code: "AVELCTERCTR007", page: 14}
+  - {kind: sap, article: "GMA-200-R", sap_code: "AVELCAGLFUSE05", page: 14}
+  - {kind: sap, article: "GMA-2-R", sap_code: "AVELCAGLSFUSE2A", page: 14}
+  - {kind: sap, article: "KUDF4", sap_code: "AVELCAFSTB0200", page: 14}
+  - {kind: sap, article: "KPXN", sap_code: "AVELCATBEP0200", page: 14}
+  - {kind: sap, article: "SCUN", sap_code: "AVELCATBCPA", page: 14}
+  - {kind: sap, article: "S8FSREPUTED", sap_code: "AVELCCSMPS0003", page: 15}
+  - {kind: sap, article: "XB7EV04MPN", sap_code: "AVELCPNLELI057", page: 15}
+  - {kind: sap, article: "XB7EV05MPN", sap_code: "AVELCPNLELI058", page: 15}
+  - {kind: sap, article: "XB7EV06MPN", sap_code: "AVELCPNLELI059", page: 15}
+  - {kind: sap, article: "XB7EV03MPN", sap_code: "AVELCAILGREEN", page: 15}
+  - {kind: sap, article: "XB5AW33M1N", sap_code: "AVELCILUGPBSCH02", page: 15}
+  - {kind: sap, article: "XB5AA42N", sap_code: "AVELCREDPBSCHWNO", page: 15}
+  - {kind: sap, article: "XB5AS542N", sap_code: "AVELCESTOPSCHWNC", page: 15}
+  - {kind: sap, article: "ZBE101N", sap_code: "AVELCPUBUELNO", page: 15}
+  - {kind: sap, article: "ZBE102N", sap_code: "AVELCPUBUELNC", page: 15}
+  - {kind: sap, article: "XB5AA51N", sap_code: "AVELCAPBYWNO", page: 15}
+  - {kind: sap, article: "XB5AA61N", sap_code: "AVELCABPBNOE", page: 15}
+  - {kind: sap, article: "XB5AA21N", sap_code: "AVELCBLKPSHBUT", page: 15}
+  - {kind: sap, article: "H57", sap_code: "AVELCHM230VAC", page: 15}
+  - {kind: sap, article: "OM1300", sap_code: "AVELCVAFMET230V", page: 15}
+  - {kind: sap, article: "50X10", sap_code: "AVELCALBB5010", page: 15}
+  - {kind: sap, article: "25X12", sap_code: "AVELCALBB2512", page: 15}
+  - {kind: sap, article: "25X6", sap_code: "AVELCALBB2506", page: 15}
+  - {kind: sap, article: "6ES7288-1ST40-0AA0", sap_code: "AVELCPLCSI1ST40", page: 15}
+  - {kind: sap, article: "6ES7288-3AE04-0AA0", sap_code: "AVELCPLCSI3AE04", page: 15}
+  - {kind: sap, article: "6AV2123-2GB03-0AX0", sap_code: "AVELCHMIU7INC", page: 15}
+  - {kind: sap, article: "6ES7288-5CM01-0AA0", sap_code: "AVELCCMSI5CM01", page: 15}
+  - {kind: sap, article: "DBK-1X4REPUTED", sap_code: "AVELCDBL308010", page: 15}
+  - {kind: sap, article: "S2CTS15", sap_code: "AVELCACTSR001", page: 15}

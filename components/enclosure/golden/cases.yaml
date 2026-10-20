@@ -1,0 +1,162 @@
+# Golden cases for enclosure — written BEFORE the code (G4).
+# The Rittal catalogue prints the formulas but no worked numeric example for them (its only worked example,
+# p.30, is the condensate quantity, which this component does not compute). Oracle: hand calculation with the
+# printed formulas, shown in `calc`, and the Siemens PM240-2 formula (PDF p.34) as an independent check.
+#   (ΔT)max = Q̇v/(k·A) (p.13) · Q̇s = A·k·ΔT, ΔT = Ti – Tu (p.13) · V̇ = f·Q̇v/ΔT (p.12) · qw = (Q̇v – A·ΔT·k)/ΔT (p.26)
+#   Q̇E = Q̇v – k·A·ΔT (p.30) · k = 5.5 W/m²K sheet steel · f: 3.1 (0–100 m) 3.2 (–250) 3.3 (–500) 3.4 (–750) 3.5 (–1000)
+# Unless stated: indoor siting, sheet steel. Values compared to 2 decimals.
+
+cases:
+  # --- natural convection / passive (R-ENC-05 … 07) ------------------------------------------------
+  - id: E01
+    in: {heat_loss_w: 300, ambient_c: 35, max_internal_c: 55, altitude_m: 0, area_m2: 5, material: sheet_steel, siting: indoor}
+    expect: {status: warning, warnings: [R-ENC-03], method: passive, passive: "yes", k_w_m2k: 5.5, delta_t_natural_k: 10.91, internal_natural_c: 45.91, surface_w: 550, cooling_unit_w: 0, heat_exchanger_w_per_k: 0, heat_exchanger: null, fan_airflow_m3h: 46.5}
+    oracle: "hand calc, p.13: (ΔT)max = Q̇v/(k·A); passive when Tu + (ΔT)max ≤ Ti"
+    calc: "300/(5.5×5) = 10.91 K → 45.91 °C ≤ 55; Q̇s = 5×5.5×20 = 550 W > 300 W → Q̇E = 300 − 550 < 0 → 0; V̇ = 3.1×300/20 = 46.5 m³/h (shown, not needed)"
+  - id: E02
+    in: {heat_loss_w: 550, ambient_c: 35, max_internal_c: 55, altitude_m: 0, area_m2: 5, material: sheet_steel, siting: indoor}
+    expect: {status: warning, warnings: [R-ENC-03], method: passive, passive: "yes", delta_t_natural_k: 20, internal_natural_c: 55, cooling_unit_w: 0}
+    oracle: "hand calc, boundary: natural temperature exactly equal to the permitted internal temperature"
+    calc: "550/27.5 = 20 K → 35 + 20 = 55 °C ≤ 55 °C"
+  - id: E03
+    in: {heat_loss_w: 560, ambient_c: 35, max_internal_c: 55, altitude_m: 0, area_m2: 5, material: sheet_steel, siting: indoor}
+    expect: {status: warning, warnings: [R-ENC-03], method: fan, passive: "no", delta_t_natural_k: 20.36, internal_natural_c: 55.36, fan_airflow_m3h: 86.8, cooling_unit_w: 10, heat_exchanger_w_per_k: 0.5, heat_exchanger: "SK 3126.100"}
+    oracle: "hand calc, just above the passive limit"
+    calc: "560/27.5 = 20.36 K → 55.36 °C > 55; V̇ = 3.1×560/20 = 86.8; Q̇E = 560 − 550 = 10 W; qw = 10/20 = 0.5 W/K → smallest model 17.5 W/K"
+
+  # --- fan airflow and the Siemens cross-check (R-ENC-09, R-ENC-13) -----------------------------------
+  - id: E04
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 0, area_m2: 4, material: sheet_steel, siting: indoor}
+    expect: {status: warning, warnings: [R-ENC-03], method: fan, passive: "no", delta_t_natural_k: 45.45, internal_natural_c: 80.45, surface_w: 220, altitude_factor: 3.1, fan_airflow_m3h: 310, fan_airflow_ls: 86.11, siemens_airflow_ls: 86.0, cooling_unit_w: 780, heat_exchanger_w_per_k: 78, heat_exchanger: "SK 3130.100"}
+    oracle: "hand calc (Rittal p.12/13/26/30) and Siemens PM240-2 p.34: 1000 × 0.86 / 10 = 86.0 l/s"
+    calc: "V̇ = 3.1×1000/10 = 310 m³/h = 86.11 l/s vs Siemens 86.0 l/s (0.13 % apart); Q̇s = 4×5.5×10 = 220; Q̇E = 780; qw = 780/10 = 78 → 90 W/K model"
+  - id: E05
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 0, siting: indoor}
+    expect: {status: ok, method: fan, passive: "not assessed", fan_airflow_m3h: 310, fan_airflow_ls: 86.11, siemens_airflow_ls: 86.0, cooling_unit_w: 1000, heat_exchanger_w_per_k: 100, heat_exchanger: null, surface_w: null}
+    oracle: "as E04 without A: the fan formula does not use A (p.12); surface ignored for the cooling unit / heat exchanger (R-ENC-16)"
+    calc: "Q̇E = 1000 W; qw = 1000/10 = 100 W/K > 90 → no listed heat exchanger"
+  - id: E15
+    in: {heat_loss_w: 240, ambient_c: 40, max_internal_c: 50, altitude_m: 0, siting: indoor}
+    expect: {status: ok, method: fan, fan_airflow_m3h: 74.4, fan_airflow_ls: 20.67, siemens_airflow_ls: 20.64}
+    oracle: "Siemens PM240-2: 7.5 kW drive 6SL3210-1PE21-8UL0 power loss 200 W (PDF p.100) + Control Unit < 40 W (PDF p.34) = 240 W; Siemens airflow 240 × 0.86 / 10 = 20.64 l/s"
+    calc: "Rittal V̇ = 3.1×240/10 = 74.4 m³/h = 20.67 l/s — agrees with Siemens within 0.15 %"
+
+  # --- altitude factor f (R-ENC-01, R-ENC-09, R-ENC-10) ---------------------------------------------
+  - id: E06
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 50, siting: indoor}
+    expect: {status: ok, altitude_factor: 3.1, fan_airflow_m3h: 310}
+    oracle: "p.12: f = 3.1 at h = 0 to 100 m"
+  - id: E07
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 100, siting: indoor}
+    expect: {status: ok, altitude_factor: 3.2, fan_airflow_m3h: 320}
+    oracle: "p.12: 100 m is the end of '0 to 100' and the start of '100 to 250' → higher f (R-ENC-10)"
+    calc: "3.2×1000/10 = 320"
+  - id: E08
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 101, siting: indoor}
+    expect: {status: ok, altitude_factor: 3.2, fan_airflow_m3h: 320}
+    oracle: "p.12: f = 3.2 at h = 100 to 250 m"
+  - id: E09
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 250, siting: indoor}
+    expect: {status: ok, altitude_factor: 3.3, fan_airflow_m3h: 330}
+    oracle: "p.12: boundary 250 m → higher f 3.3 (R-ENC-10)"
+  - id: E10
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 600, siting: indoor}
+    expect: {status: ok, altitude_factor: 3.4, fan_airflow_m3h: 340}
+    oracle: "p.12: f = 3.4 at h = 500 to 750 m"
+  - id: E11
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 1000, siting: indoor}
+    expect: {status: ok, altitude_factor: 3.5, fan_airflow_m3h: 350, fan_airflow_ls: 97.22, siemens_airflow_ls: 86.0}
+    oracle: "p.12: f = 3.5 at h = 750 to 1000 m; Siemens' formula has no altitude factor (shown, Rittal governs)"
+    calc: "3.5×1000/10 = 350 m³/h = 97.22 l/s"
+  - id: E12
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 1200, siting: indoor}
+    expect: {status: cannot_select, rule: R-ENC-01}
+    oracle: "p.12 gives f only up to 1000 m"
+  - id: E13
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: -10, siting: indoor}
+    expect: {status: cannot_select, rule: R-ENC-01}
+    oracle: "p.12 starts at 0 m"
+  - id: E14
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 0, siting: outdoor}
+    expect: {status: cannot_select, rule: R-ENC-01}
+    oracle: "p.52: k = 5.5 is based on indoor siting, static air; outdoor (moving air, sun) is not covered"
+
+  # --- heat exchanger (R-ENC-14) ---------------------------------------------------------------------
+  - id: E16
+    in: {heat_loss_w: 800, ambient_c: 30, max_internal_c: 45, altitude_m: 0, area_m2: 3, material: sheet_steel, siting: indoor}
+    expect: {status: warning, warnings: [R-ENC-03], method: fan, passive: "no", delta_t_natural_k: 48.48, internal_natural_c: 78.48, surface_w: 247.5, fan_airflow_m3h: 165.33, cooling_unit_w: 552.5, heat_exchanger_w_per_k: 36.83, heat_exchanger: "SK 3128.100"}
+    oracle: "hand calc p.26: qw = (Q̇v − A·ΔT·k)/ΔT; p.26 diagram labels: 30 W/K < 36.83 ≤ 45 W/K → SK 3128.100"
+    calc: "Q̇s = 3×5.5×15 = 247.5; qw = 552.5/15 = 36.83; V̇ = 3.1×800/15 = 165.33; 800/16.5 = 48.48 K"
+  - id: E17
+    in: {heat_loss_w: 600, ambient_c: 30, max_internal_c: 40, altitude_m: 0, siting: indoor}
+    expect: {status: ok, method: fan, fan_airflow_m3h: 186, heat_exchanger_w_per_k: 60, heat_exchanger: "SK 3129.100"}
+    oracle: "boundary: qw exactly 60 W/K → the 60 W/K model (≥), p.26"
+    calc: "qw = 600/10 = 60; V̇ = 3.1×600/10 = 186"
+
+  # --- small temperature difference / large airflow (R-ENC-11, R-ENC-12) -------------------------------
+  - id: E18
+    in: {heat_loss_w: 600, ambient_c: 40, max_internal_c: 43, altitude_m: 0, siting: indoor}
+    expect: {status: warning, warnings: [R-ENC-11], method: cooling_unit, fan_airflow_m3h: 620, cooling_unit_w: 600, heat_exchanger: null}
+    oracle: "Ti − Tu = 3 K < 5 K (lowest ΔT line, p.12 selection diagram) → cooling unit recommended"
+    calc: "V̇ = 3.1×600/3 = 620 m³/h (shown); Q̇E = 600 W (no A, R-ENC-16)"
+  - id: E19
+    in: {heat_loss_w: 600, ambient_c: 40, max_internal_c: 43, altitude_m: 0, area_m2: 5, material: sheet_steel, siting: indoor}
+    expect: {status: warning, warnings: [R-ENC-03, R-ENC-11], method: cooling_unit, passive: "no", delta_t_natural_k: 21.82, surface_w: 82.5, cooling_unit_w: 517.5, heat_exchanger_w_per_k: 172.5, heat_exchanger: null}
+    oracle: "hand calc p.30"
+    calc: "Q̇s = 5×5.5×3 = 82.5; Q̇E = 600 − 82.5 = 517.5 W; qw = 517.5/3 = 172.5 W/K > 90"
+  - id: E23
+    in: {heat_loss_w: 2000, ambient_c: 50, max_internal_c: 55, altitude_m: 1000, siting: indoor}
+    expect: {status: warning, warnings: [R-ENC-12], method: fan, altitude_factor: 3.5, fan_airflow_m3h: 1400, fan_airflow_ls: 388.89, siemens_airflow_ls: 344, cooling_unit_w: 2000, heat_exchanger: null}
+    oracle: "WNS2503 style: 50 °C site at 1000 m, 55 °C inside with fans; p.8: Blue e+ fan-and-filter up to 1160 m³/h"
+    calc: "V̇ = 3.5×2000/5 = 1400 m³/h > 1160 → warning"
+
+  # --- cooling unit (R-ENC-08, R-ENC-15, R-ENC-16) ---------------------------------------------------
+  - id: E20
+    in: {heat_loss_w: 500, ambient_c: 40, max_internal_c: 40, altitude_m: 0, siting: indoor}
+    expect: {status: ok, method: cooling_unit, cooling_unit_w: 500, fan_airflow_m3h: null, heat_exchanger: null}
+    oracle: "p.7/p.24: fans and heat exchangers need Tu < Ti; Ti = Tu → ΔT = 0 → Q̇E = Q̇v (p.30) without A"
+  - id: E21
+    in: {heat_loss_w: 2000, ambient_c: 50, max_internal_c: 35, altitude_m: 1000, area_m2: 6, material: sheet_steel, siting: indoor}
+    expect: {status: warning, warnings: [R-ENC-03], method: cooling_unit, passive: "no", surface_w: -495, cooling_unit_w: 2495, delta_t_natural_k: 60.61, internal_natural_c: 110.61, fan_airflow_m3h: null}
+    oracle: "WNS2503 style: 35 °C inside at a 50 °C site. p.30: Q̇E = Q̇v − k·A·ΔT, ΔT = 35 − 50 = −15 K"
+    calc: "Q̇s = 6×5.5×(−15) = −495 W (heat taken in); Q̇E = 2000 + 495 = 2495 W; 2000/33 = 60.61 K"
+  - id: E22
+    in: {heat_loss_w: 2000, ambient_c: 50, max_internal_c: 35, altitude_m: 1000, siting: indoor}
+    expect: {status: cannot_select, rule: R-ENC-15}
+    oracle: "Ti < Tu: heat taken in through the surface needs A (p.13: Q̇s < 0, irradiation); A not given"
+
+  # --- surface area and material (R-ENC-02 … 04) ------------------------------------------------------
+  - id: E24
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 0, area_m2: 4, material: stainless_steel, siting: indoor}
+    expect: {status: cannot_select, rule: R-ENC-04}
+    oracle: "p.13: k given for sheet steel only"
+  - id: E25
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 0, material: sheet_steel, siting: indoor, sections: [{width_mm: 800, height_mm: 2000, depth_mm: 600, installation: free-standing}]}
+    expect: {status: cannot_select, rule: R-ENC-02}
+    oracle: "IEC 890 named on p.13 but its installation-type formulas are not printed in the held catalogue"
+  - id: E26
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 0, area_m2: 4, material: sheet_steel, siting: indoor, sections: [{width_mm: 800, height_mm: 2000, depth_mm: 600, installation: free-standing}]}
+    expect: {status: warning, warnings: [R-ENC-03], method: fan, surface_w: 220, cooling_unit_w: 780, fan_airflow_m3h: 310}
+    oracle: "as E04: the designer's A is used; the section sizes are recorded only"
+
+  # --- input validation ------------------------------------------------------------------------------
+  - id: E27
+    in: {heat_loss_w: 0, ambient_c: 35, max_internal_c: 45, altitude_m: 0, siting: indoor}
+    expect: {status: invalid}
+    oracle: "heat loss must be > 0"
+  - id: E28
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 0, area_m2: 4, siting: indoor}
+    expect: {status: invalid}
+    oracle: "with A, the enclosure material is required (k) — no default"
+  - id: E29
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 0}
+    expect: {status: invalid}
+    oracle: "siting (indoor / outdoor) is required — no default"
+  - id: E30
+    in: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 0, area_m2: -2, material: sheet_steel, siting: indoor}
+    expect: {status: invalid}
+    oracle: "A must be > 0"
+  - id: E31
+    in: {heat_loss_w: 1000, max_internal_c: 45, altitude_m: 0, siting: indoor}
+    expect: {status: invalid}
+    oracle: "ambient temperature is required — no default"

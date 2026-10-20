@@ -1,0 +1,16 @@
+# Rittal TSC "Cooling with ambient air" 3124300 EN — fan-and-filter principle (PDF page = printed page).
+# p.12: the performance diagrams show separate curves for the fan with "1 x outlet filter" (lower airflow than the
+#   fan alone); the per-model curves for SK 3239 / 3240 are not printed ("Further performance diagrams may be found
+#   on the Internet") — the data sheets give the result as "air throughput with outlet filter" (R-ACC-04).
+# p.12: selection criterion. p.8: prerequisite (clean ambient air, below the internal temperature) and the
+#   pleated filter note (Blue e+; the TopTherm data sheets say "including chopped-fibre filter mat").
+
+source:
+  ref: RITTAL-TSC-3124300
+  section: "Fan-and-filter units: prerequisite (p. 8), performance diagrams with outlet filter and selection criterion (p. 12)"
+
+rows:
+  - {quantity: outlet_filter_curve, value: "1 x outlet filter SK 3238.300", page: 12}
+  - {quantity: more_diagrams, value: "Further performance diagrams may be found on the Internet.", page: 12}
+  - {quantity: selection_criterion, value: "The correct fan-and-filter unit has been chosen if the specified heat loss is dissipated whilst complying with the desired maximum enclosure internal temperature.", page: 12}
+  - {quantity: prerequisite, value: "the ambient air must be relatively clean with a temperature below the desired enclosure internal temperature", page: 8}

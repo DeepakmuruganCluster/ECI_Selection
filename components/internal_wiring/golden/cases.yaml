@@ -1,0 +1,184 @@
+# Golden cases for internal_wiring — written BEFORE the code (G4).
+# Oracle: Lapp Cable Guide "Power Rating" (LAPP-POWER), PDF pages (printed page in brackets) and hand calculation.
+#   Table 12-1 col A / C: PDF p.1 (144 / 145); footnote 3: p.2 (146); Table 12-2, 12-3: p.3 (148);
+#   Table 12-4: p.3 (149); Table 12-6: p.4 (150 / 151).
+#   Iz = I(T12-1) × k_temp × k_bundle × k_group × k_cores
+# Unless stated: single cores, in a wiring duct, 3~AC circuit, PVC 70 °C rated conductor temperature.
+#   3~AC single cores in a duct, 1 circuit: k_bundle 0.67 (fn 3), k_group 1.00 (T12-6 bunched, 1)
+#   70 °C column of T12-2: 35 °C 0.94, 40 °C 0.87, 55 °C 0.61, 65 °C 0.35, 10 °C 1.22
+
+cases:
+  # --- base cases --------------------------------------------------------------------------------------
+  - id: W01
+    in: {ib_a: 10, in_a: 10, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 30, insulation: "70", circuits: 1}
+    expect: {status: ok, size_mm2: 0.75, iz_a: 10.05, k_temp: 1.0, k_bundle: 0.67, k_group: 1.0, bound_by: ampacity}
+    oracle: "p.1 col A: 0.5 mm² 12 A, 0.75 mm² 15 A; fn 3 3~AC 0.67"
+    calc: "0.5: 12 × 0.67 = 8.04 < 10; 0.75: 15 × 0.67 = 10.05 ≥ 10"
+  - id: W02
+    in: {ib_a: 15.5, in_a: 16, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 55, insulation: "70", circuits: 1}
+    expect: {status: ok, size_mm2: 4, iz_a: 17.17, k_temp: 0.61, bound_by: ampacity}
+    oracle: "WNS2503 7.5 kW DOL (15.5 A, MPCB 13–16 A at its top setting) at 55 °C inside: T12-2 70 °C/55 °C = 0.61"
+    calc: "k = 0.67 × 0.61 = 0.4087; 2.5: 32 × 0.4087 = 13.08 < 16; 4: 42 × 0.4087 = 17.17 ≥ 16"
+  - id: W03
+    in: {ib_a: 15.5, in_a: 16, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 35, insulation: "70", circuits: 1}
+    expect: {status: ok, size_mm2: 2.5, iz_a: 20.15, k_temp: 0.94, bound_by: ampacity}
+    oracle: "same at 35 °C: T12-2 70 °C/35 °C = 0.94"
+    calc: "k = 0.67 × 0.94 = 0.6298; 1.5: 24 × 0.6298 = 15.12 < 16; 2.5: 32 × 0.6298 = 20.15"
+  - id: W04
+    in: {ib_a: 70, in_a: 100, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 55, insulation: "70", circuits: 1}
+    expect: {status: ok, size_mm2: 70, iz_a: 100.13, bound_by: ampacity}
+    oracle: "WNS2503 37 kW drive feed (LO input 70 A, 3NA3830 gG fuse 100 A) at 55 °C: col A 50 → 198, 70 → 245"
+    calc: "50: 198 × 0.4087 = 80.92 < 100; 70: 245 × 0.4087 = 100.13 ≥ 100"
+  - id: W05
+    in: {ib_a: 70, in_a: 100, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 35, insulation: "70", circuits: 1}
+    expect: {status: ok, size_mm2: 50, iz_a: 124.7, bound_by: ampacity}
+    oracle: "same at 35 °C: col A 35 → 158, 50 → 198"
+    calc: "35: 158 × 0.6298 = 99.51 < 100; 50: 198 × 0.6298 = 124.70"
+  - id: W06
+    in: {ib_a: 70, overload_device: false, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 55, insulation: "70", circuits: 1}
+    expect: {status: ok, size_mm2: 50, iz_a: 80.92, bound_by: ampacity}
+    oracle: "device gives no overload protection (e.g. aR fuse): Iz ≥ Ib only (R-WIR-10)"
+    calc: "35: 158 × 0.4087 = 64.57 < 70; 50: 198 × 0.4087 = 80.92 ≥ 70"
+  - id: W07
+    in: {ib_a: 70, in_a: 100, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 55, insulation: heat_90, circuits: 1}
+    expect: {status: ok, size_mm2: 50, iz_a: 124.7, k_temp: 0.94}
+    oracle: "H07V2-K (heat resistant 90 °C): T12-4 p.3 right (printed 149) 55 °C = 0.94"
+    calc: "k = 0.67 × 0.94 = 0.6298; 35: 99.51 < 100; 50: 124.70"
+  - id: W08
+    in: {ib_a: 70, in_a: 100, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 45, insulation: heat_90, circuits: 1}
+    expect: {status: ok, size_mm2: 35, iz_a: 105.86, k_temp: 1.0}
+    oracle: "T12-4: 'up to 50' °C = 1.00 for H07V2-K"
+    calc: "25: 129 × 0.67 = 86.43 < 100; 35: 158 × 0.67 = 105.86"
+
+  # --- grouping (T12-6) ------------------------------------------------------------------------------------
+  - id: W09
+    in: {ib_a: 10, in_a: 10, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 30, insulation: "70", circuits: 4}
+    expect: {status: ok, size_mm2: 1.5, iz_a: 10.45, k_group: 0.65}
+    oracle: "p.4 (printed 150) bunched, 4 circuits = 0.65"
+    calc: "k = 0.67 × 0.65 = 0.4355; 1.0: 19 × 0.4355 = 8.27 < 10; 1.5: 24 × 0.4355 = 10.45"
+  - id: W10
+    in: {ib_a: 6, in_a: 6, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 30, insulation: "70", circuits: 11}
+    expect: {status: ok, size_mm2: 1.5, iz_a: 7.24, k_group: 0.45}
+    oracle: "11 circuits not printed → 12 column (R-WIR-09), p.4 (printed 151) = 0.45"
+    calc: "k = 0.67 × 0.45 = 0.3015; 1.0: 5.73 < 6; 1.5: 24 × 0.3015 = 7.24"
+  - id: W11
+    in: {ib_a: 6, in_a: 6, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 30, insulation: "70", circuits: 21}
+    expect: {status: cannot_select, rule: R-WIR-09}
+    oracle: "Table 12-6 ends at 20"
+  - id: W12
+    in: {ib_a: 2, in_a: 2, conductor_type: single, installation: duct, circuit: dc, ambient_c: 55, insulation: "70", circuits: 20}
+    expect: {status: ok, size_mm2: 0.5, iz_a: 2.11, k_bundle: 0.76, k_group: 0.38, bound_by: smallest size offered}
+    oracle: "24 V DC I/O wire in a full duct: fn 3 DC 0.76, T12-2 0.61, T12-6 20 → 0.38"
+    calc: "k = 0.76 × 0.61 × 0.38 = 0.17617; 0.5: 12 × 0.17617 = 2.11 ≥ 2"
+  - id: W13
+    in: {ib_a: 4, in_a: 4, conductor_type: single, installation: duct, circuit: dc, ambient_c: 55, insulation: "70", circuits: 20}
+    expect: {status: ok, size_mm2: 1.5, iz_a: 4.23}
+    oracle: "as W12, 4 A"
+    calc: "1.0: 19 × 0.17617 = 3.35 < 4; 1.5: 24 × 0.17617 = 4.23"
+  - id: W14
+    in: {ib_a: 6, in_a: 6, conductor_type: single, installation: surface, circuit: 1ac, ambient_c: 40, insulation: "70", circuits: 2}
+    expect: {status: ok, size_mm2: 0.5, iz_a: 6.35, k_bundle: 0.76, k_group: 0.8, k_temp: 0.87}
+    oracle: "230 V 1~AC on the mounting plate: fn 3 0.76, T12-2 40 °C 0.87, T12-6 2 → 0.80"
+    calc: "k = 0.76 × 0.87 × 0.80 = 0.52896; 0.5: 12 × 0.52896 = 6.35 ≥ 6"
+
+  # --- free air, spaced ------------------------------------------------------------------------------------
+  - id: W15
+    in: {ib_a: 70, in_a: 100, conductor_type: single, installation: air_spaced, circuit: 3ac, ambient_c: 55, insulation: "70"}
+    expect: {status: ok, size_mm2: 50, iz_a: 120.78, k_bundle: 1.0, k_group: 1.0}
+    oracle: "col A drawing: single cores spaced ≥ d, no bundling / grouping factor"
+    calc: "35: 158 × 0.61 = 96.38 < 100; 50: 198 × 0.61 = 120.78"
+
+  # --- multicore (column C) --------------------------------------------------------------------------------
+  - id: W16
+    in: {ib_a: 20, in_a: 20, conductor_type: multi, installation: duct, circuit: 3ac, ambient_c: 40, insulation: "70", circuits: 3}
+    expect: {status: ok, size_mm2: 4, iz_a: 20.71, k_bundle: 1.0, k_group: 0.7}
+    oracle: "col C (printed 145): 2.5 → 26, 4 → 34; T12-6 3 cables 0.70; 40 °C 0.87"
+    calc: "k = 0.87 × 0.70 = 0.609; 2.5: 15.83 < 20; 4: 34 × 0.609 = 20.71"
+  - id: W17
+    in: {ib_a: 10, in_a: 10, conductor_type: multi, installation: surface, circuit: 1ac, ambient_c: 30, insulation: "70", circuits: 1}
+    expect: {status: ok, size_mm2: 0.75, iz_a: 12, k_cores: 1.0}
+    oracle: "col C: 0.5 → 9, 0.75 → 12 (2 loaded conductors)"
+  - id: W18
+    in: {ib_a: 4, in_a: 4, conductor_type: multi, installation: duct, circuit: dc, ambient_c: 40, insulation: "70", circuits: 1, loaded_cores: 12}
+    expect: {status: ok, size_mm2: 0.75, iz_a: 5.22, k_cores: 0.5}
+    oracle: "12 loaded cores → 14 row of T12-3 free air 0.50 (R-WIR-09)"
+    calc: "k = 0.87 × 0.50 = 0.435; 0.5: 9 × 0.435 = 3.92 < 4; 0.75: 12 × 0.435 = 5.22"
+  - id: W19
+    in: {ib_a: 50, in_a: 50, conductor_type: multi, installation: surface, circuit: 3ac, ambient_c: 30, insulation: "70", circuits: 1, loaded_cores: 7}
+    expect: {status: cannot_select, rule: R-WIR-07}
+    oracle: "T12-3 only up to 10 mm²: 10 mm² 61 × 0.65 = 39.65 < 50, larger not allowed"
+  - id: W20
+    in: {ib_a: 1, in_a: 1, conductor_type: multi, installation: duct, circuit: dc, ambient_c: 30, insulation: "70", circuits: 1, loaded_cores: 62}
+    expect: {status: cannot_select, rule: R-WIR-09}
+    oracle: "T12-3 ends at 61 conductors"
+
+  # --- temperature limits ----------------------------------------------------------------------------------
+  - id: W21
+    in: {ib_a: 5, in_a: 5, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 66, insulation: "70", circuits: 1}
+    expect: {status: cannot_select, rule: R-WIR-09}
+    oracle: "T12-2 70 °C column ends at 65 °C"
+  - id: W22
+    in: {ib_a: 5, in_a: 5, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 65, insulation: "70", circuits: 1}
+    expect: {status: ok, size_mm2: 1.5, iz_a: 5.63, k_temp: 0.35}
+    oracle: "T12-2 70 °C/65 °C = 0.35"
+    calc: "k = 0.67 × 0.35 = 0.2345; 1.0: 4.46 < 5; 1.5: 24 × 0.2345 = 5.63"
+  - id: W23
+    in: {ib_a: 15.5, in_a: 16, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 52, insulation: "70", circuits: 1}
+    expect: {status: ok, size_mm2: 4, iz_a: 17.17, k_temp: 0.61}
+    oracle: "52 °C → 55 °C row (R-WIR-09)"
+  - id: W24
+    in: {ib_a: 10, in_a: 10, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 5, insulation: "70", circuits: 1}
+    expect: {status: ok, size_mm2: 0.75, iz_a: 12.26, k_temp: 1.22}
+    oracle: "below 10 °C → 10 °C row 1.22 (R-WIR-09)"
+    calc: "k = 0.67 × 1.22 = 0.8174; 0.5: 9.81 < 10; 0.75: 15 × 0.8174 = 12.26"
+  - id: W25
+    in: {ib_a: 5, in_a: 5, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 50, insulation: "85", circuits: 1}
+    expect: {status: cannot_select, rule: R-WIR-09}
+    oracle: "T12-2 85 °C column prints '-' from 50 °C"
+
+  # --- overload, sizes, scope, inputs ----------------------------------------------------------------------
+  - id: W26
+    in: {ib_a: 20, in_a: 16, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 35, insulation: "70", circuits: 1}
+    expect: {status: cannot_select, rule: R-WIR-10}
+    oracle: "In 16 < Ib 20"
+  - id: W27
+    in: {ib_a: 20, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 35, insulation: "70", circuits: 1}
+    expect: {status: invalid}
+    oracle: "overload device (default) but no In"
+  - id: W28
+    in: {ib_a: 20, in_a: 20, conductor_type: single, installation: tray, circuit: 3ac, ambient_c: 35, insulation: "70", circuits: 1}
+    expect: {status: cannot_select, rule: R-WIR-03}
+    oracle: "trays (T12-7 / 12-8) not inside a panel: out of scope"
+  - id: W29
+    in: {ib_a: 20, in_a: 20, conductor_type: single, installation: air_bundled, circuit: 3ac, ambient_c: 35, insulation: "70"}
+    expect: {status: cannot_select, rule: R-WIR-03}
+    oracle: "fn 3: single cores touching free in air → 0.7 then Table 12-8 (cable trays): no tray, no factor"
+  - id: W30
+    in: {ib_a: 20, in_a: 20, conductor_type: multi, installation: air_spaced, circuit: 3ac, ambient_c: 35, insulation: "70"}
+    expect: {status: cannot_select, rule: R-WIR-03}
+    oracle: "col C drawing shows a cable on a surface only"
+  - id: W31
+    in: {ib_a: 600, in_a: 630, conductor_type: single, installation: air_spaced, circuit: 3ac, ambient_c: 55, insulation: "70"}
+    expect: {status: cannot_select, rule: R-WIR-11}
+    oracle: "largest col A size 500 mm²: 830 × 0.61 = 506.3 < 630; no parallel conductors"
+  - id: W32
+    in: {ib_a: 10, in_a: 10, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 30, insulation: "70", circuits: 1, min_size_mm2: 1.5}
+    expect: {status: ok, size_mm2: 1.5, iz_a: 16.08, bound_by: project minimum size}
+    oracle: "W01 with a project minimum of 1.5 mm²"
+    calc: "24 × 0.67 = 16.08"
+  - id: W33
+    in: {ib_a: 10, in_a: 10, conductor_type: cord, installation: duct, circuit: 3ac, ambient_c: 30, insulation: "70", circuits: 1}
+    expect: {status: cannot_select, rule: R-WIR-01}
+    oracle: "category B (home / portable cords) out of scope"
+  - id: W34
+    in: {ib_a: 10, in_a: 10, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 30, circuits: 1}
+    expect: {status: invalid}
+    oracle: "rated conductor temperature (insulation) has no default"
+  - id: W35
+    in: {ib_a: 10, in_a: 10, conductor_type: single, installation: duct, circuit: 3ac, ambient_c: 30, insulation: "70"}
+    expect: {status: invalid}
+    oracle: "duct: the number of circuits in the group has no default"
+  - id: W36
+    in: {ib_a: 1, in_a: 1, conductor_type: single, installation: duct, circuit: dc, ambient_c: 30, insulation: "70", circuits: 1}
+    expect: {status: ok, size_mm2: 0.5, iz_a: 9.12, bound_by: smallest size offered}
+    oracle: "1 A DC: 0.08 … 0.34 mm² are not offered (R-WIR-11, footnote 1); 0.5 mm² 12 × 0.76 = 9.12"

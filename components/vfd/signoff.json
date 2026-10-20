@@ -1,0 +1,47 @@
+{
+  "component": "vfd",
+  "signed_by": "Deepak",
+  "signed_at": "2026-10-10T23:41:50",
+  "decisions": {
+    "V-1": {
+      "question": "The temperature table has 5 °C steps. Between steps, the tool uses the next higher step (e.g. 47 °C is treated as 50 °C). This is safe but may pick a bigger drive.",
+      "answer": "Use the next higher step (safe)",
+      "choice": "step",
+      "recommended": "step"
+    },
+    "V-2": {
+      "question": "Siemens lists a fuse for each drive in this manual. Circuit-breaker (MCCB) protection is in a separate Siemens document (109801083) we don't hold yet.",
+      "answer": "Fetch that document so MCCBs can be offered",
+      "choice": "fetch",
+      "recommended": "fetch"
+    },
+    "V-3": {
+      "question": "The PM240-2 manual we hold is a third-party copy of the 07/2022 edition. Replace it with Siemens' official download?",
+      "answer": "Yes, use the official Siemens copy",
+      "choice": "official",
+      "recommended": "official"
+    },
+    "V-4": {
+      "question": "Small drives (up to 15 kW) need a supply impedance of 1–4 %, or a line reactor. ECI asks for line reactors up to 15 kW. What should the tool do?",
+      "answer": "Follow ECI's rule (line reactor up to 15 kW)",
+      "choice": "client",
+      "recommended": "client"
+    }
+  },
+  "changes_needed": [],
+  "notes": "",
+  "automatic_checks": "32/32 passed",
+  "data_sha256": {
+    "data/makers/siemens/pm240_2_400v.yaml": "13d7e6fd6bee7190a1e410f791836a1d1a21939221d419a1dbd70b68f5fc6925",
+    "data/makers/siemens/pm240_2_cable_lengths.yaml": "154fa4ebecac3433596b111707b9aebe02354cabed24cfb5e0048d0972fdb298",
+    "data/makers/siemens/pm240_2_derating.yaml": "1414045cec82192d686d5e02b83285ae098eaeca8a9a6d2c3ecda252a1192458",
+    "data/makers/siemens/pm240_2_reactors.yaml": "40590a936e3393ca603d0b958e8aa4b51682561731ec9aa7117116416b5f1c2f",
+    "components/vfd/rules.yaml": "291917244b2b2530d2f5e51fe5be06e72784f8603baaf7f2634fa8876a59b1b1"
+  },
+  "history": [
+    {
+      "at": "2026-10-13",
+      "what": "data tables moved to data/makers and data/company (owner request); file contents byte-identical, fingerprints carried over"
+    }
+  ]
+}

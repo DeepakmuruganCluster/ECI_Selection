@@ -1,0 +1,142 @@
+# Golden cases for load_list — written BEFORE the code (G4).
+# Oracle: the cells of ECI's Word load list (ECI-WNS2503-LOADS) read by hand, quoted below, and
+# for R-LL-15 the client's equipment PDF (ECI-WNS2503-EQUIP) read by hand.
+# "table T row R" counts from 1 as Word shows it; the header row of table 1 is row 1.
+
+cases:
+  # ---- whole document / per panel: counts done by hand from the tables ----
+  - id: L01
+    in: {project: WNS2503, panel: all}
+    expect: {status: warning, n_rows: 67, n_units: 117, n_dol: 46, n_vfd: 18, n_ss: 2, n_heater: 1, n_spare: 1,
+             n_single_phase: 14, units_vfd: 38, units_dol: 75, units_ss: 3, n_standby: 0, n_duplicate_tags: 2,
+             n_tag_mismatch: 5, n_repairs: 17, n_flc_outside_range: 23, n_pdf_differences: 5, n_total_mismatch: 1,
+             warnings: [R-LL-04, R-LL-08, R-LL-09, R-LL-10, R-LL-11, R-LL-12, R-LL-13, R-LL-14, R-LL-15]}
+    oracle: "BIO_UF (L02) + RO (L03): 35 + 32 rows; VFD 10 + 8, SS 1 + 1, DOL 24 + 22 (+ heater HT401); units 59 + 58"
+  - id: L02
+    in: {project: WNS2503, panel: BIO_UF}
+    expect: {status: warning, n_rows: 35, n_units: 59, n_dol: 24, n_vfd: 10, n_ss: 1, n_heater: 0, n_spare: 0,
+             n_single_phase: 5, units_vfd: 22, units_dol: 36, units_ss: 1, n_duplicate_tags: 1, n_tag_mismatch: 2,
+             n_repairs: 5, n_flc_outside_range: 13, n_pdf_differences: 5, n_total_mismatch: 1,
+             warnings: [R-LL-08, R-LL-09, R-LL-10, R-LL-11, R-LL-12, R-LL-13, R-LL-14, R-LL-15]}
+    oracle: >
+      table 1 rows 3-12 closed by 'BIO/UF Panel Total VFD … 22' (row 13); row 24 'Cooling Tower E101' closed by
+      'BIO/Uf Panel Total SS … 1'; rows 29-52 closed by 'BIO/Uf Panel Total DOL … 36'. 1PH 230V rows: P407, P410,
+      P412, P701, P704. S102 used twice (rows 30, 33). ID ≠ marking: 'MX401' / 'MX401 & MX401B', 'MX402' / 'MX402 & MX402B'.
+      Total Qty sum of the VFD rows is 23 (P103A/B 'Total Qty 3') vs total row 22. Merged cells: S101 '0.9 To 1.25A MPCB-3RV',
+      P701-P704 '1.1A To 1.6AMPCB-3RV'. Current outside MPCB range: S101 0.70/0.9-1.25, S102 1.1 kW 2.09/2.2-3.2,
+      P407/P410/P412 1.36/1.4-2, MX701-706 2.71/1.8-2.5, P702/P703 0.48/1.1-1.6. PDF: K101A/B 15 kW 28.52 A, P102A/B 1PH,
+      P411A/B, P419A/B, P418A/B where Word has P410A/B, P701A/B, P703A/B.
+  - id: L03
+    in: {project: WNS2503, panel: RO}
+    expect: {status: warning, n_rows: 32, n_units: 58, n_dol: 22, n_vfd: 8, n_ss: 1, n_heater: 1, n_spare: 1,
+             n_single_phase: 9, units_vfd: 16, units_dol: 39, units_ss: 2, n_duplicate_tags: 1, n_tag_mismatch: 3,
+             n_repairs: 12, n_flc_outside_range: 10, n_pdf_differences: 0, n_total_mismatch: 0,
+             warnings: [R-LL-04, R-LL-08, R-LL-09, R-LL-10, R-LL-13, R-LL-14]}
+    oracle: >
+      table 1 rows 14-21 closed by 'RO Panel Total VFD … 16'; row 26 P301A/B closed by 'RO Panel Total SS … 2'; table 1
+      rows 54-59 + table 2 rows 1-17 closed by 'RO Panel Total DOL … 40' (39 DOL + HT401 'RO CIP Heater'). 'Extra DOL'
+      P507A/B/C/D is spare. P412A/B already used in BIO/UF. ID ≠ marking: P414A/B / 'P402A&P402B', P416A/B / 'P403A & P403B',
+      MX507 / 'MX505'. Repairs: HT401 and P412A/B range one column right; P414, P416, P501-P505, P408, P415, P417 merged.
+      Outside range: MX501-507 2.71/1.8-2.5, P502/P503 0.48/1.1-1.6, P601 4.18/4.5-6.3. PDF RO rows all agree.
+
+  # ---- single rows ----
+  - id: L04
+    in: {project: WNS2503, tag: "K101A/B"}
+    expect: {status: warning, panel: BIO_UF, kw: 18.5, starter: VFD, qty: 2, standby: 0, phases: 3, voltage_v: 400,
+             client_flc_a: 35.17, client_range_min: 28, client_range_max: 40, source: "table 1 row 3",
+             line: "K101A/B 18.5 VFD qty=2", warnings: [R-LL-08, R-LL-15]}
+    oracle: "table 1 row 3: 'Equlaisaton Blower | K101A/B | K101A/B | 3PH 400V 50HZ | 18.5 | 35.17 | 28 - 40A | MPCB-3RV | 2 | 37 | 2'; PDF p.1 S.NO 3 says 15 kW 28.52 A"
+  - id: L05
+    in: {project: WNS2503, tag: "K101A/B", standby_per_group: 1}
+    expect: {status: warning, qty: 2, standby: 1, line: "K101A/B 18.5 VFD qty=2 standby=1", warnings: [R-LL-08, R-LL-15]}
+    oracle: "as L04, user asks 1 standby per group (interpretation, still flagged)"
+  - id: L06
+    in: {project: WNS2503, tag: "P407A/B"}
+    expect: {status: warning, panel: BIO_UF, starter: DOL, phases: 1, voltage_v: 230, client_flc_a: 1.36,
+             client_range_min: 1.4, client_range_max: 2, source: "table 1 row 39",
+             line: "P407A/B 0.25 DOL qty=2 ph=1 v=230", warnings: [R-LL-08, R-LL-14]}
+    oracle: "table 1 row 39: 'Hypo Dosing Pump … | P407A/B | 1PH 230V 50HZ | 0.25 | 1.36 | 1.4 - 2A | MPCB-3RV | 2 | 0.5 | | 2'; 1.36 A < 1.4 A"
+  - id: L07
+    in: {project: WNS2503, tag: "P701A/B"}
+    expect: {status: warning, panel: BIO_UF, kw: 0.25, qty: 2, client_range_min: 1.1, client_range_max: 1.6,
+             client_device: MPCB-3RV, source: "table 1 row 49", line: "P701A/B 0.25 DOL qty=2 ph=1 v=230",
+             warnings: [R-LL-08, R-LL-13, R-LL-15]}
+    oracle: "table 1 row 49: rating cell '1.1A To 1.6AMPCB-3RV', next cell empty → split; PDF p.2 S.NO 7 names it P419A/B (marking P701A&P701B)"
+  - id: L08
+    in: {project: WNS2503, tag: HT401}
+    expect: {status: warning, panel: RO, kw: 15, starter: HEATER, load_type: heater, qty: 1, client_flc_a: 28.52,
+             client_range_min: 27, client_range_max: 32, client_device: MPCB-3RV, source: "table 1 row 55",
+             line: "HT401 15 HEATER", warnings: [R-LL-04, R-LL-13]}
+    oracle: "table 1 row 55: 'RO CIP Heater | HT401 | HT401 | 3PH 400V 50HZ | 15 | 28.52 | (empty) | 27 To 32 A MPCB-3RV | 1 | 15 | | 1'"
+  - id: L09
+    in: {project: WNS2503, tag: "P507A/B/C/D", standby_per_group: 1}
+    expect: {status: warning, panel: RO, kw: 4, starter: DOL, load_type: spare, qty: 4, standby: 0,
+             client_flc_a: 7.22, source: "table 2 row 14", line: "P507A/B/C/D 4 DOL qty=4", warnings: [R-LL-04]}
+    oracle: "table 2 row 14: 'Extra DOL | P507A/B/C/D | … | 4 | 7.22 | 7 To 10A | MPCB-3RV | 4 | 16 | | 4'; spare rows get no standby"
+  - id: L10
+    in: {project: WNS2503, tag: "P103A/B"}
+    expect: {status: warning, kw: 2.2, starter: VFD, qty: 2, source: "table 1 row 6", line: "P103A/B 2.2 VFD qty=2",
+             warnings: [R-LL-08, R-LL-11]}
+    oracle: "table 1 row 6: 'Bio Sludge Recurculation Pump | P103A/B | P103A&P103B | … | 2.2 | 4.18 | 3.5 - 5A | MPCB-3RV | 3 | 6.6 | 2' — Total Qty 3 but Req Inverter 2 and two tags"
+  - id: L11
+    in: {project: WNS2503, tag: S102_2}
+    expect: {status: warning, panel: BIO_UF, kw: 1.1, starter: DOL, qty: 1, client_flc_a: 2.09, source: "table 1 row 33",
+             line: "S102_2 1.1 DOL", warnings: [R-LL-09, R-LL-14]}
+    oracle: "table 1 row 33: 'Drum Screen | S102 | S102 | … | 1.1 | 2.09 | 2.2 - 3.2A' — S102 already used by 'Oil Skimmer' row 30; 2.09 A < 2.2 A"
+  - id: L12
+    in: {project: WNS2503, tag: MX507}
+    expect: {status: warning, panel: RO, kw: 1.5, source: "table 2 row 6", line: "MX507 1.5 DOL", warnings: [R-LL-10, R-LL-14]}
+    oracle: "table 2 row 6: 'Sodium Hydroxide Dosing Mixer | MX507 | MX505 | … | 1.5 | 2.71 | 1.8 To 2.5 A'"
+  - id: L13
+    in: {project: WNS2503, tag: "P102A/B"}
+    expect: {status: warning, phases: 3, voltage_v: 400, client_flc_a: 1.43, source: "table 1 row 31",
+             line: "P102A/B 0.75 DOL qty=2", warnings: [R-LL-08, R-LL-15]}
+    oracle: "table 1 row 31: 'Acid Dosing Pump … | P102A/B | P102A &P102B | 3PH 400V 50HZ | 0.75 | 1.43'; PDF p.1 S.NO 9 says 1PH 230V 50HZ"
+  - id: L14
+    in: {project: WNS2503, tag: "P302A/B", default_cable_m: 50}
+    expect: {status: warning, panel: RO, kw: 30, starter: VFD, client_flc_a: 57.03, client_device: MCCB-3VM,
+             source: "table 1 row 14", line: "P302A/B 30 VFD qty=2 cable=50", warnings: [R-LL-07, R-LL-08]}
+    oracle: "table 1 row 14: 'RO High Pressure Pumps -1st stage | P302A/B | … | 30 | 57.03 | 45- 63A | MCCB-3VM | 2 | 60 | 2'; cable 50 m is the user's"
+  - id: L15
+    in: {project: WNS2503, tag: "K102A/B"}
+    expect: {status: warning, kw: 37, client_flc_a: 70.34, client_mpcb: "100A", client_range_min: null,
+             client_range_max: null, line: "K102A/B 37 VFD qty=2", warnings: [R-LL-08]}
+    oracle: "table 1 row 5: 'Biological Oxidation Blower | K102A/B | … | 37 | 70.34 | 100A | MPCB-3RV' — a single value, not a range"
+  - id: L16
+    in: {project: WNS2503, tag: E101}
+    expect: {status: ok, panel: BIO_UF, kw: 7.5, starter: SS, qty: 1, source: "table 1 row 24", line: "E101 7.5 SS"}
+    oracle: "table 1 row 24: 'Cooling Tower | E101 | E101 | 3PH 400V 50HZ | 7.5 | 14.26 | 11 - 16A | MPCB-3RV | 1 | 7.5 | | | 1'; same in PDF"
+  - id: L17
+    in: {project: WNS2503, panel: RO, tag: "P412A/B_2"}
+    expect: {status: warning, panel: RO, kw: 0.25, client_range_min: 1.1, client_range_max: 1.6, source: "table 1 row 56",
+             line: "P412A/B_2 0.25 DOL qty=2 ph=1 v=230", warnings: [R-LL-08, R-LL-09, R-LL-13]}
+    oracle: "table 1 row 56: 'Caustic Dosing Pump for RO Feed pH Correction | P412A/B | … | 1PH 230V 50HZ | 0.25 | 1.36 | (empty) | 1.1 To 1.6A MPCB-3RV'; P412A/B also BIO/UF row 41"
+
+  # ---- user parameters ----
+  - id: L18
+    in: {project: WNS2503, panel: RO, standby_per_group: 1, default_cable_m: 50}
+    expect: {status: warning, n_rows: 32, n_standby: 23,
+             warnings: [R-LL-04, R-LL-07, R-LL-08, R-LL-09, R-LL-10, R-LL-13, R-LL-14]}
+    oracle: "RO groups: 8 VFD + P301A/B + 14 DOL groups (P305, P412, P414, P416, P501-P506, P408, P601, P415, P417); P507 spare excluded"
+
+  # ---- invalid input ----
+  - id: L19
+    in: {project: WNS2503, panel: MBR}
+    expect: {status: invalid}
+    oracle: "the document has BIO/UF and RO panel totals only"
+  - id: L20
+    in: {project: XYZ}
+    expect: {status: invalid}
+    oracle: "only the WNS2503 load list is held"
+  - id: L21
+    in: {project: WNS2503, tag: P999}
+    expect: {status: invalid}
+    oracle: "no such Instrument ID in the document"
+  - id: L22
+    in: {project: WNS2503, tag: "K101A/B", panel: RO}
+    expect: {status: invalid}
+    oracle: "K101A/B is a BIO/UF row"
+  - id: L23
+    in: {project: WNS2503, default_cable_m: -5}
+    expect: {status: invalid}
+    oracle: "a cable length must be positive"

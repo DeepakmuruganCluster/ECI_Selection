@@ -1,0 +1,346 @@
+# SENTRON 3VM molded case circuit breakers for line protection, fixed-mounted, lug terminal:
+# one row per article number printed in the selection and ordering data (PDF pp. 28–35).
+#   poles 3:  TM210 FTFM pp. 28 (class B) / 29 (N, S, M); TM220 ATFM pp. 30 (B) / 31 (N, S, M)
+#   poles 4:  TM210 FTFM pp. 32 (B) / 33 (N, S, M); TM220 ATFM pp. 34 (N) / 35 (S, M)
+#   neutral:  "none" = without neutral conductor protection (always for 3-pole);
+#             "100"  = 100 % neutral conductor protection (4-pole only)
+#   class:    breaking capacity class B / N / S / M (Icu at 415 V in 3vm_breaking_capacity.yaml)
+# A "--" in the catalogue (not available) has no row. The article number is printed in full in
+# the catalogue — it is looked up here, never assembled from code letters.
+# page = PDF page where the article number is printed.
+
+source:
+  ref: SIE-3VM-LV31
+  section: "Line protection, selection and ordering data (pp. 28–35)"
+
+rows:
+  # 3-pole, TM210, neutral protection: none
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 16 , class: B, article: 3VM1096-2ED32-0AA0, page: 28}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 16 , class: N, article: 3VM1096-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 16 , class: S, article: 3VM1096-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 20 , class: B, article: 3VM1020-2ED32-0AA0, page: 28}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 20 , class: N, article: 3VM1020-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 20 , class: S, article: 3VM1020-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 25 , class: B, article: 3VM1025-2ED32-0AA0, page: 28}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 25 , class: N, article: 3VM1025-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 25 , class: S, article: 3VM1025-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 32 , class: B, article: 3VM1032-2ED32-0AA0, page: 28}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 32 , class: N, article: 3VM1032-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 32 , class: S, article: 3VM1032-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 40 , class: B, article: 3VM1040-2ED32-0AA0, page: 28}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 40 , class: N, article: 3VM1040-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 40 , class: S, article: 3VM1040-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 50 , class: B, article: 3VM1050-2ED32-0AA0, page: 28}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 50 , class: N, article: 3VM1050-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 50 , class: S, article: 3VM1050-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 63 , class: B, article: 3VM1063-2ED32-0AA0, page: 28}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 63 , class: N, article: 3VM1063-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 63 , class: S, article: 3VM1063-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 80 , class: B, article: 3VM1080-2ED32-0AA0, page: 28}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 80 , class: N, article: 3VM1080-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 80 , class: S, article: 3VM1080-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 100, class: B, article: 3VM1010-2ED32-0AA0, page: 28}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 100, class: N, article: 3VM1010-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM10, in_a: 100, class: S, article: 3VM1010-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 16 , class: N, article: 3VM1196-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 16 , class: S, article: 3VM1196-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 16 , class: M, article: 3VM1196-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 20 , class: N, article: 3VM1120-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 20 , class: S, article: 3VM1120-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 20 , class: M, article: 3VM1120-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 25 , class: N, article: 3VM1125-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 25 , class: S, article: 3VM1125-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 25 , class: M, article: 3VM1125-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 32 , class: N, article: 3VM1132-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 32 , class: S, article: 3VM1132-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 32 , class: M, article: 3VM1132-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 40 , class: N, article: 3VM1140-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 40 , class: S, article: 3VM1140-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 40 , class: M, article: 3VM1140-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 50 , class: N, article: 3VM1150-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 50 , class: S, article: 3VM1150-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 50 , class: M, article: 3VM1150-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 63 , class: N, article: 3VM1163-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 63 , class: S, article: 3VM1163-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 63 , class: M, article: 3VM1163-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 80 , class: N, article: 3VM1180-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 80 , class: S, article: 3VM1180-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 80 , class: M, article: 3VM1180-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 100, class: N, article: 3VM1110-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 100, class: S, article: 3VM1110-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 100, class: M, article: 3VM1110-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 125, class: N, article: 3VM1112-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 125, class: S, article: 3VM1112-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 125, class: M, article: 3VM1112-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 160, class: N, article: 3VM1116-3ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 160, class: S, article: 3VM1116-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM11, in_a: 160, class: M, article: 3VM1116-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM12, in_a: 200, class: S, article: 3VM1220-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM12, in_a: 200, class: M, article: 3VM1220-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM12, in_a: 250, class: S, article: 3VM1225-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM12, in_a: 250, class: M, article: 3VM1225-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM13, in_a: 320, class: S, article: 3VM1332-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM13, in_a: 320, class: M, article: 3VM1332-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM13, in_a: 400, class: S, article: 3VM1340-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM13, in_a: 400, class: M, article: 3VM1340-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM14, in_a: 500, class: S, article: 3VM1450-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM14, in_a: 500, class: M, article: 3VM1450-5ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM14, in_a: 630, class: S, article: 3VM1463-4ED32-0AA0, page: 29}
+  - {poles: 3, release: TM210, neutral: "none", frame: 3VM14, in_a: 630, class: M, article: 3VM1463-5ED32-0AA0, page: 29}
+  # 3-pole, TM220, neutral protection: none
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 16 , class: N, article: 3VM1196-3EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 16 , class: S, article: 3VM1196-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 16 , class: M, article: 3VM1196-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 20 , class: N, article: 3VM1120-3EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 20 , class: S, article: 3VM1120-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 20 , class: M, article: 3VM1120-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 25 , class: N, article: 3VM1125-3EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 25 , class: S, article: 3VM1125-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 25 , class: M, article: 3VM1125-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 32 , class: N, article: 3VM1132-3EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 32 , class: S, article: 3VM1132-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 32 , class: M, article: 3VM1132-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 40 , class: N, article: 3VM1140-3EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 40 , class: S, article: 3VM1140-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 40 , class: M, article: 3VM1140-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 50 , class: N, article: 3VM1150-3EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 50 , class: S, article: 3VM1150-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 50 , class: M, article: 3VM1150-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 63 , class: N, article: 3VM1163-3EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 63 , class: S, article: 3VM1163-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 63 , class: M, article: 3VM1163-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 80 , class: N, article: 3VM1180-3EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 80 , class: S, article: 3VM1180-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 80 , class: M, article: 3VM1180-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 100, class: N, article: 3VM1110-3EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 100, class: S, article: 3VM1110-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 100, class: M, article: 3VM1110-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 125, class: N, article: 3VM1112-3EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 125, class: S, article: 3VM1112-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 125, class: M, article: 3VM1112-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 160, class: N, article: 3VM1116-3EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 160, class: S, article: 3VM1116-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM11, in_a: 160, class: M, article: 3VM1116-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM12, in_a: 200, class: S, article: 3VM1220-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM12, in_a: 200, class: M, article: 3VM1220-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM12, in_a: 250, class: S, article: 3VM1225-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM12, in_a: 250, class: M, article: 3VM1225-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM13, in_a: 320, class: S, article: 3VM1332-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM13, in_a: 320, class: M, article: 3VM1332-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM13, in_a: 400, class: S, article: 3VM1340-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM13, in_a: 400, class: M, article: 3VM1340-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM14, in_a: 500, class: S, article: 3VM1450-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM14, in_a: 500, class: M, article: 3VM1450-5EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM14, in_a: 630, class: S, article: 3VM1463-4EE32-0AA0, page: 31}
+  - {poles: 3, release: TM220, neutral: "none", frame: 3VM14, in_a: 630, class: M, article: 3VM1463-5EE32-0AA0, page: 31}
+  # 4-pole, TM210, neutral protection: 100
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 16 , class: N, article: 3VM1196-3GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 16 , class: S, article: 3VM1196-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 16 , class: M, article: 3VM1196-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 20 , class: N, article: 3VM1120-3GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 20 , class: S, article: 3VM1120-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 20 , class: M, article: 3VM1120-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 25 , class: N, article: 3VM1125-3GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 25 , class: S, article: 3VM1125-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 25 , class: M, article: 3VM1125-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 32 , class: N, article: 3VM1132-3GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 32 , class: S, article: 3VM1132-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 32 , class: M, article: 3VM1132-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 40 , class: N, article: 3VM1140-3GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 40 , class: S, article: 3VM1140-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 40 , class: M, article: 3VM1140-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 50 , class: N, article: 3VM1150-3GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 50 , class: S, article: 3VM1150-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 50 , class: M, article: 3VM1150-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 63 , class: N, article: 3VM1163-3GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 63 , class: S, article: 3VM1163-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 63 , class: M, article: 3VM1163-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 80 , class: N, article: 3VM1180-3GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 80 , class: S, article: 3VM1180-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 80 , class: M, article: 3VM1180-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 100, class: N, article: 3VM1110-3GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 100, class: S, article: 3VM1110-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 100, class: M, article: 3VM1110-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 125, class: N, article: 3VM1112-3GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 125, class: S, article: 3VM1112-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 125, class: M, article: 3VM1112-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 160, class: N, article: 3VM1116-3GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 160, class: S, article: 3VM1116-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM11, in_a: 160, class: M, article: 3VM1116-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM12, in_a: 200, class: S, article: 3VM1220-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM12, in_a: 200, class: M, article: 3VM1220-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM12, in_a: 250, class: S, article: 3VM1225-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM12, in_a: 250, class: M, article: 3VM1225-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM13, in_a: 320, class: S, article: 3VM1332-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM13, in_a: 320, class: M, article: 3VM1332-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM13, in_a: 400, class: S, article: 3VM1340-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM13, in_a: 400, class: M, article: 3VM1340-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM14, in_a: 500, class: S, article: 3VM1450-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM14, in_a: 500, class: M, article: 3VM1450-5GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM14, in_a: 630, class: S, article: 3VM1463-4GD42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "100", frame: 3VM14, in_a: 630, class: M, article: 3VM1463-5GD42-0AA0, page: 33}
+  # 4-pole, TM210, neutral protection: none
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 16 , class: B, article: 3VM1096-2ED42-0AA0, page: 32}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 16 , class: N, article: 3VM1096-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 16 , class: S, article: 3VM1096-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 20 , class: B, article: 3VM1020-2ED42-0AA0, page: 32}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 20 , class: N, article: 3VM1020-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 20 , class: S, article: 3VM1020-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 25 , class: B, article: 3VM1025-2ED42-0AA0, page: 32}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 25 , class: N, article: 3VM1025-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 25 , class: S, article: 3VM1025-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 32 , class: B, article: 3VM1032-2ED42-0AA0, page: 32}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 32 , class: N, article: 3VM1032-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 32 , class: S, article: 3VM1032-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 40 , class: B, article: 3VM1040-2ED42-0AA0, page: 32}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 40 , class: N, article: 3VM1040-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 40 , class: S, article: 3VM1040-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 50 , class: B, article: 3VM1050-2ED42-0AA0, page: 32}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 50 , class: N, article: 3VM1050-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 50 , class: S, article: 3VM1050-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 63 , class: B, article: 3VM1063-2ED42-0AA0, page: 32}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 63 , class: N, article: 3VM1063-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 63 , class: S, article: 3VM1063-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 80 , class: B, article: 3VM1080-2ED42-0AA0, page: 32}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 80 , class: N, article: 3VM1080-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 80 , class: S, article: 3VM1080-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 100, class: B, article: 3VM1010-2ED42-0AA0, page: 32}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 100, class: N, article: 3VM1010-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM10, in_a: 100, class: S, article: 3VM1010-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 16 , class: N, article: 3VM1196-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 16 , class: S, article: 3VM1196-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 16 , class: M, article: 3VM1196-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 20 , class: N, article: 3VM1120-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 20 , class: S, article: 3VM1120-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 20 , class: M, article: 3VM1120-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 25 , class: N, article: 3VM1125-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 25 , class: S, article: 3VM1125-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 25 , class: M, article: 3VM1125-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 32 , class: N, article: 3VM1132-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 32 , class: S, article: 3VM1132-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 32 , class: M, article: 3VM1132-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 40 , class: N, article: 3VM1140-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 40 , class: S, article: 3VM1140-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 40 , class: M, article: 3VM1140-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 50 , class: N, article: 3VM1150-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 50 , class: S, article: 3VM1150-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 50 , class: M, article: 3VM1150-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 63 , class: N, article: 3VM1163-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 63 , class: S, article: 3VM1163-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 63 , class: M, article: 3VM1163-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 80 , class: N, article: 3VM1180-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 80 , class: S, article: 3VM1180-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 80 , class: M, article: 3VM1180-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 100, class: N, article: 3VM1110-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 100, class: S, article: 3VM1110-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 100, class: M, article: 3VM1110-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 125, class: N, article: 3VM1112-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 125, class: S, article: 3VM1112-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 125, class: M, article: 3VM1112-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 160, class: N, article: 3VM1116-3ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 160, class: S, article: 3VM1116-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM11, in_a: 160, class: M, article: 3VM1116-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM12, in_a: 200, class: S, article: 3VM1220-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM12, in_a: 200, class: M, article: 3VM1220-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM12, in_a: 250, class: S, article: 3VM1225-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM12, in_a: 250, class: M, article: 3VM1225-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM13, in_a: 320, class: S, article: 3VM1332-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM13, in_a: 320, class: M, article: 3VM1332-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM13, in_a: 400, class: S, article: 3VM1340-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM13, in_a: 400, class: M, article: 3VM1340-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM14, in_a: 500, class: S, article: 3VM1450-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM14, in_a: 500, class: M, article: 3VM1450-5ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM14, in_a: 630, class: S, article: 3VM1463-4ED42-0AA0, page: 33}
+  - {poles: 4, release: TM210, neutral: "none", frame: 3VM14, in_a: 630, class: M, article: 3VM1463-5ED42-0AA0, page: 33}
+  # 4-pole, TM220, neutral protection: 100
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 16 , class: N, article: 3VM1196-3GE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 16 , class: S, article: 3VM1196-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 16 , class: M, article: 3VM1196-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 20 , class: N, article: 3VM1120-3GE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 20 , class: S, article: 3VM1120-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 20 , class: M, article: 3VM1120-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 25 , class: N, article: 3VM1125-3GE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 25 , class: S, article: 3VM1125-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 25 , class: M, article: 3VM1125-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 32 , class: N, article: 3VM1132-3GE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 32 , class: S, article: 3VM1132-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 32 , class: M, article: 3VM1132-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 40 , class: N, article: 3VM1140-3GE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 40 , class: S, article: 3VM1140-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 40 , class: M, article: 3VM1140-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 50 , class: N, article: 3VM1150-3GE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 50 , class: S, article: 3VM1150-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 50 , class: M, article: 3VM1150-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 63 , class: N, article: 3VM1163-3GE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 63 , class: S, article: 3VM1163-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 63 , class: M, article: 3VM1163-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 80 , class: N, article: 3VM1180-3GE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 80 , class: S, article: 3VM1180-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 80 , class: M, article: 3VM1180-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 100, class: N, article: 3VM1110-3GE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 100, class: S, article: 3VM1110-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 100, class: M, article: 3VM1110-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 125, class: N, article: 3VM1112-3GE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 125, class: S, article: 3VM1112-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 125, class: M, article: 3VM1112-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 160, class: N, article: 3VM1116-3GE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 160, class: S, article: 3VM1116-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM11, in_a: 160, class: M, article: 3VM1116-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM12, in_a: 200, class: S, article: 3VM1220-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM12, in_a: 200, class: M, article: 3VM1220-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM12, in_a: 250, class: S, article: 3VM1225-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM12, in_a: 250, class: M, article: 3VM1225-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM13, in_a: 320, class: S, article: 3VM1332-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM13, in_a: 320, class: M, article: 3VM1332-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM13, in_a: 400, class: S, article: 3VM1340-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM13, in_a: 400, class: M, article: 3VM1340-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM14, in_a: 500, class: S, article: 3VM1450-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM14, in_a: 500, class: M, article: 3VM1450-5GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM14, in_a: 630, class: S, article: 3VM1463-4GE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "100", frame: 3VM14, in_a: 630, class: M, article: 3VM1463-5GE42-0AA0, page: 35}
+  # 4-pole, TM220, neutral protection: none
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 16 , class: N, article: 3VM1196-3EE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 16 , class: S, article: 3VM1196-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 16 , class: M, article: 3VM1196-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 20 , class: N, article: 3VM1120-3EE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 20 , class: S, article: 3VM1120-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 20 , class: M, article: 3VM1120-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 25 , class: N, article: 3VM1125-3EE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 25 , class: S, article: 3VM1125-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 25 , class: M, article: 3VM1125-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 32 , class: N, article: 3VM1132-3EE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 32 , class: S, article: 3VM1132-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 32 , class: M, article: 3VM1132-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 40 , class: N, article: 3VM1140-3EE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 40 , class: S, article: 3VM1140-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 40 , class: M, article: 3VM1140-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 50 , class: N, article: 3VM1150-3EE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 50 , class: S, article: 3VM1150-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 50 , class: M, article: 3VM1150-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 63 , class: N, article: 3VM1163-3EE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 63 , class: S, article: 3VM1163-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 63 , class: M, article: 3VM1163-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 80 , class: N, article: 3VM1180-3EE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 80 , class: S, article: 3VM1180-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 80 , class: M, article: 3VM1180-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 100, class: N, article: 3VM1110-3EE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 100, class: S, article: 3VM1110-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 100, class: M, article: 3VM1110-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 125, class: N, article: 3VM1112-3EE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 125, class: S, article: 3VM1112-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 125, class: M, article: 3VM1112-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 160, class: N, article: 3VM1116-3EE42-0AA0, page: 34}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 160, class: S, article: 3VM1116-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM11, in_a: 160, class: M, article: 3VM1116-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM12, in_a: 200, class: S, article: 3VM1220-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM12, in_a: 200, class: M, article: 3VM1220-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM12, in_a: 250, class: S, article: 3VM1225-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM12, in_a: 250, class: M, article: 3VM1225-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM13, in_a: 320, class: S, article: 3VM1332-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM13, in_a: 320, class: M, article: 3VM1332-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM13, in_a: 400, class: S, article: 3VM1340-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM13, in_a: 400, class: M, article: 3VM1340-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM14, in_a: 500, class: S, article: 3VM1450-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM14, in_a: 500, class: M, article: 3VM1450-5EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM14, in_a: 630, class: S, article: 3VM1463-4EE42-0AA0, page: 35}
+  - {poles: 4, release: TM220, neutral: "none", frame: 3VM14, in_a: 630, class: M, article: 3VM1463-5EE42-0AA0, page: 35}

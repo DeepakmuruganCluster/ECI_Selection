@@ -1,0 +1,20 @@
+# Siemens S7-1200 G2 standard CPUs: power budget, output type and temperature range from the S7-1200 G2 System Manual
+# V4.1, 12/2025 (A5E52923928-AC), Appendix A Technical specifications, transcribed 2026-10-13 (page = PDF page).
+#   budget_5v_ma = "Current available for expansion devices … max. (5 V DC)"; sensor_24v_ma = "Current available on
+#   sensor supply"; max_sm = "Signal module expansion … max."; do_type from the digital output table ("Solid state –
+#   MOSFET (sourcing)" / "Relay, dry contact"); output table pages p.376 (1212C), p.399 (1214C).
+#   in_24v_cpu_ma / in_24v_all_ma: "Input current (CPU only)" / "(with all accessories)" at 24 V DC, Power supply tables
+#   A-12 (p.375) and A-30 (p.398); AC/DC/RLY CPUs are AC-fed (0 A from a 24 V supply).
+#   Temperature (Table A-3, p.361): -20 … 40 °C at maximum specifications; up to 60 °C "with derating": rated voltages and
+#   50 % of the current available for expansion devices, on the sensor supply and for the digital outputs, alternate I/O active.
+source:
+  ref: SIE-S71200G2-SYS
+  section: "A.1 General technical specifications (Table A-3); A.3 CPU 1212C; A.5 CPU 1214C"
+rows:
+  - {article: 6ES7212-1AG50-0XB0, model: CPU 1212C DC/DC/DC, budget_5v_ma: 1000, sensor_24v_ma: 300, max_sm: 6, do_type: sourcing, do_page: 376, in_24v_cpu_ma: 125, in_24v_all_ma: 700, power_page: 375, page: 369}
+  - {article: 6ES7212-1BG50-0XB0, model: CPU 1212C AC/DC/RLY, budget_5v_ma: 1000, sensor_24v_ma: 300, max_sm: 6, do_type: relay, do_page: 376, in_24v_cpu_ma: 0, in_24v_all_ma: 0, power_page: 375, page: 369}
+  - {article: 6ES7212-1HG50-0XB0, model: CPU 1212C DC/DC/RLY, budget_5v_ma: 1000, sensor_24v_ma: 300, max_sm: 6, do_type: relay, do_page: 376, in_24v_cpu_ma: 185, in_24v_all_ma: 765, power_page: 375, page: 369}
+  - {article: 6ES7214-1AH50-0XB0, model: CPU 1214C DC/DC/DC, budget_5v_ma: 1600, sensor_24v_ma: 400, max_sm: 10, do_type: sourcing, do_page: 399, in_24v_cpu_ma: 145, in_24v_all_ma: 1000, power_page: 398, page: 391}
+  - {article: 6ES7214-1BH50-0XB0, model: CPU 1214C AC/DC/RLY, budget_5v_ma: 1600, sensor_24v_ma: 400, max_sm: 10, do_type: relay, do_page: 399, in_24v_cpu_ma: 0, in_24v_all_ma: 0, power_page: 398, page: 391}
+  - {article: 6ES7214-1HH50-0XB0, model: CPU 1214C DC/DC/RLY, budget_5v_ma: 1600, sensor_24v_ma: 400, max_sm: 10, do_type: relay, do_page: 399, in_24v_cpu_ma: 245, in_24v_all_ma: 1100, power_page: 398, page: 391}
+  - {article: all, model: temperature, full_spec_max_c: 40, derated_max_c: 60, derating_factor: 0.5, text: "-20 °C to 40 °C Max. specifications; -20 °C to 60 °C With derating", page: 361}

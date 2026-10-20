@@ -1,0 +1,58 @@
+# Siemens SIRIUS fuseless load feeders: 3RV2 motor starter protector + 3RT2 contactor,
+# CLASS 10, type of coordination 2, short-circuit breaking capacity Iq = 150 kA, AC 400 V.
+#
+# Transcribed 2026-10-10 from the table in section 3.1, pp. 28–29 (checked against the
+# rendered page images). Rows in table order. Only the 3RV2 rows; the 3VA + 3RT1 rows
+# (55–250 kW) are out of scope.
+#   range:        "Maximum permitted setting range overload release, IE1 / IE2 motors"
+#   range_ie3:    same, "IE3 / IE4 motors"
+#   ie3_start_max_a: note inside the IE3/IE4 cell "(up to … A starting current)"
+#   contactor:    article no. as printed (coil 230 V AC 50 Hz, footnote 2)
+#   size:         MPCB size / contactor size
+
+source:
+  ref: SIE-SIRIUS-CM
+  section: "3.1 Selection tables 400 V AC — Motor starter protector + contactor, CLASS 10, type of coordination 2, Iq = 150 kA"
+
+conditions: {voltage_v: 400, phases: 3, coordination: 2, trip_class: 10, iq_ka: 150, coil: 230VAC}
+
+rows:
+  - {kw: 0.04, range: [0.11, 0.16], range_ie3: [0.11, 0.14], mpcb: 3RV2011-0AA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 0.06, range: [0.14, 0.20], range_ie3: [0.14, 0.18], mpcb: 3RV2011-0BA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 0.06, range: [0.18, 0.25], range_ie3: [0.18, 0.22], mpcb: 3RV2011-0CA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 0.09, range: [0.22, 0.32], range_ie3: [0.22, 0.28], mpcb: 3RV2011-0DA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 0.09, range: [0.28, 0.40], range_ie3: [0.28, 0.35], mpcb: 3RV2011-0EA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 0.12, range: [0.35, 0.50], range_ie3: [0.35, 0.45], mpcb: 3RV2011-0FA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 0.18, range: [0.45, 0.63], range_ie3: [0.45, 0.55], mpcb: 3RV2011-0GA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 0.18, range: [0.55, 0.80], range_ie3: [0.55, 0.70], mpcb: 3RV2011-0HA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 0.25, range: [0.70, 1.00], range_ie3: [0.70, 0.90], mpcb: 3RV2011-0JA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 0.37, range: [0.90, 1.25], range_ie3: [0.90, 1.10], mpcb: 3RV2011-0KA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 0.55, range: [1.1, 1.6],   range_ie3: [1.1, 1.4],   mpcb: 3RV2011-1AA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 0.75, range: [1.4, 2.0],   range_ie3: [1.4, 1.8],   mpcb: 3RV2011-1BA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 0.75, range: [1.8, 2.5],   range_ie3: [1.8, 2.2],   mpcb: 3RV2011-1CA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 1.1,  range: [2.2, 3.2],   range_ie3: [2.2, 2.8],   mpcb: 3RV2011-1DA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 1.5,  range: [2.8, 4.0],   range_ie3: [2.8, 3.5],   mpcb: 3RV2011-1EA10, contactor: 3RT2015-1AP01, size: S00/S00, page: 28}
+  - {kw: 1.5,  range: [3.5, 5.0],   range_ie3: [3.5, 4.5],   mpcb: 3RV2011-1FA10, contactor: 3RT2024-1AP00, size: S00/S0,  page: 28}
+  - {kw: 2.2,  range: [4.5, 6.3],   range_ie3: [4.5, 5.5],   mpcb: 3RV2011-1GA10, contactor: 3RT2024-1AP00, size: S00/S0,  page: 28}
+  - {kw: 3,    range: [5.5, 8.0],   range_ie3: [5.5, 7.0],   mpcb: 3RV2011-1HA10, contactor: 3RT2024-1AP00, size: S00/S0,  page: 28}
+  - {kw: 4,    range: [7.0, 10.0],  range_ie3: [7.0, 9.0],   mpcb: 3RV2011-1JA10, contactor: 3RT2024-1AP00, size: S00/S0,  page: 28}
+  - {kw: 5.5,  range: [9.0, 12.5],  range_ie3: [9.0, 10.0],  mpcb: 3RV2011-1KA10, contactor: 3RT2024-1AP00, size: S00/S0,  page: 28}
+  - {kw: 7.5,  range: [10, 16],     range_ie3: [10, 13],     mpcb: 3RV2011-4AA10, contactor: 3RT2026-1AP00, size: S00/S0,  page: 28}
+  - {kw: 7.5,  range: [13, 20],     range_ie3: [13, 16],     mpcb: 3RV2021-4BA10, contactor: 3RT2027-1AP00, size: S0/S0,   page: 28}
+  - {kw: 11,   range: [16, 22],     range_ie3: [16, 18],     mpcb: 3RV2021-4CA10, contactor: 3RT2027-1AP00, size: S0/S0,   page: 28}
+  - {kw: 11,   range: [18, 25],     range_ie3: [18, 23],     mpcb: 3RV2021-4DA10, contactor: 3RT2027-1AP00, size: S0/S0,   page: 28}
+  - {kw: 15,   range: [23, 28],     range_ie3: [23, 27],     mpcb: 3RV2021-4NA10, contactor: 3RT2027-1AP00, size: S0/S0,   page: 28}
+  - {kw: 15,   range: [27, 32],     range_ie3: [27, 30],     mpcb: 3RV2021-4EA10, contactor: 3RT2027-1AP00, size: S0/S0,   page: 28, ie3_start_max_a: 256}
+  - {kw: 15,   range: [22, 32],     range_ie3: [22, 28],     mpcb: 3RV2032-4EA10, contactor: 3RT2035-1AP00, size: S2/S2,   page: 29}
+  - {kw: 18.5, range: [28, 36],     range_ie3: [28, 32],     mpcb: 3RV2032-4PA10, contactor: 3RT2035-1AP00, size: S2/S2,   page: 29}
+  - {kw: 18.5, range: [32, 40],     range_ie3: [32, 35],     mpcb: 3RV2032-4UA10, contactor: 3RT2035-1AP00, size: S2/S2,   page: 29}
+  - {kw: 22,   range: [35, 45],     range_ie3: [35, 42],     mpcb: 3RV2032-4VA10, contactor: 3RT2036-1AP00, size: S2/S2,   page: 29}
+  - {kw: 22,   range: [42, 50],     range_ie3: [42, 49],     mpcb: 3RV2032-4WA10, contactor: 3RT2036-1AP00, size: S2/S2,   page: 29}
+  - {kw: 30,   range: [49, 59],     range_ie3: [49, 54],     mpcb: 3RV2032-4XA10, contactor: 3RT2037-1AP00, size: S2/S2,   page: 29}
+  - {kw: 30,   range: [54, 65],     range_ie3: [54, 62],     mpcb: 3RV2032-4JA10, contactor: 3RT2037-1AP00, size: S2/S2,   page: 29}
+  - {kw: 37,   range: [62, 73],     range_ie3: [62, 70],     mpcb: 3RV2032-4KA10, contactor: 3RT2038-1AP00, size: S2/S2,   page: 29}
+  - {kw: 45,   range: [70, 80],     range_ie3: [70, 77],     mpcb: 3RV2032-4RA10, contactor: 3RT2038-1AP00, size: S2/S2,   page: 29, ie3_start_max_a: 720}
+  - {kw: 45,   range: [65, 84],     range_ie3: [65, 80],     mpcb: 3RV2042-4RA10, contactor: 3RT2045-1AP00, size: S3/S3,   page: 29}
+  - {kw: 45,   range: [65, 84],     range_ie3: [65, 84],     mpcb: 3RV2042-4RA10, contactor: 3RT2046-1AP00, size: S3/S3,   page: 29}
+  - {kw: 45,   range: [75, 93],     range_ie3: [75, 93],     mpcb: 3RV2042-4YA10, contactor: 3RT2046-1AP00, size: S3/S3,   page: 29}
+  - {kw: 55,   range: [80, 100],    range_ie3: [80, 100],    mpcb: 3RV2042-4MA10, contactor: 3RT2047-1AP00, size: S3/S3,   page: 29}

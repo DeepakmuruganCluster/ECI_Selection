@@ -1,0 +1,19 @@
+# Finder Series 39 MasterINTERFACE, MasterBASIC EMR 39.11 (box clamp) / 39.01 (push-in), 6.2 mm wide
+# (catalogue S39EN, III-2026). Transcribed 2026-10-11, checked against the page images.
+# page = PDF page; the catalogue's printed page numbers equal the PDF page numbers (offset 0).
+# Only the 24 V AC/DC version exists for MasterBASIC at 24 V (no DC-only coil for 39.11/39.01, p.17, p.22).
+
+source:
+  ref: FINDER-S39
+  section: "MasterBASIC EMR (p.6), ordering (p.17), technical data (pp. 21–22), combinations (pp. 29–30), accessories (p.33)"
+  printed_page_offset: 0
+
+rows:
+  - {kind: module, article: "39.01.0.024.0060", series: "39", connection: screwless, coil: "24 V AC/DC", coil_code: "0.024", relay: "34.51.7.024.0010", socket: "93.60.7.024", width_mm: 6.2, page: 30}
+  - {kind: module, article: "39.11.0.024.0060", series: "39", connection: screw, coil: "24 V AC/DC", coil_code: "0.024", relay: "34.51.7.024.0010", socket: "93.61.7.024", width_mm: 6.2, page: 29}
+  - {kind: contact, type: "39.11/39.01", contacts: "1 CO (SPDT)", rated_a: 6, peak_a: 10, rated_v_ac: 250, max_v_ac: 400, ac1_va: 1500, ac15_va: 300, dc1_24v_a: 6, dc1_110v_a: 0.2, dc1_220v_a: 0.12, ambient_min_c: -40, ambient_max_c: 70, ambient_note: "see L39 derating diagram p.21", page: 6}
+  - {kind: coil, coil_code: "0.024", coil: "24 V AC/DC", un_v: 24, umin_v: 19.2, umax_v: 26.4, i_ma: 11, p_w: 0.25, page: 22}
+  - {kind: accessory, use: jumper, article: "093.16", ways: 16, rated_a: 36, rated_v: 250, for_types: "39 series", note: "blue; 093.16.0 black, 093.16.1 red. Each pole must not exceed the 6 A limit of the interface", page: 33}
+  - {kind: accessory, use: separator, article: "093.60", per_group: 0, note: "dual-purpose separator: necessary only for protective separation of different voltages or to protect cut jumper ends (not required at group ends)", page: 33}
+  - {kind: accessory, use: marker, article: "093.48", tags: 48, note: "Sheet of marker tags, plastic, 48 tags, 6 x 10 mm", page: 33}
+  - {kind: statement, topic: dc13, text: "In the case of DC13 loads, the connection of a diode in parallel with the load will permit a similar electrical life as for a DC1 load.", page: 21}

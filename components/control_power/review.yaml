@@ -1,0 +1,51 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 10
+title: Control power (24 V DC supply)
+what_it_does: >
+  Sizes the 24 V DC power supply. It adds up the load: each digital input (0.03 A, from the old
+  switchgear template), each interface relay coil (10.4 mA, Finder data sheet page 13), each PLC
+  output without a relay (0.05 A, template) and the PLC, I/O modules and HMI, whose current you
+  give from their data sheets. It multiplies by 1.25 (template) and takes the smallest supply from
+  the AutoBOM supply database (Omron, Phoenix Contact, Mean Well, Weidmüller; 197 supplies) that is big enough, and says whether the AutoBOM team marked that series as verified. The PLC itself, the network and the UPS are not chosen
+  yet: they wait for the Siemens manuals.
+
+how_to_check:
+  - "Press 'Try it: 64 inputs, 32 relays, PLC 1.5 A'. 64 × 0.03 + 32 × 0.0104 + 1.5 = 3.75 A; × 1.25 = 4.69 A. SMPS db.xlsx sheet db1 row 4 is the Omron S8VK-S12024 5 A, the smallest 1-phase supply above 4.69 A."
+  - "Finder: open FINDER-S38 page 13, coil code 7.024 (24 V DC sensitive): 10.4 mA."
+  - "The template figures (0.03 A per input, 0.05 A per output, factor 1.25) are in Switchgear_Selection_Calculation.xls, sheet 'U1_SMPS Selection', rows 9, 10 and 21."
+
+spot_checks:
+  - {label: "64 inputs, 32 relays, PLC 1.5 A", tab: control_power, inputs: {di: 64, relays: 32, plc_a: 1.5}}
+  - {label: "3-phase supply for 24 A", tab: control_power, inputs: {di: 10, plc_a: 24, input: "3P"}}
+
+decisions:
+  - id: CP-1
+    question: "The template counts 0.03 A per digital input and 0.05 A per output without a relay. These come from a 2012 project, not a data sheet. Keep them until we have the ET 200SP manual?"
+    options: {"yes": "Yes, keep them", "no": "No, I'll give my own figures"}
+    recommended: "yes"
+  - id: CP-2
+    question: "The supply is sized at 1.25 × the load (template). Keep this factor?"
+    options: {"yes": "Yes, 1.25", "no": "Another factor"}
+    recommended: "yes"
+  - id: CP-3
+    question: "The supply database has Omron, Phoenix Contact, Mean Well and Weidmüller, but no Siemens SITOP (ECI asks for SITOP). Default to Omron until SITOP KT 10.1 is downloaded?"
+    options: {"yes": "Yes, Omron by default", "no": "No, wait for SITOP"}
+    recommended: "yes"
+
+  - id: CP-4
+    question: "Omron S8VK-X supplies have a network port (EtherNet/IP) and cost more. Take them only when communication is asked?"
+    options: {"yes": "Yes, only when asked", "no": "No, treat them like any other supply"}
+    recommended: "yes"
+
+fields:
+  di: "Digital inputs"
+  do: "Outputs without an interface relay"
+  relays: "Interface relays (24 V DC coil)"
+  plc_a: "PLC + I/O modules + HMI current (A)"
+  other_a: "Other 24 V loads (A)"
+  input: {label: "Supply input", options: ["1P+N", "3P"]}
+  brand: {label: "Make", options: ["Omron", "Phoenix Contact", "Mean well", "Weidmueller"]}
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/company/dc/ab_smps.yaml, data/company/switchgear/own_calc_method.yaml]

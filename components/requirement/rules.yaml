@@ -1,0 +1,291 @@
+# Requirement rules — reading a plain-language requirement. Holds no engineering data.
+# Authority: RULE = our decision (SIGNOFF.md).
+
+component: requirement
+
+rules:
+  R-REQ-01: {authority: RULE, text: "Only these facts are read, each from a fixed pattern, and each shows the words it was read from: motor kW (and 'n x kW' quantity), starter (VFD / drive / inverter, DOL / direct on line, soft starter), duty (heavy / normal duty), supply voltage (V) and frequency (Hz), fault level (kA), motor cable length (m … cable), motor FLC (FLC … A), power factor, safety (STO), fieldbus, encoder, application, IP rating, indoor / outdoor, country, budget; since 2026-10-14 also the temperature inside the panel (a °C value whose own phrase names the panel / inside / internal / cabinet / enclosure — otherwise a °C value is the site temperature) and the cable installation (buried / underground / in the ground → ground, in a duct → duct). Numbers: a decimal comma with one or two digits is a decimal point (5,5 kW), a leading point belongs to the number (.75 kW), a number glued to a letter or digit is not read (1e3), kWh is not kW; 'U0/U V' gives the higher (line) voltage (IEC 60038); quantity from 'n x / n * kW', 'kW … x n' and 'n nos / units / pcs'; a power factor outside 0 … 1 is not used (R-REQ-02 warning). Regression round 2026-10-14: a °C value is the site temperature only when its phrase names the site / ambient / outdoor / indoor / room / air / environment (other °C values — water, winding, process — are not read); negated phrases ('not buried', 'no duct') are not read; asked instead of guessed (R-REQ-02): voltage ranges (380-415 V), two cable lengths in one phrase, zero lengths or powers, '1.500 kW' (decimal or thousands), duty / standby notation (2+1, 2W+1S, 1 duty 1 standby); quantities also from 'n no.', 'qty n' and number words up to twenty; starters also 'soft start(ing)', 'Y-D', 'star/delta'; 'and' / ',' start a new motor when a kW follows within three words. Texts longer than 5 000 characters are refused (invalid). Nothing else is inferred."}
+  R-REQ-02: {authority: RULE, text: "Two different values for the same fact, or a unit the selection does not use (hp), are not read: the fact becomes a question."}
+  R-REQ-03: {authority: RULE, text: "An answer typed in the form takes precedence over the text and is shown as 'answered'."}
+  R-REQ-04: {authority: RULE, text: "Required before selection, asked when missing (no defaults): motor kW, starter, supply voltage, fault level, panel internal temperature, cable route temperature (unless worked out, R-REQ-20), motor cable length; for a VFD also duty, encoder, safety, fieldbus and memory card; for a soft starter the duty (it sets the starting class, R-SS-06); at 60 Hz the motor FLC (the FLC table is for 50 Hz). QA 2026-10-16 (L5): a bare 'n m' in a motor's words without 'cable' (and not a pump head) is offered as the first quick pick for its cable length, never read."}
+  R-REQ-05: {authority: RULE, text: "The application word suggests the duty: conveyor, crusher, mixer, hoist, extruder, agitator → heavy (HO); pump, fan, blower, compressor → normal (LO). A suggestion is a read fact and needs the same confirmation; duty stated in the text wins."}
+  R-REQ-06: {authority: RULE, text: "Recorded but not used: IP rating and indoor / outdoor (enclosure out of scope, owner 2026-10-12), budget (no price source held, owner 2026-10-12), country (supply data per country not held: the voltage must be stated), site temperature (the panel internal temperature is asked separately)."}
+  R-REQ-07: {authority: RULE, text: "Selection runs only when nothing is left to ask and the user has confirmed the facts; it runs the panel assembly (12) on one load line per motor, then the I/O list (23) and the panel-level components (R-REQ-10 … 13)."}
+  R-REQ-08: {authority: RULE, text: "Panel defaults that the requirement does not ask for are listed as used: DOL coil 230 V AC, IE3 motor, cable in air, Polycab cable, fuse protection for drives, 3-phase supply, Finder slim relay per PLC output, Connectwell push-in terminal (1.5 mm²) per I/O channel, internal wire 70 °C, 24 V supply fed 1P+N, surge arrester for 3Ph+N+PE, Siemens phase monitoring relay."}
+  R-REQ-09: {authority: RULE, text: "Several motors: the text is split into clauses at ';', new lines, sentence ends, 'and', 'plus' and commas followed by a number. A clause with one kW is one motor: its quantity, starter, duty, application, cable length and FLC are read from that clause. A motor fact in a clause without kW applies to every motor that does not state its own. A clause with two kW values is asked. Answers typed for one motor (M2 …) apply to that motor; general answers apply to every motor."}
+  R-REQ-10: {authority: RULE, text: "Incomer (component 8 is not built): design current = sum over running units of the drive input current or the DOL motor FLC, no diversity; breaker from the 3VM catalogue (component 3) with Icu ≥ the fault level at the panel temperature. The busbar is not sized (warning). Units that were not selected are named as missing from the sum (warning). QA 2026-10-16 (L6): after the power calculation, the incomer is selected again for the largest phase current when single-phase loads (control circuit, 24 V supply) make it higher than the 3-phase sum; a changed breaker replaces the BOM line. Owner 2026-10-16 (decision M-1): the incomer's In ≥ design current × the incomer factor — an input (incomer_factor, 1 … 3, not asked), 1.5 by default as the company template's main switchgear FOS (OWN-SWG-CALC 'U1_Main_Switchgear' L27); the power calculation uses the same factor. QA 2026-10-16 (M2): a motor feeder that is not selected makes the design 'incomplete', listed with its reason on every view."}
+  R-REQ-11: {authority: RULE, text: "Control and signalling (component 16) from the I/O list: one interface relay per PLC output, one I/O terminal per DI / DO / AI / AO channel; internal power wiring (component 19) per selected feeder at its design current and protection rating (as R-PRJ-06). Owner 2026-10-16 (RQ-9): the smallest internal power wire is a setting (min_power_wire_mm2: 0.5, 0.75, 1, 1.5 or 2.5 mm²), 0.75 mm² by default (company drawing OWN-PROPEL-SCH160 p.3)."}
+  R-REQ-12: {authority: RULE, text: "Metering (component 15) only when the text asks for it (energy meter, metering, power meter, kWh meter): on the incomer rated current, CT make asked, PROFINET module when the fieldbus is PROFINET."}
+  R-REQ-13: {authority: RULE, text: "Components still blocked (short-circuit level, busbar, PLC / network, earthing) are listed as not selected with the document they wait for; nothing is substituted."}
+  R-REQ-14: {authority: RULE, text: "PLC: asked Omron (CP2E + CP1W, AutoBOM database), Siemens S7-200 SMART, Siemens S7-1200 G2 or Siemens S7-1500 with ET 200SP remote I/O (component plc chooses it and calculates the 24 V it draws from the panel supply, R-PLC-24; drives on PROFINET count as its devices) or another make (its 24 V current is asked). 24 V DC supply (component 10) from the I/O list: digital inputs, one relay coil per PLC output, and the PLC current. Surge arrester and phase monitoring relay (component 11) are asked yes / no (read from 'surge arrester', 'SPD', 'phase monitoring relay'); the surge arrester make is asked."}
+  R-REQ-15: {authority: RULE, text: "An experienced designer may change the panel defaults (drive protection, cable make, cable installation, DOL source Siemens / company kit, company kit accessories on / off); the change is listed. Freshers cannot (web app)."}
+  R-REQ-16: {authority: OWN,  text: "Company practice: DOL and star-delta feeders get the company kit accessories (feeder_kit, R-PNL-14) by default; star-delta ('star delta', 'S/D') is read as a starter and built from the company kit (R-PNL-12). Lines with a company price carry it; the BOM total is indicative and partial (INR)."}
+  R-REQ-17: {authority: OWN,  text: "Everything not selected is listed in one place with its category and reason: components not built (and the document each waits for), items not selected for this panel (refusals and open articles), items the company drawing has but no component selects yet (control-circuit devices, from AVELCPSDL08WPLC BOM pages 14–15), and items out of scope by owner instruction."}
+  R-REQ-18: {authority: RULE, text: "Every question shows help: quick picks (shortcuts the designer clicks, never defaults), the range the tool accepts with the document it comes from, why it matters and where to find it. No quick picks where no held document gives typical values (e.g. power factor)."}
+  R-REQ-20: {authority: RULE, text: "Worked out instead of asked (owner 2026-10-14): the cable route temperature is the site temperature when the text states one and the cables run in air (buried cables need the ground temperature: asked); the motor power factor is not asked — read when the text gives it, otherwise each motor cable takes the worst-case voltage drop (R-CAB-09). Both are shown as 'derived'. (Also not asked: the PLC 24 V current, from the PLC component, R-REQ-14; the contactor coil power, from IC 10, R-CC-06.)"}
+  R-REQ-21: {authority: RULE, text: "Designer edits to the machine BOM (2026-10-15): replace an article, change a quantity, remove a line or add a component. Each edit is checked like a project edit (R-PRJ-17: the article is looked up in the parts catalog with its make and sources; not in the held data → kept as a designer choice marked 'unsourced'; quantities whole numbers ≥ 0, ≥ 1 for an added line); an edit that fails the check makes the request invalid. Edited lines keep the original; the edits travel with the page and the document pack."}
+  R-REQ-22: {authority: RULE, text: "Alternatives for a BOM line (2026-10-15): the design choices that produce the line (a motor's starter and duty; drive protection, control-unit options and memory card; DOL source and kit accessories; cable make and installation; panel temperature; PLC family; 24 V supply, surge arrester and CT makes; control supply) are each set to their other values and the machine is selected again, so every linked part is reselected from its sources. Each option lists every BOM line it changes and the indicative cost difference of the priced lines (changed lines without a price are counted, never assumed cheaper). An option that leaves a selected feeder unselected is not offered. The designer's prompt only ranks the options (by its words, or by the assistant choosing one of these options); applying one sets that design choice as an answer. Changing a part number alone remains possible (R-REQ-21) and is marked as not linked."}
+  R-REQ-23: {authority: RULE, text: "Power calculation (component power, 2026-10-15): AC — every selected 3-phase feeder at its running units × current per phase (drive input current; motor FLC for DOL / soft starter / star-delta), single-phase motors, and the control circuit (its load on the transformer primary across two lines, or line–neutral for a phase-neutral supply) and the 24 V supply input (24 V × load / efficiency) placed largest first on the least-loaded phase; per-phase current, imbalance, neutral current and kVA. 24 V DC — inputs (template figure), relay coils and the PLC, × the template factor against the supply chosen. Loads without data (meter, surge arrester, phase monitoring relay, HMI) are listed as not counted. Since 2026-10-15 (audit): feeders that are not selected or are excluded are listed as not counted with their kW; the designer's power edits (power_edits, R-PWR-11: set / add / remove a load by key — the control circuit is 'control', the 24 V supply 'smps', a motor its tag) are applied; an edit that names no load stops the power calculation only (warning, design kept) so it can be undone."}
+  R-REQ-24: {authority: RULE, text: "QA 2026-10-16 (H2): when a soft starter cannot be selected because its breaker's tested Iq is below the fault level (R-SS-08 'choose fuses'), the soft starter's short-circuit protection is asked (ss_protection: mpcb, fuse_gg, fuse_semi) — never chosen silently — and passed to the soft starter (component 5). Answered once, it applies to every soft starter of the machine."}
+  R-REQ-25: {authority: RULE, text: "QA 2026-10-16 (H4): the incomer's rated current is compared with every outgoing protective device's rating (drive fuse / breaker, DOL starter protector setting top). An outgoing device rated at or above the incomer → warning (a fault there can trip the incomer). Selectivity itself is not verified: no Siemens selectivity table is held (decision RQ-8). Feeders without a held device rating are listed."}
+  R-REQ-26: {authority: RULE, text: "Owner 2026-10-16: every calculation takes its I/O counts from the one I/O list (component 22, named I_ / O_, inputs and outputs apart): DI × the template's 0.03 A and DO × the relay coil current in the 24 V load, one interface relay per DO, one terminal per DI / DO / AI / AO channel, the PLC's channels (with spare) against its capacity. Each link is listed with its value; a count that does not match → warning."}
+  R-REQ-28: {authority: RULE, text: "Owner 2026-10-16 (delete everywhere): the designer can remove a motor read from the text (answer removed = true, per motor M<n>.removed). The motor keeps its place: the others keep their tags; it gets no feeder, BOM line, signal, current or question and is listed as removed by the designer. Removing every motor → invalid (nothing to select)."}
+  R-REQ-29: {authority: RULE, text: "Owner 2026-10-16 (ECI templates): with a template (the company's standard panels and DOL kits, OWN-PROPEL-COST / OWN-PROPEL-DOL) the template's lines are the panel's BOM, with the sheet's makes and prices; the designer's BOM edits apply to them. The engine still selects from the motor (power, I/O, cables, diagram) and checks the template against the rules: the template MCCB's rating against the incomer the rules need, the template's 24 V supply against the 24 V needed, its control transformer VA against the VA needed. A template line below the rule → warning (listed in the checks); a template rating not printed → not checked (listed). Owner 2026-10-16, naming: a template is read by the company convention '<kW>KW <starter> [WITH PLC]' — sheet name first ('55KW SD' = 55 kW star-delta, '110KW SD WITH PLC'), then the title ('… X 2' = two motors, 'DUAL MOTOR' = two motors, 'SDL' = star-delta, 'F/R' = forward / reverse, read as DOL by the rules, '2.2KW / 3.2' = two kW options); the word STARTER says nothing about the starter. When the name gives no starter, a 'STAR DELTA TIMER' line of the sheet shows star-delta; otherwise it is asked. When the name gives no kW it is asked."}
+  R-REQ-30: {authority: RULE, text: "Owner 2026-10-16: a template (each one an independent client order; PROWASH 100 = 100 TPH) opens on the results at once — nothing is asked. What the words do not give is taken from the template's own lines (supply voltage from its control transformer '415/230VAC', PLC family from its CPU line, no PLC → none), else from the template defaults (params.template_defaults: 25 kA, 40 °C inside and along the cable route, 50 m motor cable, no surge arrester or phase monitoring relay beyond the template's own). Each is shown as 'template' and is editable on the results. A template whose name gives no motor kW shows its lines and cost; power, I/O and the diagram wait for the motors the designer adds."}
+  R-REQ-31: {authority: RULE, text: "Owner 2026-10-16: with a template, only what the template lists is selected and calculated. Its lines decide the scope: a PLC (a CPU line) → PLC I/O, interface relays, I/O terminals, the PLC and its 24 V load; a 24 V supply line → the 24 V calculation (checked against that supply's rating); an incomer / switch line → the incomer and its checks; a control transformer line → the control circuit and its load. What is not listed is not selected, not drawn, and not in the documents (each says 'not in this panel'). A new machine can say the same: PLC 'none' → no PLC, PLC I/O, interface relays or I/O terminals."}
+  R-REQ-32: {authority: RULE, text: "Owner 2026-10-17 (interdependency audit: 'ask each one'): no silent panel defaults for a new machine. Asked where they matter: emergency stop, reset push button, phase lamps, pilot lamp VA, contactor coil VA (star-delta, soft starter, company DOL), internal wire insulation and circuits per duct, other cables beside each motor cable, incomer trip unit and breaking-capacity basis; with a PLC: panel signals to the PLC, relay make, terminal make, I/O wire size, 24 V supply input, PLC spare (and S7-1500 CPU and memory card); with a meter: its communication; with a surge arrester: its connection and remote signal; with drives: the EMC filter; with soft starters: line contactor and thermistor; the company kit when several fit or none is named after the application (R-KIT-06). A template (R-REQ-30) is not asked: its defaults answer, shown as 'template'."}
+  R-REQ-34: {authority: RULE, text: "Owner 2026-10-20 (RFQ part 1): the incomer series is asked — Siemens 3VA1 with the TM240 trip unit (component mccb_3va: smallest frame that fits, the article confirmed by its data sheet when held) or 3VM with TM210 / TM220 (component mccb, whose trip unit is then asked). The incomer line names the series, trip unit and setting."}
+  R-REQ-33: {authority: RULE, text: "Owner 2026-10-18 (RFQ import, stage 3): a motor may carry the client's own tag (letters, digits, _ - / . @, at most 40, each once), its units running together (1 … quantity; the rest are standby and do not count in the incomer current) and the client's MPCB setting range for a DOL starter (R-DOL-14: the RFQ value wins, flagged if the motor current is outside it). An energy meter is answered (meter yes / no) as well as read from the text."}
+  R-REQ-19: {authority: OWN,  text: "Control circuit (component 25): control supply from the panel defaults (transformer, company practice; experienced designers may choose phase-neutral), sized from the contactor coils (DOL 1, star-delta 3 per unit) and pilot lamps (company kit lamps + 3 phase lamps) at the VA the designer gives; the panel gets one emergency stop, one reset push button and phase lamps."}
+
+params:
+  heavy_words: [conveyor, crusher, mixer, hoist, extruder, agitator]
+  normal_words: [pump, fan, blower, compressor]
+  countries: [Germany, India, France, Italy, Spain, Netherlands, Belgium, Austria, Switzerland, Poland, Sweden,
+              "United Kingdom", UK, USA, "United States", Canada, Mexico, Brazil, China, Japan, Korea, Singapore,
+              Malaysia, Indonesia, Thailand, Vietnam, UAE, "Saudi Arabia", Qatar, Oman, "South Africa", Australia]
+  panel_defaults: {coil: 230VAC, ie_class: IE3, cable_installation: air, cable_make: polycab, vfd_protection: fuse,
+                   dol_source: siemens, kit_accessories: true}
+  signalling_defaults: {relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, wire_insulation: "70",
+                        smps_input: "1P+N", smps_brand: Omron, spd_config: "3Ph+N+PE", pmr_make: Siemens,
+                        control_supply: transformer,
+                        min_power_wire_mm2: 0.75}
+  template_defaults:   # R-REQ-30 (owner 2026-10-16): a template is a finished order — what neither its words nor its lines give
+    voltage_v: 415      # (used only when the template has no control transformer line '…415/230VAC')
+    fault_ka: 25
+    panel_internal_c: 40
+    cable_ambient_c: 40
+    cable_m: 50
+    spd: false
+    # audit 2026-10-17 (owner: "ask each one"): a new machine is asked these; a template (a finished order, R-REQ-30)
+    # takes them from here, shown as 'template' — the values the tool used before the audit
+    panel_signals: true
+    estop: true
+    reset_pb: true
+    phase_lamps: true
+    wire_insulation: "70"
+    wire_circuits: 1
+    cable_other: 0
+    incomer_release: TM210
+    breaking_basis: icu
+    relay_make: finder
+    terminal_make: connectwell
+    io_conductor_mm2: 1.5
+    smps_input: "1P+N"
+    plc_spare_pct: 40
+    emc_filter: none
+    spd_config: "3Ph+N+PE"
+    spd_signalling: true
+    pmr: false   # QA 2026-10-16 (M3): no power wire thinner than the company's 0.75 mm² control wiring (OWN-PROPEL-SCH160 p.3), decision RQ-9
+  meter_words: ["energy meter", "metering", "power meter", "kwh meter", "multifunction meter"]
+  blocked:
+    - "Short-circuit level (component 7): the fault level is taken as given; waits for IEC 60909-0"
+    - "Busbar (component 8): waits for the 3VA manual and IEC 61439-1"
+    - "HMI (e.g. KTP700 as in the company drawing), network switches and UPS: not selected (display and UPS out of scope, owner 2026-10-13); analog I/O is selected by the PLC component but not yet asked in this flow"
+    - "Earthing and PE (component 17): waits for IEC 60364-5-54"
+  control_devices_not_built:   # in the company drawing AVELCPSDL08WPLC (OWN-PROPEL-SCH160 pp.14-15), no selection component yet
+    - "Control fuses with fuse terminals for the control circuit (1F, 2F); illuminated / start / stop push buttons per feeder"
+    - "Indicating meters: VAF meter"
+    - "Under / over voltage relay (UV/OV) and current sensor (CTS)"
+    - "Busbars (main, neutral, earth) and distribution terminal blocks"
+    - "Name plates, panel locks, LOTO padlock set, lifting hooks"
+  out_of_scope:
+    - "Enclosure, IP rating and outdoor installation (owner 2026-10-11 / 2026-10-12)"
+    - "Enclosure accessories and cooling: fans, louvres, filters, door switch and light (owner 2026-10-11)"
+    - "Heater feeders (owner 2026-10-11)"
+    - "Budget check against a target in another currency (prices are indicative INR from the company sheets)"
+  # Help shown with each question (R-REQ-18): quick picks are shortcuts the designer clicks, never defaults.
+  # 'range' and 'source' come from documents the tool holds; where no document gives a typical value, no picks are offered.
+  question_help:
+    coil_va:
+      unit: "VA"
+      range: "Holding (sealed) power of one contactor coil at 230 V AC."
+      why: "Sizes the control transformer together with the pilot lamps."
+      where: "Contactor data sheet: Siemens catalog IC 10 (3RT2) or the Schneider data sheet (LC1E)."
+    lamp_va:
+      unit: "VA"
+      range: "Consumption of one 230 V AC LED pilot lamp."
+      why: "Sizes the control transformer together with the contactor coils."
+      where: "Pilot lamp data sheet (e.g. Schneider XB7)."
+    panel_internal_c:
+      picks: [35, 40, 45, 50]
+      unit: "°C"
+      range: "20 … 60 °C. Drives give full current up to 40 °C and less above it; above 60 °C the tool refuses."
+      why: "Drives, breakers and internal wires are derated for heat inside the panel: a hotter panel can mean a bigger drive."
+      where: "Panel design temperature: the site maximum plus the rise inside the enclosure (often stated in the client specification)."
+      source: "SIE-PM240-2 Tables 6-37 … 6-40, pp.118-119"
+    cable_ambient_c:
+      picks: [30, 35, 40, 45]
+      unit: "°C"
+      range: "In air 25 … 60 °C; in ground or duct 15 … 50 °C (the cable maker's correction tables)."
+      why: "Cables carry less current when the surroundings are hot, so this can make the motor cable one size bigger."
+      where: "The hottest air temperature along the cable route (cable tray, trench or buried)."
+      source: "POLYCAB-LT-V9 rating factors, p.87"
+    motor_pf:
+      unit: ""
+      range: "Between 0 and 1."
+      why: "Used only for the motor cable's voltage-drop check."
+      where: "Motor nameplate or data sheet, written as cos φ (e.g. 0.85). No typical value is assumed."
+    voltage_v:
+      picks: [400, 415]
+      unit: "V"
+      range: "Drives (PM240-2): 380 … 480 V, 3-phase."
+      why: "Sets the motor current and decides which drives and starters fit."
+      where: "Supply voltage at site (client specification or utility)."
+      source: "SIE-PM240-2 p.97"
+    fault_ka:
+      picks: [25, 36, 50]
+      unit: "kA"
+      range: "Drive fuses are tested up to 100 kA; give the prospective short-circuit current at the panel."
+      why: "Every breaker and fuse must be able to break this current safely."
+      where: "From the utility, the transformer data or the client specification (a short-circuit study is not built yet)."
+      source: "SIE-G120-PROT"
+    cable_m:
+      picks: [10, 30, 50, 100]
+      unit: "m"
+      range: "Long cables to drives may need an output reactor or a shielded cable; the tool checks the permitted length."
+      why: "Longer cables mean more voltage drop and, for drives, possibly an output reactor."
+      where: "Route length from the panel to the motor (layout drawing)."
+      source: "SIE-PM240-2 permitted cable lengths"
+    flc_a:
+      unit: "A"
+      range: "The motor's own full-load current."
+      why: "At 60 Hz the guide table does not apply, so the nameplate current is needed."
+      where: "Motor nameplate (rated current at the supply voltage)."
+    plc_24v_a:
+      picks: [0.5, 1, 2]
+      unit: "A"
+      range: "For comparison: an Omron CP2E CPU alone draws 0.08 … 0.25 A at 24 V (AutoBOM database)."
+      why: "Sizes the 24 V power supply together with inputs and relay coils."
+      where: "PLC, I/O module and HMI data sheets: add their 24 V currents."
+      source: "OWN-AB-PLC"
+    duty:
+      why: "Normal duty (LO) suits pumps and fans; heavy duty (HO) suits conveyors and crushers that start under load. Heavy duty can mean a bigger drive."
+      where: "From the machine's load: does it start loaded or need high starting torque?"
+    starter:
+      why: "VFD for speed control or soft starting, DOL for small simple motors, star-delta (company kit) for large motors started unloaded."
+      where: "Machine requirement or client load list."
+    cu_encoder:
+      why: "Only if an encoder is fitted on the motor for speed feedback. It decides the drive's Control Unit."
+      where: "Motor data sheet / machine design."
+    cu_safety:
+      why: "STO (safe torque off) is needed when the drive must be part of the machine's safety circuit (e.g. emergency stop)."
+      where: "Machine risk assessment or client specification."
+    cu_fieldbus:
+      why: "How the PLC talks to the drive. PROFINET means no hardwired I/O for the drive."
+      where: "Client specification or PLC choice."
+    mc_copy_parameters:
+      why: "A memory card lets a replacement drive be set up by plugging the card in."
+      where: "Maintenance practice or client specification."
+    ct_make:
+      why: "The client's preferred make for the energy meter's current transformers."
+      where: "Client specification (approved makes list)."
+    plc_make:
+      why: "Choose a make to have the PLC chosen with its current calculated; another make if the client names one; 'No PLC' when the panel has none (then no PLC I/O, interface relays or I/O terminals are selected, R-REQ-31)."
+      where: "Client specification or company standard."
+    spd:
+      why: "A surge arrester protects the panel from overvoltages on the incoming supply (lightning, switching)."
+      where: "Client specification or site exposure (outdoor lines, lightning-prone areas)."
+    spd_make:
+      why: "Make of the surge arrester: Siemens 5SD7 type 2 (catalogue LV 10, R-AUX-08) or the company database (OBO, Phoenix Contact)."
+      where: "Client approved makes."
+    pmr:
+      why: "A phase monitoring relay stops the motors on phase loss or wrong phase sequence."
+      where: "Client specification or company practice."
+    estop:
+      why: "An emergency stop on the door stops the machine; the company panels have one (mushroom push button, hood, NC element)."
+      where: "Machine risk assessment or client specification."
+    reset_pb:
+      why: "A reset push button resets trips and the emergency stop circuit."
+      where: "Machine design or client specification."
+    phase_lamps:
+      why: "Phase lamps R / Y / B show the supply on the door (company practice, decision CC-3)."
+      where: "Client specification or company practice."
+    lamp_va:
+      unit: VA
+      why: "Sizes the control transformer and the control-circuit load with the coils."
+      where: "Pilot lamp data sheet (power per lamp)."
+    coil_va:
+      unit: VA
+      why: "Sizes the control transformer: the coil power of company-kit contactors and soft-starter line contactors is not in the held data."
+      where: "Contactor data sheet (coil holding power, VA)."
+    wire_insulation:
+      why: "The internal power wires are derated for the panel temperature by their insulation rating (Lapp tables); 90 °C wire stays smaller when hot."
+      where: "Wire you stock / client specification (decision W-2)."
+    wire_circuits:
+      why: "Wires bunched with other circuits in one duct carry less current (grouping factor); one circuit alone is the best case."
+      where: "Panel layout: the busiest wiring duct (decision W-1)."
+    cable_other:
+      why: "A motor cable beside other cables in a tray carries less current (grouping); in air the cable maker's grouping table applies."
+      where: "Cable route / tray layout (decision C-3)."
+    incomer_release:
+      why: "TM210 has fixed thermal and magnetic settings; TM220 is adjustable. It changes the incomer article."
+      where: "Client specification or company practice (decision M-6)."
+    breaking_basis:
+      why: "Icu is the breaker's ultimate breaking capacity; Ics (service) is lower — demanding Ics can need a larger breaker class."
+      where: "Client specification (decision M-2)."
+    panel_signals:
+      why: "Emergency stop, reset, phase failure, general trip and warning as PLC inputs / outputs (company drawing p.12): adds I/O, relays and terminals."
+      where: "Machine control concept (decision IO-4)."
+    relay_make:
+      why: "Make of the interface relays (one per PLC output)."
+      where: "Client approved makes / company practice."
+    terminal_make:
+      why: "Make of the I/O terminals."
+      where: "Client approved makes / company practice."
+    io_conductor_mm2:
+      unit: mm²
+      why: "Decides the terminal size for the I/O wiring."
+      where: "Wiring standard of the panel (company drawing control wiring 0.75 mm², OWN-PROPEL-SCH160 p.3)."
+    smps_input:
+      why: "Single- or three-phase supply for the 24 V power supply: different supply models."
+      where: "Panel design."
+    plc_spare_pct:
+      unit: "%"
+      picks: [40]
+      source: "AutoBOM logic sheet row 1 ('consider 40% spare')"
+      why: "Spare inputs and outputs added before the PLC is sized."
+      where: "Client specification or company practice (decision PLC-1)."
+    plc_cpu:
+      why: "The S7-1500 CPU (program size and performance are the designer's call)."
+      where: "Client specification (decision PLC-S4)."
+    plc_mc_mb:
+      unit: MB
+      why: "SIMATIC memory card size for the S7-1500 (required)."
+      where: "Program size / client specification (decision PLC-S5)."
+    incomer_series:
+      why: "3VA1 with TM240: adjustable overload and short-circuit settings (Siemens LV 10 · 2026); 3VM: TM210 fixed or TM220 adjustable overload. Clients often name the series in their specification."
+      where: "Client specification (approved makes / panel specification)."
+    fuse_holder:
+      why: "Each drive has three LV HRC fuses (one per line conductor, PM240-2 manual Figure 4-5). A 3NP1 fuse switch disconnector holds them and lets the drive be isolated (Siemens LV 10 · 2026 pp.8/86-8/87)."
+      where: "Company practice or client specification."
+    contactor_suppressor:
+      why: "A varistor across the contactor coil limits the switching overvoltage seen by the PLC output / relay contact (Siemens IC 10 · 2026 p.3/96: one per contactor, by size and coil voltage)."
+      where: "Client specification or company practice."
+    meter_supply:
+      why: "The PAC3220's order number depends on its supply: AC/DC wide-range (AC 100 … 250 V) → 7KM3220-0BA01-1DA0; DC 24 … 60 V → 7KM3220-1BA01-1EA0 (Siemens LV 10 · 2026 p.10/32)."
+      where: "The panel's control supply design (230 V AC from the control transformer, or the 24 V DC supply)."
+    meter_comm:
+      why: "PROFINET needs the 7KM module; Modbus TCP uses the meter's own Ethernet; none = local display only."
+      where: "Client specification / SCADA concept."
+    spd_config:
+      why: "How the surge arrester connects: 3 phases + N + PE (TN-S / TT) or 3 phases + PE; only 3Ph+N+PE is in the held Siemens table."
+      where: "Earthing system of the site."
+    spd_signalling:
+      why: "A remote signalling contact reports the arrester's state to the PLC; it changes the article."
+      where: "Client specification (decision AX-6)."
+    emc_filter:
+      why: "A built-in class C2 filter for the drives (different drive article; decides the permitted motor cable length table)."
+      where: "EMC requirement of the site / client specification."
+    ss_line_contactor:
+      why: "A line contactor before each soft starter (needed with Class 20E and fuses in the company practice)."
+      where: "Machine design (decision SS-3)."
+    ss_thermistor:
+      why: "A motor thermistor input on the soft starter (a different soft starter article)."
+      where: "Motor data: is a thermistor fitted?"
+    control_supply:
+      why: "A control transformer (415/230 V, as in the company drawings) isolates the control circuit and is sized at 1.5 × the coil and lamp load; phase-neutral needs no transformer but the control circuit is tied to the supply neutral."
+      where: "Client specification or company practice (decision CC-1: asked every time, owner 2026-10-17)."
+    ss_protection:
+      why: "Siemens tests the 3RW52 with a motor starter protector / breaker only up to the kA printed for each size; above that it is tested with fuses (gG: type 1, semiconductor gR/gS: type 2, both 65 kA)."
+      where: "Siemens IC10 3RW52 coordination tables pp. 6/63–6/65. Type 2 (semiconductor fuses) keeps the soft starter usable after a short circuit."

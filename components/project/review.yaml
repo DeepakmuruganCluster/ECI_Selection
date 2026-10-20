@@ -1,0 +1,48 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 21
+title: Project BOM with options (ECI WNS2503)
+what_it_does: >
+  Puts the whole panel together: ECI's load list, the feeders (starters, drives, protection, control
+  units, operator panels, cables), ECI's own items, the energy meter and CTs, the interface relays and
+  terminals, and the internal wiring. Wherever something is still open (STO, latch relays, cable make,
+  CT make, wire type, terminals, memory cards, protection), it gives options. The main BOM uses the
+  first option, and the Excel file's Options sheet shows exactly what each alternative changes.
+
+how_to_check:
+  - "Press 'Try it: BIO_UF'. The control units must be 22 (one per drive unit in ECI's Word list) and the BOP-2 also 22."
+  - "Latching relays must equal the DOL starters (36), and slim relays ECI's DO count minus 36 (80 − 36 = 44)."
+  - "I/O terminals must be ECI's total I/O for the panel: 272 + 80 + 40 + 4 + 16 = 412 (ECI spec page 1)."
+  - "Download the Excel BOM and open the Options sheet. Check one option, e.g. 'no STO': 22 × 6SL3244-0BB12-1FA0 removed, 22 × 6SL3243-0BB30-1FA0 added."
+
+spot_checks:
+  - {label: "BIO_UF", tab: project, inputs: {panel: BIO_UF, fault_ka: 50, panel_internal_c: 35, motor_pf: 0.85, cable_ambient_c: 40, default_cable_m: 50}}
+  - {label: "RO", tab: project, inputs: {panel: RO, fault_ka: 50, panel_internal_c: 35, motor_pf: 0.85, cable_ambient_c: 40, default_cable_m: 50}}
+  - {label: "BIO_UF with slim relays only", tab: project, inputs: {panel: BIO_UF, fault_ka: 50, panel_internal_c: 35, motor_pf: 0.85, cable_ambient_c: 40, default_cable_m: 50, relays: slim}}
+
+decisions:
+  - id: PWR-1
+    question: "24 V power calculation: the company template counts 0.03 A per digital input, and the Siemens DI 16 module's 'current consumption, max. 90 mA' may already include its input currents. Count both (as now, safe side) or only the module figure? (RO: 23.1 A with both vs about 10.5 A without the template line, against ECI's 20 A.)"
+    options: {both: "Count both (safe side)", module: "Only the module figure for ET 200SP inputs"}
+    recommended: both
+  - id: J-1
+    question: "Should the main BOM use the first option of every open decision, with the alternatives listed on the Options sheet?"
+    options: {"yes": "Yes", choose: "No, I'll choose each option in the form"}
+    recommended: "yes"
+
+fields:
+  panel: {label: "Panel", options: ["BIO_UF", "RO"]}
+  fault_ka: "Fault level at the feeders (kA)"
+  panel_internal_c: "Temperature inside the panel (°C)"
+  motor_pf: "Motor power factor (running)"
+  cable_ambient_c: "Cable route temperature (°C)"
+  default_cable_m: "Motor cable length when ECI gives none (m)"
+  cu_safety: {label: "Drives: STO?", options: ["sto", "none"]}
+  relays: {label: "DOL output relays", options: ["latching", "slim"]}
+  vfd_protection: {label: "Drive protection", options: ["fuse", "msp", "breaker"]}
+  cable_make: {label: "Cable make", options: ["polycab", "kei"]}
+  ct_make: {label: "CT make", options: ["rishabh", "selec"]}
+  wire_insulation: {label: "Internal wire", options: ["70", "heat_90"]}
+  terminals_per_channel: {label: "Terminals per I/O channel", options: [1, 2]}
+  mc_copy_parameters: {label: "Memory card per drive", options: [false, true]}
+  line_reactor_up_to_kw: "Client: line reactor up to (kW)"

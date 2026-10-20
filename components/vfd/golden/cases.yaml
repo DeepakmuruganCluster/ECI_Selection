@@ -1,0 +1,277 @@
+# Golden cases for vfd — written BEFORE the code (G4).
+# Oracle: PM240-2 manual tables (PDF pages), and hand calculation of derated current
+#   = rated output current × table % at the next table temperature at or above the ambient.
+# Unless stated: 400 V, unfiltered, shielded cable, nameplate FLC, uk 2 %, fault 50 kA.
+
+cases:
+  # --- module selection and derating -------------------------------------------------
+  - id: V01
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50, network_uk_pct: 2}
+    expect: {status: ok, power_module: 6SL3210-1PE21-8UL0, frame: FSB, fuse: "3NA3812 (32 A)", output_a_derated: 18, line_reactor: null, output_reactor: null}
+    oracle: "p.100: 7.5 kW LO 18.0 A; p.119 FSA-FSC LO 40 °C 100 % → 18 ≥ 15.5; fuse 3NA3812 32 A"
+  - id: V02
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 50, cable_m: 50, fault_ka: 50, network_uk_pct: 2}
+    expect: {status: warning, power_module: 6SL3210-1PE22-7UL0, frame: FSC, output_a_derated: 22.1, warnings: [R-VFD-04]}
+    oracle: "hand calc, p.119 LO 50 °C 85 %: 7.5 kW 18 × 0.85 = 15.3 < 15.5 → 11 kW 26 × 0.85 = 22.1"
+  - id: V03
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 47, cable_m: 50, fault_ka: 50, network_uk_pct: 2}
+    expect: {status: warning, power_module: 6SL3210-1PE22-7UL0, output_a_derated: 22.1, warnings: [R-VFD-04]}
+    oracle: "47 °C taken at the 50 °C column (no interpolation) → as V02"
+  - id: V04
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 50}
+    expect: {status: ok, power_module: 6SL3210-1PE27-5UL0, frame: FSD, fuse: "3NA3830 (100 A)", output_a_derated: 69.75, line_reactor: null}
+    oracle: "p.103: 37 kW LO 75 A; p.118 FSD-FSF LO 45 °C 93 % → 69.75 ≥ 66; FSD has no line impedance restriction"
+  - id: V05
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 55, cable_m: 50, fault_ka: 50}
+    expect: {status: warning, power_module: 6SL3210-1PE28-8UL0, frame: FSE, output_a_derated: 68.4, warnings: [R-VFD-04]}
+    oracle: "hand calc, p.118 LO 55 °C 76 %: 75 × 0.76 = 57 < 66 → 45 kW 90 × 0.76 = 68.4"
+  - id: V06
+    in: {kw: 15, flc_a: 29, flc_basis: nameplate, duty: heavy, ambient_c: 40, cable_m: 50, fault_ka: 50}
+    expect: {status: ok, power_module: 6SL3210-1PE23-8UL0, frame: FSD, fuse: "3NA3822 (63 A)", output_a_derated: 32}
+    oracle: "p.102: HO 15 kW, HO output 32 A (the 15 kW FSC module is HO 11 kW); p.118 HO 40 °C 100 %"
+  - id: V27
+    in: {kw: 0.37, flc_a: 1.1, flc_basis: nameplate, ambient_c: 40, cable_m: 20, fault_ka: 50, network_uk_pct: 2}
+    expect: {status: ok, power_module: 6SL3210-1PE11-8UL1, frame: FSA, fuse: "3NA3803 (10 A)"}
+    oracle: "p.99 smallest module 0.55 kW LO 1.7 A; 0.37 / 0.55 = 67 % ≥ 25 %"
+
+  # --- line reactor (R-VFD-08) ---------------------------------------------------------
+  - id: V07
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50, client_line_reactor_up_to_kw: 15, network_uk_pct: 2}
+    expect: {status: ok, power_module: 6SL3210-1PE21-8UL0, line_reactor: 6SL3203-0CE21-8AA0}
+    oracle: "client rule ≤ 15 kW; Table 8-4 p.146: 1PE21-8 → 6SL3203-0CE21-8AA0"
+  - id: V08
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50}
+    expect: {status: warning, power_module: 6SL3210-1PE21-8UL0, line_reactor: null, warnings: [R-VFD-08]}
+    oracle: "p.97: FSA-FSC need 1 % ≤ uk < 4 %; uk not given, no client rule"
+  - id: V09
+    in: {kw: 2.2, flc_a: 5, flc_basis: nameplate, ambient_c: 40, cable_m: 30, fault_ka: 50, network_uk_pct: 0.5}
+    expect: {status: ok, power_module: 6SL3210-1PE16-1UL1, line_reactor: 6SL3203-0CE21-0AA0}
+    oracle: "uk 0.5 % < 1 % → line reactor; Table 8-4: 1PE16-1 → 6SL3203-0CE21-0AA0"
+  - id: V10
+    in: {kw: 15, flc_a: 29, flc_basis: nameplate, ambient_c: 50, cable_m: 50, fault_ka: 50, client_line_reactor_up_to_kw: 15}
+    expect: {status: warning, power_module: 6SL3210-1PE23-8UL0, frame: FSD, line_reactor: null, output_a_derated: 32.3, warnings: [R-VFD-04]}
+    oracle: "hand calc LO 50 °C 85 %: 15 kW FSC 32 × 0.85 = 27.2 < 29 → 18.5 kW FSD 38 × 0.85 = 32.3; FSD: no line reactor (not in Table 8-4)"
+
+  # --- motor cable length / output reactors (R-VFD-09, R-VFD-10) -------------------------------
+  - id: V11
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 180, fault_ka: 50, network_uk_pct: 2}
+    expect: {status: cannot_select, rule: R-VFD-09}
+    oracle: "Table 4-1 p.62: FSB unfiltered shielded 150 m without and with output reactor"
+  - id: V12
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 180, cable_shielded: false, fault_ka: 50, network_uk_pct: 2}
+    expect: {status: ok, power_module: 6SL3210-1PE21-8UL0, output_reactor: 6SL3202-0AE21-8CA0, output_reactor_qty: 1}
+    oracle: "Table 4-1: unshielded 150 m without, 225 m with output reactor (380–415 V); Table 8-11 p.163"
+  - id: V23
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 180, cable_shielded: false, voltage_v: 415, fault_ka: 50, network_uk_pct: 2}
+    expect: {status: ok, output_reactor: 6SL3202-0AE21-8CA0, output_reactor_qty: 1}
+    oracle: "415 V is in the 380 … 415 V band (footnote 4): 225 m"
+  - id: V24
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 180, cable_shielded: false, voltage_v: 460, fault_ka: 50, network_uk_pct: 2}
+    expect: {status: cannot_select, rule: R-VFD-09}
+    oracle: "440 … 480 V: unshielded with reactor 150 m (footnote 4) < 180 m"
+  - id: V13
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 250, fault_ka: 50}
+    expect: {status: ok, power_module: 6SL3210-1PE27-5UL0, output_reactor: 6SE6400-3TC07-5ED0, output_reactor_qty: 2}
+    oracle: "Table 4-2 p.62: FSD shielded 200 m without, 350 m with two reactors in series; Table 8-15 p.165"
+  - id: V14
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 400, fault_ka: 50}
+    expect: {status: cannot_select, rule: R-VFD-09}
+    oracle: "400 m > 350 m"
+  - id: V15
+    in: {kw: 90, flc_a: 160, flc_basis: nameplate, ambient_c: 40, cable_m: 400, cable_shielded: false, fault_ka: 50}
+    expect: {status: ok, power_module: 6SL3210-1PE31-8UL0, frame: FSF, fuse: "3NA3142 (224 A)", output_reactor: null}
+    oracle: "p.105: 90 kW LO 178 A; Table 4-3 p.63: FSF unshielded 450 m without reactor"
+  - id: V16
+    in: {kw: 110, flc_a: 195, flc_basis: nameplate, ambient_c: 40, cable_m: 500, fault_ka: 50}
+    expect: {status: ok, power_module: 6SL3210-1PE32-1UL0, output_reactor: 6SL3000-2BE32-1AA0, output_reactor_qty: 2}
+    oracle: "Table 4-3: FSF shielded 300 m without, 525 m with two reactors; Table 8-15: 110 kW → 6SL3000-2BE32-1AA0"
+
+  # --- integrated C2 filter ------------------------------------------------------------------
+  - id: V18
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 40, emc_filter: C2, fault_ka: 50, network_uk_pct: 2}
+    expect: {status: ok, power_module: 6SL3210-1PE21-8AL0}
+    oracle: "p.100 'Article No. with filter'; Table 4-1: C2 shielded 50 m"
+  - id: V17
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 60, emc_filter: C2, fault_ka: 50, network_uk_pct: 2}
+    expect: {status: cannot_select, rule: R-VFD-09}
+    oracle: "Table 4-1: C2 shielded 50 m; C2 with output reactor not listed"
+
+  # --- warnings -----------------------------------------------------------------------------
+  - id: V28
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: guide, ambient_c: 40, cable_m: 50, fault_ka: 50, network_uk_pct: 2}
+    expect: {status: warning, power_module: 6SL3210-1PE21-8UL0, warnings: [R-VFD-13]}
+    oracle: "guide value"
+
+  # --- refusals -------------------------------------------------------------------------------
+  - id: V19
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 120}
+    expect: {status: cannot_select, rule: R-VFD-06}
+    oracle: "p.97: ≤ 100 kA"
+  - id: V20
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 62, cable_m: 50, fault_ka: 50}
+    expect: {status: cannot_select, rule: R-VFD-03}
+    oracle: "tables end at 60 °C"
+  - id: V21
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50, altitude_m: 1500}
+    expect: {status: cannot_select, rule: R-VFD-01}
+    oracle: "scope ≤ 1000 m"
+  - id: V22
+    in: {kw: 30, flc_a: 35, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50, voltage_v: 690}
+    expect: {status: cannot_select, rule: R-VFD-01}
+    oracle: "p.97: 380 … 480 V"
+  - id: V25
+    in: {kw: 0.75, flc_a: 5, flc_basis: nameplate, ambient_c: 40, cable_m: 20, fault_ka: 10, phases: 1}
+    expect: {status: cannot_select, rule: R-VFD-01}
+    oracle: "3-phase supply only"
+  - id: V26
+    in: {kw: 160, flc_a: 280, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50}
+    expect: {status: cannot_select, rule: R-VFD-04}
+    oracle: "largest FSF module 132 kW LO"
+  - id: V29
+    in: {kw: 0.1, flc_a: 0.4, flc_basis: nameplate, ambient_c: 40, cable_m: 20, fault_ka: 50, network_uk_pct: 2}
+    expect: {status: cannot_select, rule: R-VFD-05}
+    oracle: "0.1 / 0.55 = 18 % < 25 % (p.96)"
+
+  # --- invalid ----------------------------------------------------------------------------------
+  - id: V30
+    in: {kw: 7.5, flc_a: 15.5, ambient_c: 40, fault_ka: 50}
+    expect: {status: invalid}
+    oracle: "cable length is required"
+  - id: V31
+    in: {kw: 7.5, flc_a: 15.5, cable_m: 50, fault_ka: 50}
+    expect: {status: invalid}
+    oracle: "ambient temperature around the drive is required"
+  - id: V32
+    in: {kw: 7.5, flc_a: 0, ambient_c: 40, cable_m: 50, fault_ka: 50}
+    expect: {status: invalid}
+    oracle: "FLC must be > 0"
+
+  # --- protection devices (Protective Devices for PM240-2, 07/2021) — added before the code change ----------
+  - id: V33
+    in: {kw: 1.1, flc_a: 2.7, flc_basis: nameplate, ambient_c: 40, cable_m: 20, fault_ka: 50, network_uk_pct: 2, protection: msp}
+    expect: {status: ok, power_module: 6SL3210-1PE13-2UL1, protection_device: 3RV2011-1FA10, protection_icc_ka: 55, min_enclosure_m3: 0.03}
+    oracle: "p.11: 1PE13-2 → 3RV1031-4AA (phased out, skipped), then 3RV2011-4AA 16 A 55 kA ≥ 50 kA; FSA 0.03 m³ (owner 2026-10-20, R-VFD-19: the full IC 10 article sized to the drive — type 3RV2011, smallest rating ≥ input with Icu ≥ 50 kA: 1FA10 3.5 … 5 A, Icu 100 kA, p.7/25)"
+  - id: V34
+    in: {kw: 1.1, flc_a: 2.7, flc_basis: nameplate, ambient_c: 40, cable_m: 20, fault_ka: 60, network_uk_pct: 2, protection: msp}
+    expect: {status: ok, protection_device: 3RV2031-4SA10, protection_icc_ka: 65}
+    oracle: "p.11: 55 kA devices < 60 kA; 3RV2031-4SA 14 A 65 kA; drive input 4.1 A ≤ 14 A (R-VFD-19: full article 3RV2031-4SA10 9.5 … 14 A, Icu 65 kA, IC 10 p.7/27)"
+  - id: V35
+    in: {kw: 1.1, flc_a: 2.7, flc_basis: nameplate, ambient_c: 40, cable_m: 20, fault_ka: 70, network_uk_pct: 2, protection: msp}
+    expect: {status: cannot_select, rule: R-VFD-07}
+    oracle: "p.11: highest MSP ICC for 1PE13-2 is 65 kA"
+  - id: V36
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50, network_uk_pct: 2, protection: breaker}
+    expect: {status: cannot_select, rule: R-VFD-07}
+    oracle: "p.14: no circuit breaker listed for 4 … 15 kW (FSB, FSC)"
+  - id: V37
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 50, protection: breaker}
+    expect: {status: ok, power_module: 6SL3210-1PE27-5UL0, protection_device: 3VA1110-6E..., protection_icc_ka: 70, min_enclosure_m3: null}
+    oracle: "p.14: 3VL… phased out; 3VA1010-4ED 36 kA < 50; 3VA1110-6E 100 A 70 kA; FSD: no enclosure volume"
+  - id: V38
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 30, protection: breaker}
+    expect: {status: ok, protection_device: 3VA1010-4ED..., protection_icc_ka: 36}
+    oracle: "p.14: first non-phased-out device with ICC ≥ 30 kA is 3VA1010-4ED (36 kA)"
+  - id: V39
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 50, protection: breaker, preferred_family: 3VM}
+    expect: {status: cannot_select, rule: R-VFD-14}
+    oracle: "p.14 lists only 3VL / 3VA / 3RV27 — no 3VM for any PM240-2"
+  - id: V40
+    in: {kw: 110, flc_a: 195, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50, protection: breaker}
+    expect: {status: ok, power_module: 6SL3210-1PE32-1UL0, protection_device: 3VA1340-7..., min_enclosure_m3: 0.6}
+    oracle: "p.14: 3VL4731 phased out; 3VA1340-7 400 A 100 kA; FSF 0.6 m³"
+  - id: V41
+    in: {kw: 22, flc_a: 41, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50, protection: msp}
+    expect: {status: ok, power_module: 6SL3210-1PE24-5UL0, protection_device: 3RV2031-4VA10, protection_icc_ka: 65}
+    oracle: "p.11: 3RV104x phased out; 3RV2031-4KA 73 A 65 kA; drive LO input 42 A ≤ 73 A (R-VFD-19: sized to the input 42 A — 3RV2031-4VA10 35 … 45 A, Icu 65 kA, IC 10 p.7/27; the listed 4KA is the type's maximum)"
+  - id: V42
+    in: {kw: 22, flc_a: 41, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50, protection: msp, earthing: IT}
+    expect: {status: cannot_select, rule: R-VFD-15}
+    oracle: "p.11 note: ICC only valid for TN / TT"
+  - id: V43
+    in: {kw: 2.2, flc_a: 5, flc_basis: nameplate, ambient_c: 40, cable_m: 30, fault_ka: 80, network_uk_pct: 2}
+    expect: {status: ok, protection_device: 3NA3805, protection_icc_ka: 100, min_enclosure_m3: 0.03}
+    oracle: "p.5: fuse 3NA3805 100 kA; above 65 kA the FSA minimum enclosure volume 0.03 m³ applies"
+  - id: V44
+    in: {kw: 2.2, flc_a: 5, flc_basis: nameplate, ambient_c: 40, cable_m: 30, fault_ka: 50, network_uk_pct: 2}
+    expect: {status: ok, protection_device: 3NA3805, min_enclosure_m3: null}
+    oracle: "p.5 footnote 1: no enclosure size restriction at ≤ 65 kA with fuses"
+
+  # --- control unit, operator panel, memory card (company logic, ECI-VFD-Selection) — added before the code ---
+  - id: V45
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 50, cu_encoder: false, cu_safety: none, cu_fieldbus: profinet, mc_copy_parameters: false}
+    expect: {status: ok, control_unit: 6SL3243-0BB30-1FA0, operator_panel: 6SL3255-0AA00-4CA1, memory_card: null}
+    oracle: "flowchart: no encoder → no advanced → no STO → fieldbus → Profinet → CU230P-2 PN; database row 4: 6SL3243-0BB30-1FA0; BOP-2 every module; memory card: not CU250S → no copy → none"
+  - id: V46
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 50, cu_encoder: false, cu_safety: sto, cu_fieldbus: profinet}
+    expect: {status: ok, control_unit: 6SL3244-0BB12-1FA0}
+    oracle: "flowchart: STO → fieldbus → Profinet → CU240E-2 PN; database row 7"
+  - id: V47
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 50, cu_encoder: false, cu_safety: advanced, cu_sbc: false, cu_fieldbus: profibus}
+    expect: {status: ok, control_unit: 6SL3244-0BB13-1PA1}
+    oracle: "flowchart: advanced → no SBC → fieldbus → Profibus DP → CU240E-2 DP-F; database row 9"
+  - id: V48
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 50, cu_encoder: false, cu_safety: advanced, cu_sbc: true, cu_fieldbus: profinet, mc_basic_positioning: true}
+    expect: {status: ok, control_unit: 6SL3246-0BA22-1FA0, memory_card: "6SL3054-4AG00-2AA0-Z F01+E01"}
+    oracle: "flowchart: advanced → SBC → fieldbus → Profinet → CU250S-2 PN (row 13); memory card: CU250S + advanced + positioning → -Z F01+E01"
+  - id: V49
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 50, cu_encoder: true, cu_safety: none, cu_fieldbus: none, mc_basic_positioning: false, mc_copy_parameters: true}
+    expect: {status: ok, control_unit: 6SL3246-0BA22-1BA0, memory_card: 6SL3054-4AG00-2AA0}
+    oracle: "flowchart: encoder → no fieldbus → CU250S-2 (row 11); memory card: CU250S, no advanced, no positioning, copy → 6SL3054-4AG00-2AA0"
+  - id: V50
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 50, cu_encoder: false, cu_safety: none, cu_fieldbus: modbus}
+    expect: {status: ok, control_unit: 6SL3243-0BB30-1HA3}
+    oracle: "flowchart: no safety → fieldbus → Modbus RTU → CU230P-2 HVAC (row 2)"
+  - id: V51
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 50, cu_encoder: false, cu_safety: sto, cu_fieldbus: canopen}
+    expect: {status: warning, control_unit: null, warnings: [R-VFD-17]}
+    oracle: "flowchart: 'Part not available for other fieldbus communications'"
+  - id: V52
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 50, cu_encoder: false, cu_safety: none, cu_fieldbus: profinet, mc_customer_article: 6SL3054-4AG00-2AA0}
+    expect: {status: ok, memory_card: 6SL3054-4AG00-2AA0}
+    oracle: "memory-card flowchart: customer preference takes precedence"
+  - id: V53
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 50, cu_encoder: false, cu_safety: sto, cu_fieldbus: ethernet_ip}
+    expect: {status: ok, control_unit: 6SL3244-0BB12-1FA0}
+    oracle: "flowchart node 'Profinet / Ethernet IP' → CU240E-2 PN; database row 7 lists Ethernet IP"
+  # --- 2026-10-20 (owner, RFQ part 2): three fuses per drive and their fuse switch disconnector, R-VFD-17 / 18
+  - id: V54
+    in: {kw: 15, flc_a: 29, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 55, network_uk_pct: 2, fuse_holder: switch_disconnector}
+    expect: {status: ok, power_module: 6SL3210-1PE23-3UL0, protection_device: 3NA3820, protection_qty: 3, fuse_holder: 3NP1123-1CA20}
+    oracle: "SIE-G120-PROT p.5: 15 kW 1PE23-3 → 3NA3820 (50 A); SIE-PM240-2 Figure 4-5 (PDF p.60): a fuse in each of L1, L2, L3 → 3; LV 10 · 2026 p.7/46: 3NA3820 is size 000; pp.8/87: NH000, box terminals, floor mounting, without, 3-pole → 3NP1123-1CA20 (Iu 125 A ≥ 50 A)"
+  - id: V55
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 55, fuse_holder: switch_disconnector}
+    expect: {status: ok, power_module: 6SL3210-1PE27-5UL0, protection_device: 3NA3830, protection_qty: 3, fuse_holder: 3NP1123-1CA20}
+    oracle: "37 kW 1PE27-5 → 3NA3830 100 A (p.5), size 000 (p.7/46) → 3NP1123-1CA20 (Iu 125 A ≥ 100 A)"
+  - id: V56
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50, network_uk_pct: 2}
+    expect: {status: ok, protection_qty: 3, fuse_holder: null}
+    oracle: "no holder given: three fuses, holder reported as not given (asked by the panel)"
+  - id: V57
+    in: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50, network_uk_pct: 2, fuse_holder: base}
+    expect: {status: invalid}
+    oracle: "fuse_holder: switch_disconnector (the owner's choice 2026-10-20)"
+  - id: V58
+    in: {kw: 75, flc_a: 138, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50, fuse_holder: switch_disconnector}
+    expect: {status: ok, power_module: 6SL3210-1PE31-5UL0, protection_device: 3NA3140, protection_qty: 3, fuse_holder: 3NP1143-1DA20}
+    oracle: "SIE-G120-PROT p.5: 75 kW 1PE31-5 → 3NA3140 (200 A); LV 10 · 2026 p.7/48: 3NA3140 is size 1 (47.2 mm); p.8/87: NH1 box terminals, floor, without, 3-pole → 3NP1143-1DA20 (Iu 250 A ≥ 200 A)"
+  - id: V59
+    in: {kw: 132, flc_a: 230, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50, fuse_holder: switch_disconnector}
+    expect: {status: warning, protection_qty: 3, fuse_holder: null, warnings: [R-VFD-18]}
+    oracle: "132 kW → a size-2 fuse (3NA3252, p.5) — size 2 not transcribed (p.7/48 cut at size 1): the drive stays selected, its holder is a warning"
+  # --- 2026-10-20 (owner, RFQ part 3): drives protected by a motor starter protector sized to the drive, R-VFD-19
+  - id: V60
+    in: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 55, protection: msp, msp_range: "100"}
+    expect: {status: ok, power_module: 6SL3210-1PE27-5UL0, protection_device: 3RV2041-4MA10, protection_qty: 1, input_a: 70}
+    oracle: "SIE-G120-PROT p.11: 1PE27-5 → 3RV2041-4MA.. up to 100 A, ICC 65 kA; IC 10 p.7/28: 3RV2041-4MA10 80 … 100 A, Icu 65 kA ≥ 55; rated 100 A ≥ input 70 A (LO, SIE-PM240-2) → the client's 100 A fits"
+  - id: V61
+    in: {kw: 4, flc_a: 8.5, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 55, protection: msp, msp_range: "7-10", network_uk_pct: 2}
+    expect: {status: warning, protection_device: 3RV2021-4AA10, warnings: [R-VFD-19]}
+    oracle: "4 kW 1PE21-1, input 13.3 A: the client's 7 … 10 A is below it → the listed type 3RV2021 (p.11, up to 32 A, ICC 55 kA), smallest rating ≥ 13.3 A with Icu ≥ 55 kA = 3RV2021-4AA10 10 … 16 A, Icu 55 kA (IC 10 p.7/26); warning: tell the client"
+  - id: V62
+    in: {kw: 15, flc_a: 29, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 55, protection: msp, network_uk_pct: 2}
+    expect: {status: ok, protection_device: 3RV2031-4UA10, input_a: 39.9}
+    oracle: "15 kW 1PE23-3, input 39.9 A: listed 3RV2031-4VA.. up to 45 A, ICC 65 kA; smallest 3RV2031 rating ≥ 39.9 A = 4UA10 32 … 40 A, Icu 65 kA (IC 10 p.7/27)"
+  - id: V63
+    in: {kw: 4, flc_a: 8.5, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 55, protection: msp, msp_range: "ten"}
+    expect: {status: invalid}
+    oracle: "msp_range is 'low-high' or 'high' in A"

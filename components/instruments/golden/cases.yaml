@@ -1,0 +1,23 @@
+# Golden cases for instruments — written BEFORE the code (G4).
+# Oracle: the field-device rows of ECI-WNS2503-EQUIP pp.1-3 counted by hand (projects/ECI-WNS2503/scripts/import_eci_instruments.py output),
+# the client I/O table (ECI-WNS2503-AUTO p.1), MCB.csv line 211 (Siemens 2P C 0.5 A 5SL42057RC).
+
+cases:
+  - id: N01
+    in: {panel: BIO_UF}
+    expect: {status: warning, n_loop_tx: 19, n_mains_tx: 12, n_valves: 7, n_pneumatic: 1, n_tower_lamp: 1, n_unstated: 50,
+             n_analog_loops: 34, io_matches: 1, warnings: [R-INS-01, R-INS-03, R-INS-04, R-INS-06]}
+    oracle: "BIO/UF rows: 19 loop transmitters, 12 × 230 V instruments, valves EV101, EV102, EV701-705 = 7; PV201-PV250 (50) without supply; analog loops 33 + 1 = 34; motors 96 + field 163 = 259 DI etc. = client table"
+  - id: N02
+    in: {panel: RO}
+    expect: {status: warning, n_loop_tx: 24, n_mains_tx: 23, n_valves: 5, n_analog_loops: 49, io_matches: 1, range_mismatches: 1}
+    oracle: "RO rows; PV301 to PV360 = 60 valves but quantity 65 (R-INS-02)"
+  - id: N03
+    in: {panel: BIO_UF, instrument_230v_a: 0.5, valve_va: 10, pneumatic_24v_a: 1, tower_lamp_24v_a: 0.2}
+    expect: {status: warning, dc_load_a: 1.618, instrument_mcb: 5SL42057RC, n_instrument_mcb: 12, valve_mcb: 5SL42057RC,
+             valve_current_a: 0.3043, n_fused_terminals: 34}
+    oracle: "19 × 0.022 + 1 + 0.2 = 1.618 A; valves 7 × 10 VA / 230 V = 0.304 A → 2P C 0.5 A (line 211); 12 instrument MCBs 0.5 A; 34 fused terminals"
+  - id: N04
+    in: {panel: XYZ}
+    expect: {status: invalid}
+    oracle: "panel must be BIO_UF or RO"

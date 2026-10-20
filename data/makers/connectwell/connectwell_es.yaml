@@ -1,0 +1,26 @@
+# Connectwell Electronic Solutions Catalogue 25-26 — CSR series compact slim relays, 1 CO electromechanical.
+# Transcribed 2026-10-11, checked against the page images. page = PDF page; printed page = PDF page − 3
+# (PDF p.44 = printed 41, PDF p.45 = printed 42).
+# The catalogue (133 pages) contains NO latching / bistable relay: a whole-document search for "latch",
+# "bistable", "monostable", "set", "reset" finds only "Long Latch IDC Connectors" (verified in G6).
+# The CSR data give no AC-15 and no DC-13 rating — only 6 A, 230 V AC / 30 V DC, 1500 VA / 180 W.
+
+source:
+  ref: CW-ES-2526
+  section: "Slim relays, electro mechanical relay 1 change over (pp. 44–45)"
+  printed_page_offset: -3
+
+rows:
+  - {kind: module, article: "CSR1S-24DXB", series: CSR, connection: screwless, coil: "24 V DC", nominal_input_ma: 7, pickup_v: 18, dropout_v: 1.2, input_mw: 168, polarity: "polarised (24 VDC)", width_mm: 6, page: 44}
+  - {kind: module, article: "CSR1S-24DYB", series: CSR, connection: screw, coil: "24 V DC", nominal_input_ma: 7, pickup_v: 18, dropout_v: 1.2, input_mw: 168, polarity: "polarised (24 VDC)", width_mm: 6, page: 44}
+  - {kind: contact, type: "CSR1S", contacts: "1 CO (SPDT)", rated_a: 6, max_v_ac: 230, max_v_dc: 30, max_va: 1500, max_w_dc: 180, ambient_min_c: -40, ambient_max_c: 55, page: 44}
+  - {kind: accessory, use: jumper, article: "JX4/2", ways: 2, page: 45}
+  - {kind: accessory, use: jumper, article: "JX4/3", ways: 3, page: 45}
+  - {kind: accessory, use: jumper, article: "JX4/4", ways: 4, page: 45}
+  - {kind: accessory, use: jumper, article: "JX4/5", ways: 5, page: 45}
+  - {kind: accessory, use: jumper, article: "JX4/8", ways: 8, page: 45}
+  - {kind: accessory, use: jumper, article: "JX4/10", ways: 10, page: 45}
+  - {kind: accessory, use: jumper, article: "JX4/16", ways: 16, page: 45}
+  - {kind: accessory, use: marker, article: "MC6", note: "Marker Card MC6 (Blank), standard pack 10 cards; tags per card: CW-TB-2526 p.289", page: 45}
+  - {kind: accessory, use: end_clamp, article: "CA103", page: 45}
+  - {kind: accessory, use: end_clamp, article: "CA104", page: 45}

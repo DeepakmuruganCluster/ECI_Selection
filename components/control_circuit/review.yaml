@@ -1,0 +1,52 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 25
+title: Control circuit (control transformer, MCBs, operator devices)
+what_it_does: >
+  Works out the 230 V control supply: the control load (contactor coils, pilot lamps, valves, 230 V
+  instruments), the control transformer from the company's standard sizes (150 to 1500 VA, costing
+  sheet) at 1.5 × the load (old switchgear template), and its primary (D-curve) and secondary
+  (C-curve) MCBs; or, without a transformer, one MCB on phase-neutral. It adds the operator devices
+  in the company's makes and prices: emergency stop with hood, reset push button, phase lamps, hour
+  meter. Coil and lamp consumption are not in the documents we hold (Siemens IC 10, Schneider data
+  sheets), so they are asked; until then the transformer is not sized.
+
+how_to_check:
+  - "Press 'Try it: 4 coils, 6 lamps'. 4 × 10 + 6 × 1 = 46 VA × 1.5 = 69 VA → the 150 VA transformer (costing sheet, row 26 of 'PROWASH 100'); primary 150/415 = 0.36 A → 2-pole D 0.5 A; secondary 150/230 = 0.65 A → 2-pole C 2 A."
+  - "The factor 1.5 is in Switchgear_Selection_Calculation.xls, sheet U1_Transformer, cell G13."
+
+spot_checks:
+  - {label: "4 coils, 6 lamps", tab: control_circuit, inputs: {supply: transformer, coils: 4, coil_va: 10, lamps: 6, lamp_va: 1}}
+  - {label: "E-stop, reset, phase lamps", tab: control_circuit, inputs: {supply: transformer, coils: 2, coil_va: 10, estop: 1, reset: 1, phase_lamps: true}}
+  - {label: "Coils from IC 10: 2 × 3RT2027 + 3 × 3RT2015 (99.4 VA → 150 VA)", tab: control_circuit, inputs: {supply: transformer, coil_power: [{close_va: 77, hold_va: 9.8, qty: 2}, {close_va: 27, hold_va: 4.2, qty: 3}]}}
+
+decisions:
+  - id: CC-1
+    question: "Control supply: a control transformer (as in every company drawing), or phase-neutral without a transformer?"
+    options: {transformer: "Control transformer", phase_neutral: "Phase-neutral"}
+    recommended: transformer
+    answered: "Owner 2026-10-17: ask every time — no default for a new machine; a template follows its own lines (transformer line → transformer)."
+  - id: CC-2
+    question: "The transformer is sized at 1.5 × the control load (old template). Keep this factor?"
+    options: {"yes": "Yes, 1.5", "no": "Another factor"}
+    recommended: "yes"
+  - id: CC-3
+    question: "Phase indication lamps R / Y / B on every panel door (company practice)?"
+    options: {"yes": "Yes", "no": "No"}
+    recommended: "yes"
+  - id: CC-4
+    question: "Hour meters: only where asked (company crusher panels have them per main motor)?"
+    options: {asked: "Only where asked", always: "One per main motor"}
+    recommended: asked
+  - id: CC-5
+    question: "Operator devices in Schneider (company costing sheet) also on Siemens-based panels?"
+    options: {"yes": "Yes, Schneider XB5 / XB7", "siemens": "No, Siemens 3SU (needs catalog IC 10)"}
+    recommended: "yes"
+  - id: CC-6
+    question: "Contactor coils draw much more when they close (e.g. 3RT2027: 77 VA closing, 9.8 VA holding, IC 10 p.3/30). How should the control transformer count them?"
+    options: {step: "All coils at holding power + the largest single closing step (coils switch one at a time)", all_close: "All coils at closing power (very large transformer)", hold_only: "Holding power only (as the template counts steady loads)"}
+    recommended: step
+
+fields:
+  supply: {label: "Control supply", options: ["transformer", "phase_neutral"]}
+  phase_lamps: {label: "Phase lamps R/Y/B", options: [true, false]}

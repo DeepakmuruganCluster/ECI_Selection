@@ -1,0 +1,74 @@
+# KEI copper conductor, XLPE insulated, armoured power cables up to 1100 V (IS 7098-1), multi-core.
+# Tables (left half of each two-page spread; the PDF pages are printed rotated):
+#   2-core PDF p.36 (printed 69), 3-core p.38 (printed 73), 3.5-core p.40 (printed 77), 4-core p.42 (printed 81).
+# page = PDF page. KEI prints two handbook pages per PDF page: left half printed 2·page − 3, right half 2·page − 2.
+# ground = "Buried Direct in the Ground @ 30 °C", duct = "In Single way buried Duct @ 30 °C", air = "In Air @ 40 °C"
+# r_ac90 = "Approx A.C Resistance of Conductor at 90 °C" (Ω/km), x50 = "Approx Reactance at 50 Hz" (Ω/km).
+# The 4 and 6 mm² sizes are listed twice (1 and 7 wires) with identical ratings: written once.
+# Basis (p.33 "Rating factors (XLPE)"): conductor 90 °C, air 40 °C, ground 30 °C, soil 1.5 K.m/W, depth 75 cm.
+# All sizes are offered with wire armour (the "Wire" weight column is filled for every row).
+
+source:
+  ref: KEI-TH-2023
+  section: "Copper XLPE armoured power cables up to 1100 V, 2/3/3.5/4 core (PDF pp. 36, 38, 40, 42, left half)"
+
+basis: {air_c: 40, ground_c: 30, soil_kmw: 1.5, depth_mm: 750, conductor_c: 90}
+basis_page: 33
+
+rows:
+  - {cores: "2", size: 4  , ground: 54 , duct: 45 , air: 48 , r_ac90: 5.90  , x50: 0.0927, page: 36}
+  - {cores: "2", size: 6  , ground: 67 , duct: 56 , air: 61 , r_ac90: 3.94  , x50: 0.0884, page: 36}
+  - {cores: "2", size: 10 , ground: 89 , duct: 75 , air: 83 , r_ac90: 2.34  , x50: 0.0837, page: 36}
+  - {cores: "2", size: 16 , ground: 115, duct: 96 , air: 108, r_ac90: 1.47  , x50: 0.0808, page: 36}
+  - {cores: "2", size: 25 , ground: 147, duct: 122, air: 140, r_ac90: 0.931 , x50: 0.08  , page: 36}
+  - {cores: "2", size: 35 , ground: 176, duct: 146, air: 172, r_ac90: 0.671 , x50: 0.08  , page: 36}
+  - {cores: "2", size: 50 , ground: 208, duct: 173, air: 208, r_ac90: 0.495 , x50: 0.078 , page: 36}
+  - {cores: "2", size: 70 , ground: 253, duct: 211, air: 262, r_ac90: 0.343 , x50: 0.077 , page: 36}
+  - {cores: "2", size: 95 , ground: 302, duct: 252, air: 322, r_ac90: 0.247 , x50: 0.074 , page: 36}
+  - {cores: "2", size: 120, ground: 340, duct: 284, air: 368, r_ac90: 0.196 , x50: 0.072 , page: 36}
+  - {cores: "2", size: 150, ground: 379, duct: 317, air: 419, r_ac90: 0.159 , x50: 0.072 , page: 36}
+  - {cores: "2", size: 185, ground: 425, duct: 357, air: 482, r_ac90: 0.127 , x50: 0.072 , page: 36}
+  - {cores: "2", size: 240, ground: 486, duct: 409, air: 566, r_ac90: 0.097 , x50: 0.072 , page: 36}
+  - {cores: "2", size: 300, ground: 541, duct: 456, air: 644, r_ac90: 0.077 , x50: 0.071 , page: 36}
+  - {cores: "2", size: 400, ground: 602, duct: 508, air: 734, r_ac90: 0.060 , x50: 0.07  , page: 36}
+  - {cores: "3", size: 4  , ground: 45 , duct: 38 , air: 41 , r_ac90: 5.90  , x50: 0.0927, page: 38}
+  - {cores: "3", size: 6  , ground: 56 , duct: 47 , air: 52 , r_ac90: 3.94  , x50: 0.0884, page: 38}
+  - {cores: "3", size: 10 , ground: 74 , duct: 62 , air: 70 , r_ac90: 2.34  , x50: 0.0837, page: 38}
+  - {cores: "3", size: 16 , ground: 95 , duct: 79 , air: 89 , r_ac90: 1.47  , x50: 0.0808, page: 38}
+  - {cores: "3", size: 25 , ground: 122, duct: 102, air: 119, r_ac90: 0.931 , x50: 0.080 , page: 38}
+  - {cores: "3", size: 35 , ground: 146, duct: 122, air: 147, r_ac90: 0.671 , x50: 0.080 , page: 38}
+  - {cores: "3", size: 50 , ground: 173, duct: 144, air: 179, r_ac90: 0.495 , x50: 0.078 , page: 38}
+  - {cores: "3", size: 70 , ground: 212, duct: 177, air: 226, r_ac90: 0.343 , x50: 0.077 , page: 38}
+  - {cores: "3", size: 95 , ground: 254, duct: 212, air: 279, r_ac90: 0.247 , x50: 0.074 , page: 38}
+  - {cores: "3", size: 120, ground: 287, duct: 240, air: 320, r_ac90: 0.196 , x50: 0.072 , page: 38}
+  - {cores: "3", size: 150, ground: 321, duct: 269, air: 365, r_ac90: 0.159 , x50: 0.072 , page: 38}
+  - {cores: "3", size: 185, ground: 362, duct: 304, air: 422, r_ac90: 0.127 , x50: 0.072 , page: 38}
+  - {cores: "3", size: 240, ground: 418, duct: 352, air: 500, r_ac90: 0.097 , x50: 0.072 , page: 38}
+  - {cores: "3", size: 300, ground: 469, duct: 396, air: 574, r_ac90: 0.077 , x50: 0.071 , page: 38}
+  - {cores: "3", size: 400, ground: 528, duct: 447, air: 662, r_ac90: 0.060 , x50: 0.070 , page: 38}
+  - {cores: "3.5", size: 25 , ground: 122, duct: 102, air: 119, r_ac90: 0.931 , x50: 0.080 , page: 40}
+  - {cores: "3.5", size: 35 , ground: 146, duct: 122, air: 147, r_ac90: 0.671 , x50: 0.080 , page: 40}
+  - {cores: "3.5", size: 50 , ground: 173, duct: 144, air: 179, r_ac90: 0.495 , x50: 0.078 , page: 40}
+  - {cores: "3.5", size: 70 , ground: 212, duct: 177, air: 226, r_ac90: 0.343 , x50: 0.077 , page: 40}
+  - {cores: "3.5", size: 95 , ground: 254, duct: 212, air: 279, r_ac90: 0.247 , x50: 0.074 , page: 40}
+  - {cores: "3.5", size: 120, ground: 287, duct: 240, air: 320, r_ac90: 0.196 , x50: 0.072 , page: 40}
+  - {cores: "3.5", size: 150, ground: 321, duct: 269, air: 365, r_ac90: 0.159 , x50: 0.072 , page: 40}
+  - {cores: "3.5", size: 185, ground: 362, duct: 304, air: 422, r_ac90: 0.127 , x50: 0.072 , page: 40}
+  - {cores: "3.5", size: 240, ground: 418, duct: 352, air: 500, r_ac90: 0.097 , x50: 0.072 , page: 40}
+  - {cores: "3.5", size: 300, ground: 469, duct: 396, air: 574, r_ac90: 0.077 , x50: 0.071 , page: 40}
+  - {cores: "3.5", size: 400, ground: 528, duct: 447, air: 662, r_ac90: 0.060 , x50: 0.070 , page: 40}
+  - {cores: "4", size: 4  , ground: 45 , duct: 38 , air: 41 , r_ac90: 5.90  , x50: 0.0927, page: 42}
+  - {cores: "4", size: 6  , ground: 56 , duct: 47 , air: 52 , r_ac90: 3.94  , x50: 0.0884, page: 42}
+  - {cores: "4", size: 10 , ground: 74 , duct: 62 , air: 70 , r_ac90: 2.34  , x50: 0.0837, page: 42}
+  - {cores: "4", size: 16 , ground: 95 , duct: 79 , air: 89 , r_ac90: 1.47  , x50: 0.0808, page: 42}
+  - {cores: "4", size: 25 , ground: 122, duct: 102, air: 119, r_ac90: 0.931 , x50: 0.080 , page: 42}
+  - {cores: "4", size: 35 , ground: 146, duct: 122, air: 147, r_ac90: 0.671 , x50: 0.080 , page: 42}
+  - {cores: "4", size: 50 , ground: 173, duct: 144, air: 179, r_ac90: 0.495 , x50: 0.078 , page: 42}
+  - {cores: "4", size: 70 , ground: 212, duct: 177, air: 226, r_ac90: 0.343 , x50: 0.077 , page: 42}
+  - {cores: "4", size: 95 , ground: 254, duct: 212, air: 279, r_ac90: 0.247 , x50: 0.074 , page: 42}
+  - {cores: "4", size: 120, ground: 287, duct: 240, air: 320, r_ac90: 0.196 , x50: 0.072 , page: 42}
+  - {cores: "4", size: 150, ground: 321, duct: 269, air: 365, r_ac90: 0.159 , x50: 0.072 , page: 42}
+  - {cores: "4", size: 185, ground: 362, duct: 304, air: 422, r_ac90: 0.127 , x50: 0.072 , page: 42}
+  - {cores: "4", size: 240, ground: 418, duct: 352, air: 500, r_ac90: 0.097 , x50: 0.072 , page: 42}
+  - {cores: "4", size: 300, ground: 469, duct: 396, air: 574, r_ac90: 0.077 , x50: 0.071 , page: 42}
+  - {cores: "4", size: 400, ground: 528, duct: 447, air: 662, r_ac90: 0.060 , x50: 0.070 , page: 42}

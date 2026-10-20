@@ -1,0 +1,24 @@
+# Panel assembly rules. The assembly adds no data; it chains components.
+# Authority: MFR = manufacturer document, RULE = our decision (SIGNOFF.md).
+
+component: panel
+
+rules:
+  R-PNL-01: {authority: RULE, text: "Load list: one load per line 'TAG kW STARTER [key=value …]'; tags must be unique; any unreadable line makes the input invalid."}
+  R-PNL-12: {authority: OWN,  text: "Star-delta (SD) lines take the starter core from the company kit (component feeder_kit): line, delta and star contactors, overload relay, timer, auxiliary blocks. The star-delta motor cables (two runs at FLC/√3) are not sized yet (open point)."}
+  R-PNL-13: {authority: OWN,  text: "dol_source = company: DOL lines take the company kit's MPCB, contactor and auxiliary contacts (Schneider), checked against the motor by feeder_kit, instead of the Siemens selection (component 2)."}
+  R-PNL-15: {authority: RULE, text: "Soft starter line (SS): component 5 (3RW52) at the panel internal temperature, starting class from duty= (R-SS-06), protection by decision SS-2; the soft starter's motor protection is set to the FLC and is the motor cable's overload device (In = FLC). Its power loss is not printed: heat incomplete."}
+  R-PNL-14: {authority: OWN,  text: "kit_accessories: every DOL and SD feeder gets the company kit's accessories (pilot lamps, power / earth / control terminals, end plates, end clamps, wiring accessories) with their indicative prices; with Siemens starters the kit's Schneider auxiliary contacts do not fit (open point); no kit for the size → open point."}
+  R-PNL-11: {authority: RULE, text: "A drive or soft starter line may give duty=normal|heavy (drive: LO / HO rating, R-VFD-02; soft starter: starting class, R-SS-06); without it the component default applies (drive: normal; soft starter: Class 10A, noted)."}
+  R-PNL-02: {authority: RULE, text: "Each line runs through its components in order. A refusal stops that line and becomes an open point; nothing is substituted. motor_pf is optional: not given, each motor cable takes the worst-case voltage drop (R-CAB-09)."}
+  R-PNL-03: {authority: RULE, text: "DOL feeder cable: the overload device is the MPCB set at the motor FLC, so In = FLC for the cable check."}
+  R-PNL-04: {authority: MFR,  text: "VFD motor cable: the Power Module provides integral motor overload and output short-circuit protection (SIE-G120-PROT p.3), so the cable is checked without an upstream overload device."}
+  R-PNL-05: {authority: RULE, text: "Drives are derated at the panel internal temperature; the enclosure must hold that temperature at the site ambient."}
+  R-PNL-06: {authority: RULE, text: "Quantities: the BOM counts every installed unit (running + standby); heat counts running units only, plus the Control Unit of every installed drive."}
+  R-PNL-07: {authority: RULE, text: "Panel heat only adds losses from held sources (drive power module, Control Unit < 40 W per SIE-PM240-2 p.34). Devices without a sourced loss (MPCB, contactor) are listed and the heat is marked incomplete (warning)."}
+  R-PNL-08: {authority: RULE, text: "Parts whose components are not built yet (incomer, busbar, short-circuit level, control power, auxiliary switchgear, drive Control Unit) are listed as not selected; the panel is incomplete (warning)."}
+  R-PNL-09: {authority: RULE, text: "Every warning a component gives is carried to the panel's open points with its tag and rule id."}
+  R-PNL-10: {authority: RULE, text: "Out of scope by owner instruction (2026-10-11): heater feeders and enclosures. Heater lines are listed as excluded (not open points); enclosure cooling is assessed only when asked (site ambient and altitude given)."}
+
+params:
+  cu_loss_w: 40            # SIE-PM240-2 p.34: Control Unit power loss < 0.04 kW (upper bound used)

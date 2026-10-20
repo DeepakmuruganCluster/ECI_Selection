@@ -1,0 +1,25 @@
+# SENTRON 7KM PAC3220 power monitoring device: the values this component uses.
+# Equipment Manual 10/2019 (L1V30425208F-01). page = PDF page; the number printed at the
+# bottom of the page is 2 lower (PDF p.98 = printed 96).
+
+source:
+  ref: SIE-PAC3220
+  section: "Accessories (pp. 9–10), features (pp. 15, 17), connection 3P4W (p.48), CT settings (p.75), device information (p.73), technical data (pp. 98–99, 106–107)"
+  printed_page_offset: -2
+
+rows:
+  - {item: accessories_only_pac3220, value: "7KM Switched Ethernet PROFINET expansion module (7KM9300-0AE02-0AA0) listed under 'Accessories available only for the PAC3220'", page: 10}
+  - {item: profinet_module_article, value: 7KM9300-0AE02-0AA0, page: 10}
+  - {item: max_comm_modules, value: 1, note: "supports two expansion modules; one of these may be a communication module", page: 17}
+  - {item: direct_connection_uln_max_v, value: 400, note: "can be directly connected in any low-voltage system up to a rated voltage UL-N of 400 V", page: 15}
+  - {item: rated_voltage_ull_max_v, value: 690, note: "Rated voltage 57.7/100 … 400/690 V (IEC)", page: 98}
+  - {item: ct_secondary_a, value: [1, 5], note: "Input current: rated current 1 x/1 A, rated current 2 x/5 A", page: 98}
+  - {item: meter_burden_va, value: 0.3, at_a: 5, note: "Measuring inputs for current: Max. power consumption per phase 300 mVA at 5 A", page: 98}
+  - {item: max_continuous_a, value: 10, note: "Max. permissible continuous current 10 A", page: 98}
+  - {item: active_energy_class, value: "0.5", note: "Accuracy class acc. to IEC 61557-12, active energy 0.5", page: 99}
+  - {item: ct_primary_range_a, value: [1, 99999], note: "CT PRIMARY 1 … 99999 A", page: 75}
+  - {item: ct_secondary_setting_a, value: [1, 5], note: "CT SECONDARY 1 A / 5 A", page: 75}
+  - {item: article_pattern, value: 7KM3x20-xBA01-1xA0, note: "Device information: 'Article number of the device' (PAC3120 and PAC3220 template)", page: 73}
+  - {item: article_on_certificate_link, value: 7KM3220-1BA01-1EA0, note: "PAC3220 certificate link under Approvals; the manual does not say which supply version this number is", page: 107}
+  - {item: ambient_c, value: [-25, 55], note: "Ambient temperature during operation −25 … +55 °C (K55)", page: 106}
+  - {item: cts_for_3p4w, value: 3, note: "Connection type 3P4W, without voltage transformer, with three current transformers (Figure 4-3)", page: 48}

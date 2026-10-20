@@ -1,0 +1,723 @@
+# Source register (v2). A data file may only cite a reference listed here.
+# A stored reference must have its file in sources/ with the recorded SHA-256;
+# the loader refuses data whose source file is missing or changed.
+
+references:
+  SIE-SIRIUS-CM:
+    title: "Siemens Configuration Manual 'Load feeders – Configuring the SIRIUS Modular System'"
+    edition: "09/2017, A8E56203880102A/RS-AB/006"
+    publisher: Siemens
+    kind: manufacturer manual
+    access: stored
+    file: pdf/manufacturer/siemens/manual_load_feeder_configuration_en-US.pdf
+    sha256: d7658207556c58ef71e97f60549fe78a11f2cf04bdb6446f974f35f8690031cd
+    obtained_from: cache.industry.siemens.com
+
+  SIE-PM240-2:
+    title: "Siemens SINAMICS G120 Power Module PM240-2 Hardware Installation Manual"
+    edition: "07/2022, A5E33294624B AN"
+    publisher: Siemens
+    kind: manufacturer manual
+    access: stored
+    file: pdf/manufacturer/siemens/G120_PM240-2_hw_inst_man_0722_en-US.pdf
+    sha256: 0b5e3b9db090a000c9052f9d96e84ad0c208325377693b6a8a9dd559d11c3014
+    obtained_from: "mroelectric.com — third-party mirror of the Siemens manual; compare with the official copy (support.industry.siemens.com) before release"
+    printed_page_offset: -2      # data cites the PDF page; the number printed on the page is 2 lower
+
+  SIE-3VM-LV31:
+    title: "Siemens SENTRON 3VM Molded Case Circuit Breakers, Catalog LV 31"
+    edition: "2018"
+    publisher: Siemens
+    kind: manufacturer catalogue
+    access: stored
+    file: pdf/manufacturer/siemens/3VM_LV31_2018_en.pdf
+    sha256: 03f23d93a42ab4b68777599118ebd4d3e68322472820b99c0ac0142aa03124b3
+    obtained_from: "assets.new.siemens.com (official), downloaded 2026-10-10; the only official 3VM catalogue found (old edition)"
+
+  POLYCAB-LT-V9:
+    title: "Polycab LT cable catalogue v9 — XLPE insulated heavy duty cables 650/1100 V, IS 7098 (Part 1)"
+    edition: "2022 (v9)"
+    publisher: Polycab
+    kind: manufacturer catalogue
+    access: stored
+    file: pdf/manufacturer/polycab/Polycab_LT_cable_catalog_v9.pdf
+    sha256: 5f9aeb3c6f3106e6f7e20b87439e792976d107c79a339436dde16e9371945511
+    obtained_from: "cms.polycab.com (official), downloaded 2026-10-10"
+
+  KEI-TH-2023:
+    title: "KEI Industries Technical Handbook (wires and cables)"
+    edition: "2023 (file dated 15 Feb 2023)"
+    publisher: KEI Industries
+    kind: manufacturer handbook
+    access: stored
+    file: pdf/manufacturer/kei/KEI_technical_hand_book.pdf
+    sha256: 445b3a775ad2fc9cc152c60cd98bcbbad67f6aea28c16c0bf6a0891489394d42
+    obtained_from: "kei-ind.com (official), downloaded 2026-10-10"
+
+  RITTAL-TSC-3124300:
+    title: "Rittal Technical System Catalogue — Cooling with ambient air / climate control (3124300, EN)"
+    edition: "3124300 EN"
+    publisher: Rittal
+    kind: manufacturer catalogue
+    access: stored
+    file: pdf/manufacturer/rittal/Rittal_TSC_climate_3124300_EN.pdf
+    sha256: bf5ea5b9d1cca0e44419ff34e1e6693a53ddee4d56951dd3048a866b8e7889a6
+    obtained_from: "rittal.com (official), downloaded 2026-10-10"
+
+  SE-CT158:
+    title: "Schneider Electric Cahier Technique no. 158 — Calculation of short-circuit currents"
+    edition: "June 2000 reprint (predates IEC 60909-0:2016 / 2026)"
+    publisher: Schneider Electric
+    kind: technical guide
+    access: stored
+    file: pdf/guides/SE-CT158/ect158_mirror_eduscol.pdf
+    sha256: 91adeeee24b1e266587f1eba2e3f87f9b614a39e2ab944cdf9897835e9d96b6f
+    obtained_from: "third-party mirror (sti.eduscol.education.fr); se.com was under maintenance. Cross-check only — not a basis for IEC 60909-0:2026 values"
+
+  SIE-G120-PROT:
+    title: "Siemens SINAMICS G120 Product Information — Protective Devices for SINAMICS G120 Power Module PM240-2"
+    edition: "07/2021, A5E38006119A AG"
+    publisher: Siemens
+    kind: manufacturer product information
+    access: stored
+    file: pdf/manufacturer/siemens/G120_PM240-2_protective_device_prod_info_0721.pdf
+    sha256: 4e6ab4a1ca966c6978d30dc3717ee6e6f705cde45c716cae00c61dcf05bbaf96
+    obtained_from: "cache.industry.siemens.com (official, SIOS 109486009), downloaded 2026-10-10; replaces withdrawn entry 109801083"
+
+  ECI-WNS2503-AUTO:
+    title: "ECI WNS2503 — Automation_Rittal Panel Specification (Siemens) Rev02"
+    edition: "Rev02, 03-06-2025"
+    publisher: ECI (client)
+    kind: client specification
+    access: stored
+    file: "pdf/client/ECI-WNS2503/Automation_Rittal  Panel Specification_Siemens_Rev02_WNS2503_03062025.pdf"
+    sha256: f969966ed14a46ec0e923900ecd78b119fad9f16f3413f8abad813d8d95fcaf5
+    obtained_from: "client input (copied from panel-selector/projects/WNS2503/input)"
+
+  ECI-WNS2503-EQUIP:
+    title: "ECI WNS2503 — Complete Equipment Panel Specification (Siemens) Rev02"
+    edition: "Rev02, 03-06-2025"
+    publisher: ECI (client)
+    kind: client specification
+    access: stored
+    file: "pdf/client/ECI-WNS2503/Complete Equipment Panel Specification_Siemens_Rev02_WNS2503_03062025.pdf"
+    sha256: 49ed68494d5f4dba7e6a1b8b8e0d8535ad346df5a698e61f3e51a6df86007e53
+    obtained_from: "client input (copied from panel-selector/projects/WNS2503/input)"
+
+  ECI-WNS2503-LOADS:
+    title: "ECI WNS2503 — VFD_SS_DOL Panel Specification (Siemens) Rev02 (load list, Word)"
+    edition: "Rev02, 03-06-2025"
+    publisher: ECI (client)
+    kind: client specification
+    access: stored
+    file: "pdf/client/ECI-WNS2503/VFD_SS_DOL Panel Specification_Siemens_Rev02_WNS2503_03062025.docx"
+    sha256: bf94d67c1fb7a3b85a526ae853cc78525675d768ea4e219b6ac5f1e796bf13c9
+    obtained_from: "client input (copied from panel-selector/projects/WNS2503/input)"
+
+
+  SIE-PAC3220:
+    title: "Siemens SENTRON PAC3120 / PAC3220 Power Monitoring Device — Equipment Manual"
+    edition: "10/2019, L1V30425208F-01"
+    publisher: Siemens
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/siemens/PAC3120_PAC3220_equipment_manual_1019_en.pdf
+    sha256: 47b3aee29285e986e83de97f27256ee13e83644e1f78784c4fbc4008b5d38f4e
+    obtained_from: "assets.new.siemens.com, downloaded 2026-10-11"
+
+  SIE-7KM-PN:
+    title: "Siemens SENTRON 7KM PAC PROFIBUS DP / Switched Ethernet PROFINET expansion module — Equipment Manual"
+    edition: "01/2020, A5E01168846B-09"
+    publisher: Siemens
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/siemens/7KM_PAC_PROFINET_module_manual_0120_en.pdf
+    sha256: 2c24b669f3fd1e0711ae1ac1089f0ba6159f20062d2d0942e353556cedf95203
+    obtained_from: "cache.industry.siemens.com (SIOS 26504372), downloaded 2026-10-11"
+
+  RISH-LTRP:
+    title: "Rishabh RISH LTRP current transformer series — data sheet"
+    edition: "REV 08"
+    publisher: Rishabh Instruments
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/rishabh/LTRP/RISH_LTRP_CT_REV_08.pdf
+    sha256: 8ee91d87885236d078757e00c6283ef402fc864b871335c3a266bafda901ab89
+    obtained_from: "rishabh.co.in, downloaded 2026-10-11"
+
+  RISH-TW:
+    title: "Rishabh RISH TW series round CTs — data sheet"
+    edition: "Rev D 07/26"
+    publisher: Rishabh Instruments
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/rishabh/TW/RISH_TW_Round_CTs_RevD_0726.pdf
+    sha256: 4b694912484cc633a870e5f65752b661836d7fa7f9e6789347eb292d014da8f8
+    obtained_from: "rishabh.co.in, downloaded 2026-10-11"
+
+  RISH-XMER:
+    title: "Rishabh RISH XMER 3-phase current transformer series — data sheet"
+    edition: "Rev H 07/26"
+    publisher: Rishabh Instruments
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/rishabh/XMER/RISH_XMER_3phase_RevH_0726.pdf
+    sha256: f3f392530acd5ae00825360a482d37e4b63ebbc453b955c2424be1c076966ae0
+    obtained_from: "rishabh.co.in, downloaded 2026-10-11"
+
+  SELEC-CT:
+    title: "Selec Analog meters & Current transformers catalogue"
+    edition: "uploaded 2024-06-15"
+    publisher: Selec Controls
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/selec/CT/Selec_Analog_meters_Current_transformers_2024.pdf
+    sha256: 422d730e4c0c807fff164249d98f2344495b5d805bb40efd98b126ec9e9901b4
+    obtained_from: "selec.com, downloaded 2026-10-11"
+
+  SELEC-MEAS:
+    title: "Selec Electrical Measurement & Protection Catalog"
+    edition: "uploaded 2026-06-24"
+    publisher: Selec Controls
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/selec/measurement/Selec_Electrical_Measurement_Protection_Catalog_2026.pdf
+    sha256: c45d3f77376cb64c32f24ee64b96dc3668a3ae77d7944e5c40338830884dad40
+    obtained_from: "selec.com, downloaded 2026-10-11"
+
+  FINDER-S38:
+    title: "Finder Series 38 relay interface modules (catalogue S38EN)"
+    edition: "as downloaded 2026-10-11"
+    publisher: Finder
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/finder/S38/S38EN.pdf
+    sha256: 3e53d56c56bd127e8da9e206e1ba4b97fd6f8145a5ac5ff75eb93dcdf89c100c
+    obtained_from: "cdn.findernet.com, downloaded 2026-10-11"
+
+  FINDER-S39:
+    title: "Finder Series 39 MasterINTERFACE relay modules (catalogue S39EN)"
+    edition: "as downloaded 2026-10-11"
+    publisher: Finder
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/finder/S39/S39EN.pdf
+    sha256: 0895854df29766f54977e581b46561f25216a72d2018ca9a7c7eba4e3050bacc
+    obtained_from: "cdn.findernet.com, downloaded 2026-10-11"
+
+  FINDER-S20:
+    title: "Finder Series 20 modular step / bistable relays (catalogue S20EN)"
+    edition: "as downloaded 2026-10-11"
+    publisher: Finder
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/finder/S20/S20EN.pdf
+    sha256: 46d95a39f94e869fc7906a88e35ef437888df7e86bd3bd1b5eae8778ed2ef2e2
+    obtained_from: "cdn.findernet.com, downloaded 2026-10-11"
+
+  FINDER-S40:
+    title: "Finder Series 40 miniature PCB/plug-in relays (catalogue S40EN)"
+    edition: "as downloaded 2026-10-11"
+    publisher: Finder
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/finder/S40/S40EN.pdf
+    sha256: 6b79746957d82d1aeca0ce2bd7d8c91643e067a0e50d3ee00853ebe642341657
+    obtained_from: "cdn.findernet.com, downloaded 2026-10-11"
+
+  FINDER-S13:
+    title: "Finder Series 13 electronic step / bistable relays (catalogue S13EN)"
+    edition: "as downloaded 2026-10-11"
+    publisher: Finder
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/finder/S13/S13EN.pdf
+    sha256: 7bd855337c99ad840bc2b009999e326cbfc7a3567d65f43a8eac0bbb36fafda8
+    obtained_from: "cdn.findernet.com, downloaded 2026-10-11"
+
+  CW-TB-2526:
+    title: "Connectwell Terminal Blocks Catalogue 25-26"
+    edition: "25-26"
+    publisher: Connectwell
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/connectwell/terminal-blocks/Connectwell_Terminal_Blocks_Catalogue_25_26.pdf
+    sha256: 404aeed685f29442ee22e770d12e329fd5ccacb638b8c9ed48ca36775ba8b15d
+    obtained_from: "connectwell.com (S3 download), downloaded 2026-10-11"
+
+  CW-ES-2526:
+    title: "Connectwell Electronic Solutions Catalogue 25-26"
+    edition: "25-26"
+    publisher: Connectwell
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/connectwell/electronic/Connectwell_Electronic_Solutions_Catalogue_25_26.pdf
+    sha256: fbf0deb63431a1b9e3f30bc2c956d28bc755826f54269a363c30e0046e163513
+    obtained_from: "connectwell.com (S3 download), downloaded 2026-10-11"
+
+  RITTAL-3239100:
+    title: "Rittal SK 3239.100 TopTherm filter fan — data sheet"
+    edition: "generated 2026-10-11 (pdf-creator)"
+    publisher: Rittal
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/rittal/3239100/Rittal_3239100.pdf
+    sha256: fa3f9cdbc7022da6d4f4e8c969d13a9a4c16c683bf2ae31c03b0f7404608b67e
+    obtained_from: "rittal.com pdf-creator, downloaded 2026-10-11"
+
+  RITTAL-3239200:
+    title: "Rittal SK 3239.200 outlet filter — data sheet"
+    edition: "generated 2026-10-11 (pdf-creator)"
+    publisher: Rittal
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/rittal/3239200/Rittal_3239200.pdf
+    sha256: dfa14352f862289a802c6c7fc851673ff5ac78e2f5d51d58e7be9ae3d7cc1b6e
+    obtained_from: "rittal.com pdf-creator, downloaded 2026-10-11"
+
+  RITTAL-3240100:
+    title: "Rittal SK 3240.100 TopTherm filter fan — data sheet"
+    edition: "generated 2026-10-11 (pdf-creator)"
+    publisher: Rittal
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/rittal/3240100/Rittal_3240100.pdf
+    sha256: 8c4bdbcb26866411da250416ef2f363d08aeb2bdd47553c05bb42296e175252e
+    obtained_from: "rittal.com pdf-creator, downloaded 2026-10-11"
+
+  RITTAL-3240200:
+    title: "Rittal SK 3240.200 outlet filter — data sheet"
+    edition: "generated 2026-10-11 (pdf-creator)"
+    publisher: Rittal
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/rittal/3240200/Rittal_3240200.pdf
+    sha256: 33eef10239dee10c9078fa0403f2bed932e4fe4da355a2dd40b8983129dedcad
+    obtained_from: "rittal.com pdf-creator, downloaded 2026-10-11"
+
+  RITTAL-4127010:
+    title: "Rittal SZ 4127.010 door-operated switch — data sheet"
+    edition: "generated 2026-10-11 (pdf-creator)"
+    publisher: Rittal
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/rittal/4127010/Rittal_4127010.pdf
+    sha256: 002130716a393a1b3c80330833ed9686d3b0c5637055f375b36b9ef9ec0f8617
+    obtained_from: "rittal.com pdf-creator, downloaded 2026-10-11"
+
+  RITTAL-4140820:
+    title: "Rittal SZ 4140.820 LED system light — data sheet"
+    edition: "generated 2026-10-11 (pdf-creator)"
+    publisher: Rittal
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/rittal/4140820/Rittal_4140820.pdf
+    sha256: a7068274a4ead7bc9d5a3a5105fbda515c88607804477d35f80024b48b7a289d
+    obtained_from: "rittal.com pdf-creator, downloaded 2026-10-11"
+
+  RITTAL-8601060:
+    title: "Rittal TS 8601.060 plinth component — data sheet"
+    edition: "generated 2026-10-11 (pdf-creator)"
+    publisher: Rittal
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/rittal/8601060/Rittal_8601060.pdf
+    sha256: 34e2b2e1488ecb812e7fe8088458d2f05e8fa82874376c3700c892ae40ff2f2d
+    obtained_from: "rittal.com pdf-creator, downloaded 2026-10-11"
+
+  RITTAL-8602060:
+    title: "Rittal TS 8602.060 plinth component — data sheet"
+    edition: "generated 2026-10-11 (pdf-creator)"
+    publisher: Rittal
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/rittal/8602060/Rittal_8602060.pdf
+    sha256: 2c7458ae6faac37afe5d59470dd8a9909e1aeab20101c4324fee89c4b8f693f7
+    obtained_from: "rittal.com pdf-creator, downloaded 2026-10-11"
+
+  LAPP-POWER:
+    title: "Lapp Cable Guide — Power Rating (current-carrying capacity, DIN VDE 0298-4)"
+    edition: "as downloaded 2026-10-11"
+    publisher: Lapp
+    kind: manufacturer document
+    access: stored
+    file: pdf/manufacturer/lapp/power-rating/Lapp_Cable_Guide_Power_Rating.pdf
+    sha256: 5d266c7b55cb51f647e7d1699e22040015fceaf98900e486fefa912b795eed77
+    obtained_from: "t3.lappcdn.com, downloaded 2026-10-11"
+
+  OWN-VFD-DB:
+    title: "ECI-VFD-Selection — VFD component database (sheets: Power module, Control Unit, Operator panel)"
+    edition: "database.xlsx as of 2026-05-07"
+    publisher: "own (Clustervise ECI-VFD-Selection project)"
+    kind: own database
+    access: stored
+    file: pdf/own/eci-vfd-selection/vfd_database.xlsx
+    sha256: 61d9b720fba8132f6e58196439af4aaf6c0332fdddfce23b97c95e297ee8e5cc
+    obtained_from: "~/Documents/ECI-VFD-Selection-main/data/database.xlsx (copied 2026-10-11)"
+
+  OWN-CU-LOGIC:
+    title: "ECI-VFD-Selection — Control Unit selection logic (flowchart)"
+    edition: "Reference/Control_unit.pdf as of 2026-05-07"
+    publisher: "own (Clustervise ECI-VFD-Selection project)"
+    kind: own selection logic
+    access: stored
+    file: pdf/own/eci-vfd-selection/control_unit_logic.pdf
+    sha256: cb4f134d6167dbcd44c43e13909346100f7a81e9fcebe17fe1465d0206514568
+    obtained_from: "~/Documents/ECI-VFD-Selection-main/Reference/Control_unit.pdf (copied 2026-10-11)"
+
+  OWN-CU-LOGIC-ALT:
+    title: "ECI-VFD-Selection — Control Unit selection logic, second version (file named 'Power unit.pdf'; adds an SBC branch and SDI)"
+    edition: "Reference/Power unit.pdf as of 2026-05-07"
+    publisher: "own (Clustervise ECI-VFD-Selection project)"
+    kind: own selection logic
+    access: stored
+    file: pdf/own/eci-vfd-selection/control_unit_logic_alt_named_power_unit.pdf
+    sha256: dc7978bf9c1dea7cd7054b1a17a47a874c9f2ebfbe7e97b35a34b232dba13cda
+    obtained_from: "~/Documents/ECI-VFD-Selection-main/Reference/Power unit.pdf (copied 2026-10-11)"
+
+  OWN-MC-LOGIC:
+    title: "ECI-VFD-Selection — Memory card + licence selection logic (flowchart)"
+    edition: "Reference/Memory card.pdf as of 2026-05-07"
+    publisher: "own (Clustervise ECI-VFD-Selection project)"
+    kind: own selection logic
+    access: stored
+    file: pdf/own/eci-vfd-selection/memory_card_logic.pdf
+    sha256: c2e3cb31e99dc43c7f086c715daa8411f38a34c4d616e7eafdd9c3f377dfa43d
+    obtained_from: "~/Documents/ECI-VFD-Selection-main/Reference/Memory card.pdf (copied 2026-10-11)"
+
+  # --- own switchgear database from panel-selector v1 (data/sources/switchgears), copied 2026-10-12.
+  # No manufacturer document behind these rows: authority OWN, article numbers to confirm before ordering.
+  OWN-SWG-MCB:
+    title: "MCB list (Schneider, Siemens, Mitsubishi, Legrand, AB; B / C / D curves, magnetic trip band)"
+    edition: "as held in panel-selector v1 (files dated 2026-10-08; template saved 2012-10-31)"
+    publisher: "own (company switchgear database)"
+    kind: own database
+    access: stored
+    file: pdf/own/switchgears/MCB.csv
+    sha256: 1e79c251b60f9905f2c718d796a9498714aeda2db98923890eadc543ad980be6
+    obtained_from: "~/Documents/panel-selector/data/sources/switchgears/MCB.csv (copied 2026-10-12)"
+
+  OWN-SWG-MCCB:
+    title: "MCCB list (Schneider, Siemens 3VA1, AB, Legrand)"
+    edition: "as held in panel-selector v1 (files dated 2026-10-08; template saved 2012-10-31)"
+    publisher: "own (company switchgear database)"
+    kind: own database
+    access: stored
+    file: pdf/own/switchgears/MCCB.csv
+    sha256: 4eabf18b6881edfdedffb61b0eda8e42498702777dfd5af6cb1aa57654be1d86
+    obtained_from: "~/Documents/panel-selector/data/sources/switchgears/MCCB.csv (copied 2026-10-12)"
+
+  OWN-SWG-MPCB:
+    title: "MPCB list (setting ranges; Siemens rows checked against SIE-SIRIUS-CM)"
+    edition: "as held in panel-selector v1 (files dated 2026-10-08; template saved 2012-10-31)"
+    publisher: "own (company switchgear database)"
+    kind: own database
+    access: stored
+    file: pdf/own/switchgears/MPCB.csv
+    sha256: 72b1f7d4ccb1a2ea07e07a54aa5b48b84b8259c8ebd0a8094da437d25add2ab3
+    obtained_from: "~/Documents/panel-selector/data/sources/switchgears/MPCB.csv (copied 2026-10-12)"
+
+  OWN-SWG-RCCB:
+    title: "RCCB list (2 / 4 pole, 30 / 100 / 300 mA)"
+    edition: "as held in panel-selector v1 (files dated 2026-10-08; template saved 2012-10-31)"
+    publisher: "own (company switchgear database)"
+    kind: own database
+    access: stored
+    file: pdf/own/switchgears/RCCB.csv
+    sha256: 54758a1cb66050ea3f84f2b2079162624c4d2002184f9c6429905279a60f055d
+    obtained_from: "~/Documents/panel-selector/data/sources/switchgears/RCCB.csv (copied 2026-10-12)"
+
+  OWN-SWG-ISO:
+    title: "Isolator list (Schneider Vario VCF, Siemens 3LD)"
+    edition: "as held in panel-selector v1 (files dated 2026-10-08; template saved 2012-10-31)"
+    publisher: "own (company switchgear database)"
+    kind: own database
+    access: stored
+    file: pdf/own/switchgears/isolator.csv
+    sha256: 07ca1165d112c03a3ad4aaf4642bbdda0f016865d22abc84ed6b30fb5a04b060
+    obtained_from: "~/Documents/panel-selector/data/sources/switchgears/isolator.csv (copied 2026-10-12)"
+
+  OWN-SWG-SA:
+    title: "Surge arrester list (OBO, Phoenix)"
+    edition: "as held in panel-selector v1 (files dated 2026-10-08; template saved 2012-10-31)"
+    publisher: "own (company switchgear database)"
+    kind: own database
+    access: stored
+    file: pdf/own/switchgears/sa.csv
+    sha256: a56fe4c53464bf9fdedc710a8bc9475db0b0112d12c97cdc7a728d80c0804c9c
+    obtained_from: "~/Documents/panel-selector/data/sources/switchgears/sa.csv (copied 2026-10-12)"
+
+  OWN-SWG-PMR:
+    title: "Phase monitoring relay list"
+    edition: "as held in panel-selector v1 (files dated 2026-10-08; template saved 2012-10-31)"
+    publisher: "own (company switchgear database)"
+    kind: own database
+    access: stored
+    file: pdf/own/switchgears/pmr.csv
+    sha256: e12580c65bbec755007c910d5fa733f1a2093e15fa893b1252cb1cf1c1f9ef8a
+    obtained_from: "~/Documents/panel-selector/data/sources/switchgears/pmr.csv (copied 2026-10-12)"
+
+  OWN-SWG-SMPS:
+    title: "24 V DC power supply list (Omron S8VK; rows 15 … 1000 blank)"
+    edition: "as held in panel-selector v1 (files dated 2026-10-08; template saved 2012-10-31)"
+    publisher: "own (company switchgear database)"
+    kind: own database
+    access: stored
+    file: pdf/own/switchgears/SMPS.csv
+    sha256: 70e1ef78897812be9667a92a66d27e767f56a66aeef3b0f61ffb59db109563a9
+    obtained_from: "~/Documents/panel-selector/data/sources/switchgears/SMPS.csv (copied 2026-10-12)"
+
+  OWN-SWG-CALC:
+    title: "Switchgear selection calculation template (TITAN, 2012): SMPS, transformer and main switchgear method"
+    edition: "as held in panel-selector v1 (files dated 2026-10-08; template saved 2012-10-31)"
+    publisher: "own (company switchgear database)"
+    kind: own database
+    access: stored
+    file: pdf/own/switchgears/Switchgear_Selection_Calculation.xls
+    sha256: 24a77a0dfc6d647f7869c5b4eef73603fe75feefcfc988db5177fa6ed0f301e1
+    obtained_from: "~/Documents/panel-selector/data/sources/switchgears/Switchgear_Selection_Calculation.xls (copied 2026-10-12)"
+
+  # --- AutoBOM databases (~/Documents/AutoBOM/AutoBOM), copied 2026-10-12. Entered by the team from maker data sheets
+  # (see each workbook's Logsheet); the data sheets themselves are not held: authority OWN.
+  OWN-AB-SMPS:
+    title: "AutoBOM 24 V DC power supply database (Omron, Phoenix Contact, Mean Well, Weidmueller) with a log of who entered and verified each series"
+    edition: "AutoBOM workbook as of 2025-08 (file dates: SMPS 2025-08-17, PLC / PLC IO 2025-08-08)"
+    publisher: "own (ClusterVise AutoBOM team)"
+    kind: own database
+    access: stored
+    file: pdf/own/autobom/SMPS db.xlsx
+    sha256: 8c5c321265571e4dffae9b82b305ca0b15052ae198e4a26cdb05f7290c13a1a7
+    obtained_from: "~/Documents/AutoBOM/AutoBOM/SMPS db.xlsx (copied 2026-10-12)"
+
+  OWN-AB-PLC:
+    title: "AutoBOM PLC database (Omron CP2E / CP1x / NX1P): I/O, expansion limit, 24 V and 5 V current"
+    edition: "AutoBOM workbook as of 2025-08 (file dates: SMPS 2025-08-17, PLC / PLC IO 2025-08-08)"
+    publisher: "own (ClusterVise AutoBOM team)"
+    kind: own database
+    access: stored
+    file: pdf/own/autobom/PLC db.xlsx
+    sha256: 2765aabe65b457b04d82cf313e67b0ac25cfb59cc262e82dddf226a372c4d923
+    obtained_from: "~/Documents/AutoBOM/AutoBOM/PLC db.xlsx (copied 2026-10-12)"
+
+  OWN-AB-PLCIO:
+    title: "AutoBOM PLC I/O module database (CP1W / NX), compatibility per CPU series, selection logic sheet"
+    edition: "AutoBOM workbook as of 2025-08 (file dates: SMPS 2025-08-17, PLC / PLC IO 2025-08-08)"
+    publisher: "own (ClusterVise AutoBOM team)"
+    kind: own database
+    access: stored
+    file: pdf/own/autobom/PLC IO_db.xlsx
+    sha256: fedf4069c435e9f6feddf1f581e4c3fad876db484d53d360f4d4469484a88de2
+    obtained_from: "~/Documents/AutoBOM/AutoBOM/PLC IO_db.xlsx (copied 2026-10-12)"
+
+  # --- company samples (sources/Sample complete, given by the owner 2026-10-12): Propel Industries panels.
+  OWN-PROPEL-DOL:
+    title: "Propel DOL motor feeder BOM structures and prices (belt conveyors, screen / pan / grizzly / wash feeders, dewatering), with the Elmex price list"
+    edition: "2023-05-30 (file), prices 'Propel Working 01.09.23' + 2 % Schneider revision"
+    publisher: "own (Propel Industries standard panels)"
+    kind: own database
+    access: stored
+    file: pdf/own/propel/DOL Motors BOM 30 05 23.xlsx
+    sha256: b73eff3cadd0ad1d44d4bff584d462909d04591fd485417771e7a2a33e1fd04a
+    obtained_from: "sources/Sample complete (Google Drive zips), copied 2026-10-12"
+
+  OWN-PROPEL-COST:
+    title: "Propel standard panel costing sheet R0: star-delta panels 55–315 kW with and without PLC, lube, wash, VSI, PF panels"
+    edition: "R0, file dated 2025-10-27"
+    publisher: "own (Propel Industries standard panels)"
+    kind: own database
+    access: stored
+    file: pdf/own/propel/PIP STANDARD PANEL COSTING SHEET R0.xlsx
+    sha256: a31dba0734784f22715c4b3ff3f18d518c3a4abd16a2b05bdd71a8f1447184e5
+    obtained_from: "sources/Sample complete (Google Drive zips), copied 2026-10-12"
+
+  OWN-PROPEL-SCH160:
+    title: "Propel drawing set AVELCPSDL08WPLC rev 08: AVCONE 160 kW S/D lube panel with PLC option (cover, index, legends, technical details, GA, power, control, PLC I/O, BOM, terminals, block diagram), 17 sheets"
+    edition: "rev 08, 29.04.2023"
+    publisher: "own (Propel Industries standard panels)"
+    kind: own drawing
+    access: stored
+    file: pdf/own/propel/Schematic 160KW SD with PLC.pdf
+    sha256: 263195dc407a57285828793b11fdf0df53262d8e9e91e621b571360a4c63ea71
+    obtained_from: "sources/Sample complete (Google Drive zips), copied 2026-10-12"
+
+  # --- Siemens documents downloaded 2026-10-13 (owner approval): catalogues and manuals for the blocked components.
+  SIE-IC10-2026:
+    title: "SIRIUS Industrial Controls, Catalog IC 10 · 2026 (complete, English)"
+    edition: "2026 (file 2026-01-29), 1452 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer catalogue
+    access: stored
+    file: "pdf/manufacturer/siemens/SIRIUS_IC10_complete_English_2026_202601291128292156.pdf"
+    sha256: 394a9a8e40c8ecf319dbd333a1d9fbd3242de34c7e7cf4fddf859db95a6d30c8
+    obtained_from: "Siemens Industry Online Support, saved by the owner from the browser save dialog (2026-10-13), SIOS 109747945"
+
+  SIE-3RW52-MAN:
+    title: "SIRIUS 3RW52 Soft Starter, Equipment Manual"
+    edition: "04/2022, A5E35630451002A, 236 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer manual
+    access: stored
+    file: "pdf/manufacturer/siemens/manual_softstarter_3RW52_en-US.pdf"
+    sha256: f613e885ab335bcaa822cc9141014d58abc461b36ef8c140c19094666c695620
+    obtained_from: "Siemens Industry Online Support, saved by the owner from the browser save dialog (2026-10-13), SIOS 109753751"
+
+  SIE-LV10-2026:
+    title: "Catalog LV 10 · 2026, Low-Voltage Power Distribution and Electrical Installation Technology (5SY MCB, 5SV RCCB, 5SD SPD, 3KD, 3VA …)"
+    edition: "LV 10 · 2026 (file 2026-01-16), 1352 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer catalogue
+    access: stored
+    file: "pdf/manufacturer/siemens/LV10_2026_EN_202601160649587174.pdf"
+    sha256: e9a00b06f97b50f70d8a7feb26e41f93321dc98e787568de1d446a11626a3b29
+    obtained_from: "Siemens Industry Online Support, saved by the owner from the browser save dialog (2026-10-13), SIOS 109482234"
+
+  SIE-LV10-3VA-2021:
+    title: "Catalog LV 10, chapter Molded Case Circuit Breakers (3VA)"
+    edition: "LV 10 10/2021, 96 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer catalogue
+    access: stored
+    file: "pdf/manufacturer/siemens/LV10_MoldedCaseCircuitBreakers_3VA_2021-10_EN.pdf"
+    sha256: 0110400d793e7d714b927b46ddfa266c7f3efbecacd45827d0c35abb53fd5699
+    obtained_from: "cache.industry.siemens.com/dl/files/637/109750637 (downloaded 2026-10-13)"
+
+  SIE-3VA-QSG-2023:
+    title: "Quick Selection Guide 3VA molded case circuit breakers"
+    edition: "2023 (file 2023-03-08), 2 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer product information
+    access: stored
+    file: "pdf/manufacturer/siemens/Quick_Selection_Guide_3VA_EN_2023.pdf"
+    sha256: 1d74e5a36e749b1a419b135ac9295ec75ef08d87c6052da2b4f74eacbb68cdd0
+    obtained_from: "cache.industry.siemens.com/dl/files/591/109757591 (downloaded 2026-10-13)"
+
+  SIE-3VA1563-DS:
+    title: "Data sheet 3VA1563-5EF32-0AA0 — circuit breaker 3VA1 IEC frame 1000, class M, Icu 55 kA @ 415 V, 3-pole, TM240 ATAM, In 630 A"
+    edition: "Siemens product data sheet (generated from the Industry Mall / SIOS product page), 6 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer product data sheet
+    access: stored
+    file: "pdf/manufacturer/siemens/3VA1563-5EF32-0AA0_datasheet.pdf"
+    sha256: 73d4e333c8ab1c8eea49d28c568bb4e0ac83487fccb03983752f89db8a29ed49
+    obtained_from: "Siemens Industry Online Support, saved by the owner from the browser (2026-10-20), file A700000010136835.pdf"
+
+  SIE-CU240E2-OI:
+    title: "SINAMICS G120 with CU240E-2, Operating Instructions"
+    edition: "02/2026, A5E34259001B, 560 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer manual
+    access: stored
+    file: "pdf/manufacturer/siemens/G120_CU240E2_op_instr_0226_en-US.pdf"
+    sha256: aa012a467bfac47db4e8a651d17dd14f067948813d0b786d9f1eabec23426cc9
+    obtained_from: "Siemens Industry Online Support, saved by the owner from the browser save dialog (2026-10-13), SIOS 109818082"
+
+  SIE-D31-1-2024:
+    title: "SINAMICS Catalog D 31.1, Converters for single-axis drives, built-in units"
+    edition: "12/2024, update 10/2025, 384 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer catalogue
+    access: stored
+    file: "pdf/manufacturer/siemens/motion-control-D31-1-complete-english-2024-12_update-10-2025.pdf"
+    sha256: 83c5d05799ca18e67889d64b42fe0e241d74a4a6f506ed3ca708496df618a636
+    obtained_from: "Siemens Industry Online Support, saved by the owner from the browser save dialog (2026-10-13), SIOS 109755273"
+
+  SIE-KT10-1-2022:
+    title: "SITOP power supplies, Catalog KT 10.1"
+    edition: "Edition 2022, 304 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer catalogue
+    access: stored
+    file: "pdf/manufacturer/siemens/SITOP_KT10-1_2022.pdf"
+    sha256: 6ff57b64bf425e08fd3eb4abd3e09d9b349b8945612cf09b43e9345c7db28ba8
+    obtained_from: "assets.new.siemens.com (uuid ca6d6c27-9e95-4f69-84cd-7248095c345b), downloaded 2026-10-13"
+
+  SIE-ET200SP-SYS:
+    title: "SIMATIC ET 200SP Distributed I/O system, System Manual"
+    edition: "11/2025, A5E03576849-AR, 436 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer manual
+    access: stored
+    file: "pdf/manufacturer/siemens/et200sp_system_manual_en-US_en-US.pdf"
+    sha256: a71d59f3dee100a4cc31b4ef1ca6afecc5d6841a5da70572bfc94e3399db5be9
+    obtained_from: "Siemens Industry Online Support, saved by the owner from the browser save dialog (2026-10-13), SIOS 58649293"
+
+  SIE-CPU1513-MAN:
+    title: "SIMATIC S7-1500 CPU 1513-1 PN, Equipment Manual"
+    edition: "03/2026, A5E40881673-AF, 56 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer manual
+    access: stored
+    file: "pdf/manufacturer/siemens/s71500_cpu1513_1_pn_dtc_manual_en-US_en-US.pdf"
+    sha256: a1c2daf714c80d7f352426ccad83983ba7703e4d5d5f8e383fd6cc48295e2e3e
+    obtained_from: "Siemens Industry Online Support, saved by the owner from the browser save dialog (2026-10-13), SIOS 110000616"
+
+  SIE-S7-200SMART-SYS:
+    title: "SIMATIC S7-200 SMART System Manual V2.7"
+    edition: "08/2022, A5E03822230-AK, 978 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer manual
+    access: stored
+    file: "pdf/manufacturer/siemens/s7-200-smart-system-manual-en-us-V2.7.pdf"
+    sha256: 1df6eafee4e195eeb8220964d710c7ace4182d25b28f1a941234db6d0483090a
+    obtained_from: "assets.new.siemens.com (uuid 5687bd75-3934-43a1-838b-e3b18a4d19c8), downloaded 2026-10-13"
+
+  SIE-ST70-2026:
+    title: "SIMATIC Products for Totally Integrated Automation, Catalog ST 70 · 2026"
+    edition: "Edition 2026, E86060-K4670-A101-C3-7600, SIOS 109744167 (entry date 10/08/2026), 2392 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer catalogue
+    access: stored
+    file: "pdf/manufacturer/siemens/simatic-st70-complete-english-2026.pdf"
+    sha256: f061a878258a519e613ed63da799474f58965e5111064c1f1e892f30b37a49a8
+    obtained_from: "Siemens Industry Online Support 109744167, saved by the owner from the browser (2026-10-13)"
+
+  # --- ET 200SP module equipment manuals (owner approval 2026-10-13: 'Download all')
+  SIE-ET200SP-DI16ST:
+    title: "SIMATIC ET 200SP Digital input module DI 16x24VDC ST (6ES7131-6BH01-0BA0), Equipment Manual"
+    edition: "02/2019, A5E03573442-AG, 32 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer manual
+    access: stored
+    file: "pdf/manufacturer/siemens/et200sp_di_16x24vdc_st_manual_en-US_en-US.pdf"
+    sha256: 1a92c8a1a2b4b9929bbbea668c97b7bc16732e68b0ed962917e986ce2327b009
+    obtained_from: "cache.industry.siemens.com/dl/files/540/59753540/att_882649 (SIOS 59753540), downloaded 2026-10-13"
+
+  SIE-ET200SP-DQ16ST:
+    title: "SIMATIC ET 200SP Digital output module DQ 16x24VDC/0.5A ST (6ES7132-6BH01-0BA0), Equipment Manual"
+    edition: "01/2025, A5E03574420-AE, 36 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer manual
+    access: stored
+    file: "pdf/manufacturer/siemens/et200sp_dq_16x24vdc_0_5a_st_manual_en-US_en-US.pdf"
+    sha256: c204a6d17407cdf02ab977a3524d672996db3a8970f5f8fd8b07478e37d44bd9
+    obtained_from: "cache.industry.siemens.com/dl/files/564/59753564/att_863743/v2 (SIOS 59753564), downloaded 2026-10-13"
+
+  SIE-ET200SP-AQ4ST:
+    title: "SIMATIC ET 200SP Analog output module AQ 4xU/I ST (6ES7135-6HD00-0BA1), Equipment Manual"
+    edition: "03/2016, A5E03573365-AD, 38 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer manual
+    access: stored
+    file: "pdf/manufacturer/siemens/et200sp_aq_4xu_i_st_manual_en-US_en-US.pdf"
+    sha256: 56dadaf6732e58e07d5f3ed2c6f1e0836344b5b994b52bb9a149c4587b2ad5b3
+    obtained_from: "cache.industry.siemens.com/dl/files/612/59753612/att_886744 (SIOS 59753612), downloaded 2026-10-13"
+
+  SIE-S71200G2-SYS:
+    title: "SIMATIC S7-1200 G2 Programmable Logic Controller, System Manual"
+    edition: "V4.1, 12/2025, A5E52923928-AC, 533 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer manual
+    access: stored
+    file: "pdf/manufacturer/siemens/S71200_G2_system_manual_en-US_en-US.pdf"
+    sha256: 5c46f14aca74ed9387726c32b16ff2913a081160b442d760d0b22d05bb623ed6
+    obtained_from: "Siemens Industry Online Support 109997791, saved by the owner from the browser (2026-10-13)"
+
+  SIE-ET200SP-AI4ST:
+    title: "SIMATIC ET 200SP Analog input module AI 4xU/I 2-wire ST (6ES7134-6HD01-0BA1), Equipment Manual"
+    edition: "09/2026, A5E03572832-AG, 45 pages"
+    publisher: "Siemens AG"
+    kind: manufacturer manual
+    access: stored
+    file: "pdf/manufacturer/siemens/et200sp_ai_4xu_i_2_wire_st_manual_en-US_en-US.pdf"
+    sha256: 063fb67ef263a3fda28c89d49f79e9d92d5125a45e896dc0e3913e70fbdfed5c
+    obtained_from: "Siemens Industry Online Support 59753624, saved by the owner from the browser (2026-10-13)"

@@ -1,0 +1,12 @@
+# Rishabh RISH LTRP CT series: specification values used by the metering component (p.2).
+# page = PDF page = printed 'Page No.'.
+
+source:
+  ref: RISH-LTRP
+  section: "Specification (p.2)"
+  printed_page_offset: 0
+
+rows:
+  - {item: secondary_a, value: 5, note: "Rated secondary current 5A (1A on request) — no 1 A ratings printed", page: 2}
+  - {item: um_max_v, value: 720, note: "'System voltage 0.72 kV (max)' = 720 V", page: 2}
+  - {item: ambient_c, value: [-25, 40], note: "Ambient Temperature -25°C to +40°C", page: 2}

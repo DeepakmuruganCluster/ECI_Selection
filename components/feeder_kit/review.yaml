@@ -1,0 +1,49 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 2
+title: Company feeder kits (Propel DOL, conveyor and star-delta BOM structures)
+what_it_does: >
+  Uses the company's own standard BOM structures: the DOL Motors BOM (belt conveyors, screen, pan,
+  grizzly and wash feeders, dewatering) and the standard panel costing sheet (star-delta panels 55 to
+  315 kW, with and without PLC). For a starter type and motor size it finds the company kit with all
+  its lines and indicative prices, and then checks the kit against the motor: the motor current must
+  lie inside the kit's MPCB range, the contactor must be big enough, and for star-delta the line and
+  delta contactors must carry FLC/√3 and the star contactor FLC/3. It does not change the kits; it
+  tells you where a kit does not suit the motor.
+
+how_to_check:
+  - "Press 'Try it: 5.5 kW DOL'. Open DOL Motors BOM, sheet BELT CONVEYOR, rows 37 to 53: GZ1E16 9–14 A, LC1E18, and the total in H53 is 3245.84 — the tool must show the same total."
+  - "Press 'Try it: 7.5 kW DOL'. The kit (row 54) uses GZ1E16 9–14 A, but a standard 7.5 kW motor draws 15.5 A (Siemens guide table): the tool must warn. At 415 V the current is a little lower: your call."
+  - "Press 'Try it: 160 kW star-delta with PLC'. The costing sheet '160KW SD WITH PLC' and the drawing AVELCPSDL08WPLC (BOM page 14) both list 2 × LC1E200M5 and 1 × LC1E160M5."
+
+spot_checks:
+  - {label: "5.5 kW DOL", tab: feeder_kit, inputs: {starter: DOL, kw: 5.5}}
+  - {label: "7.5 kW DOL", tab: feeder_kit, inputs: {starter: DOL, kw: 7.5}}
+  - {label: "22 kW screen feeder", tab: feeder_kit, inputs: {starter: DOL, kw: 22, application: screen feeder}}
+  - {label: "30 kW star-delta", tab: feeder_kit, inputs: {starter: SD, kw: 30}}
+  - {label: "160 kW star-delta with PLC", tab: feeder_kit, inputs: {starter: SD, kw: 160, application: lub with plc}}
+
+decisions:
+  - id: KIT-1
+    question: "Two company DOL kits use an MPCB whose range does not reach a standard motor's current (7.5 kW: 9–14 A for 15.5 A; 22 kW: 30–40 A for 41 A). Should the kits be corrected?"
+    options: {fix: "Yes, correct the company kits", keep: "No, our motors draw less (415 V / own motor data)"}
+    recommended: fix
+  - id: KIT-2
+    question: "Which price is the indicative price: the DOL sheet's unit price, or the column with the 2 % Schneider revision?"
+    options: {unit: "Unit price (column F)", revised: "Revised price (+2 % Schneider)"}
+    recommended: revised
+  - id: KIT-3
+    question: "With Siemens starters (the default), the kit's Schneider auxiliary contacts do not fit. Leave them as an open point until Siemens IC 10 is downloaded?"
+    options: {"open": "Yes, open point", "schneider": "No, use Schneider starters (company kit) instead"}
+    recommended: "open"
+  - id: KIT-4
+    question: "The costing sheet (R0, 2025) and the drawing (rev 08, 2023) differ for the 160 kW lube motors: the drawing has GZ1E MPCBs Q1–Q4, the costing sheet overload relays and contactors. Which is current?"
+    options: {drawing: "The drawing (MPCBs)", costing: "The costing sheet (overload relays)"}
+    recommended: drawing
+
+fields:
+  starter: {label: "Starter", options: ["DOL", "DOL_FR", "SD", "VFD"]}
+  application: "Application (narrows the kit, e.g. belt conveyor, screen feeder, lub with plc)"
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/company/propel/propel_dol_kits.yaml, data/company/propel/propel_panel_kits.yaml]

@@ -1,0 +1,156 @@
+# Golden cases for enclosure_accessories — written BEFORE the code (G4).
+# Oracle: the Rittal data sheets (pdf-creator, generated 2026-10-11) and hand calculation.
+#   SK 3239.100 (8", frame 204 × 204 mm, p.3): with 1 × SK 3239.200 outlet filter incl. chopped-fibre mat 74/87 m³/h,
+#     with 2 × 84/98 m³/h (50/60 Hz, p.2); power 16.5 / 14 W (features p.2) but 19 / 18 W (tender text p.5) → the
+#     higher is used (R-ACC-10); current 0.12 / 0.09 A (p.2) vs 0.12 / 0.11 A (p.5) → 0.12 / 0.11 A; -15 … 55 °C (p.3)
+#   SK 3240.100 (10", frame 255 × 255 mm, p.3): 1 × SK 3240.200 130/110 m³/h, 2 × 159/135 m³/h (p.2); 35 / 34 W,
+#     0.21 / 0.19 A (p.2 and p.5 agree); -30 … 55 °C (p.3)
+#   "x/y" order is 50/60 Hz: the same data sheets print "100/115 m³/h, 230 V, 1~, 50/60 Hz" (3239.100 p.4) and
+#     the p.2 free-air rows labelled "At 50 Hz: 100 / At 60 Hz: 115".
+#   n = ceil(required / airflow per fan with outlet filter) — no other derating (R-ACC-04, R-ACC-06).
+#   Plinth side trims: TS 8601.060 100 mm, TS 8602.060 200 mm, for W 600 mm, pack of 2 (p.2/p.3).
+#   Door switch SZ 4127.010 (24 V DC / 6 A, p.2); LED light SZ 4140.820 24 V DC, 0.08 A (p.3); one each per door.
+# Values compared to 2 decimals.
+
+cases:
+  # --- fan count, 8 inch, 50 Hz (R-ACC-02 … 07, 10) ----------------------------------------------------
+  - id: A01
+    in: {required_airflow_m3h: 300, doors: 5, fan_size_in: 8, supply_v: 230, frequency_hz: 50}
+    expect: {status: ok, fan: "SK 3239.100", outlet_filter: "SK 3239.200", airflow_per_fan_m3h: 74, fan_qty: 5, outlet_filter_qty: 5, delivered_airflow_m3h: 370, fan_positions: 5, fan_power_w: 95, fan_current_a: 0.6, door_switch: "SZ 4127.010", door_switch_qty: 5, door_light: "SZ 4140.820", door_light_qty: 5, light_24vdc_a: 0.4}
+    oracle: "3239.100 p.2: 1 × 3239200: 74 m³/h at 50 Hz; p.5: 19 W; p.2: 0.12 A"
+    calc: "300/74 = 4.05 → 5 fans; 5 × 74 = 370 ≥ 300; 5 × 19 = 95 W; 5 × 0.12 = 0.6 A; lights 5 × 0.08 = 0.4 A"
+  - id: A02
+    in: {required_airflow_m3h: 148, doors: 2, fan_size_in: 8, supply_v: 230, frequency_hz: 50}
+    expect: {status: ok, fan_qty: 2, delivered_airflow_m3h: 148}
+    oracle: "boundary: 2 × 74 = 148 exactly meets the requirement"
+  - id: A03
+    in: {required_airflow_m3h: 149, doors: 2, fan_size_in: 8, supply_v: 230, frequency_hz: 50}
+    expect: {status: warning, warnings: [R-ACC-07], fan_qty: 3, delivered_airflow_m3h: 222, fan_positions: 2, airflow_at_positions_m3h: 148}
+    oracle: "149/74 = 2.01 → 3 fans > 2 positions (one per door, ECI) → 2 × 74 = 148 < 149"
+  - id: A04
+    in: {required_airflow_m3h: 300, doors: 4, fan_size_in: 8, outlet_filters_per_fan: 2, supply_v: 230, frequency_hz: 50}
+    expect: {status: ok, airflow_per_fan_m3h: 84, fan_qty: 4, outlet_filter_qty: 8, delivered_airflow_m3h: 336}
+    oracle: "3239.100 p.2: 2 × 3239200: 84 m³/h at 50 Hz"
+    calc: "300/84 = 3.57 → 4 fans, 8 outlet filters; 4 × 84 = 336"
+
+  # --- 10 inch and 60 Hz -------------------------------------------------------------------------------
+  - id: A05
+    in: {required_airflow_m3h: 300, doors: 3, fan_size_in: 10, supply_v: 230, frequency_hz: 50}
+    expect: {status: ok, fan: "SK 3240.100", outlet_filter: "SK 3240.200", airflow_per_fan_m3h: 130, fan_qty: 3, delivered_airflow_m3h: 390, fan_power_w: 105, fan_current_a: 0.63}
+    oracle: "3240.100 p.2: 1 × 3240200: 130 m³/h at 50 Hz; 35 W; 0.21 A"
+    calc: "300/130 = 2.31 → 3; 3 × 35 = 105 W; 3 × 0.21 = 0.63 A"
+  - id: A06
+    in: {required_airflow_m3h: 300, doors: 3, fan_size_in: 10, outlet_filters_per_fan: 2, supply_v: 230, frequency_hz: 50}
+    expect: {status: ok, airflow_per_fan_m3h: 159, fan_qty: 2, outlet_filter_qty: 4, delivered_airflow_m3h: 318}
+    oracle: "3240.100 p.2: 2 × 3240200: 159 m³/h at 50 Hz"
+  - id: A07
+    in: {required_airflow_m3h: 300, doors: 4, fan_size_in: 8, supply_v: 230, frequency_hz: 60}
+    expect: {status: ok, airflow_per_fan_m3h: 87, fan_qty: 4, delivered_airflow_m3h: 348, fan_power_w: 72, fan_current_a: 0.44}
+    oracle: "3239.100 p.2: 87 m³/h at 60 Hz; power 14 W (p.2) vs 18 W (p.5) → 18 W; current 0.09 (p.2) vs 0.11 A (p.5) → 0.11 A"
+    calc: "300/87 = 3.45 → 4; 4 × 18 = 72 W; 4 × 0.11 = 0.44 A"
+  - id: A08
+    in: {required_airflow_m3h: 300, doors: 3, fan_size_in: 10, supply_v: 230, frequency_hz: 60}
+    expect: {status: ok, airflow_per_fan_m3h: 110, fan_qty: 3, delivered_airflow_m3h: 330, fan_power_w: 102, fan_current_a: 0.57}
+    oracle: "3240.100 p.2: 110 m³/h, 34 W, 0.19 A at 60 Hz (60 Hz is LOWER than 50 Hz for this fan)"
+
+  # --- no size given (R-ACC-08) -----------------------------------------------------------------------
+  - id: A09
+    in: {required_airflow_m3h: 300, doors: 5, supply_v: 230, frequency_hz: 50}
+    expect: {status: ok, fan: "SK 3239.100", fan_qty: 5}
+    oracle: "smallest held fan that fits the positions: 8 inch needs 5 ≤ 5"
+  - id: A10
+    in: {required_airflow_m3h: 300, doors: 3, supply_v: 230, frequency_hz: 50}
+    expect: {status: ok, fan: "SK 3240.100", fan_qty: 3, delivered_airflow_m3h: 390}
+    oracle: "8 inch needs 5 > 3 positions; 10 inch needs 3 ≤ 3"
+  - id: A11
+    in: {required_airflow_m3h: 1000, doors: 3, supply_v: 230, frequency_hz: 50}
+    expect: {status: warning, warnings: [R-ACC-07], fan: "SK 3240.100", fan_qty: 8, delivered_airflow_m3h: 1040, airflow_at_positions_m3h: 390}
+    oracle: "8 inch needs 14, 10 inch needs 8 — neither fits 3 positions → the largest held fan, with the shortfall"
+    calc: "1000/130 = 7.7 → 8; 3 × 130 = 390"
+
+  # --- WNS2503 (enclosure component airflow, components/panel/VERIFY.md; 7 sections, ECI one 8 inch fan per door) --
+  - id: A12
+    in: {required_airflow_m3h: 3515.4, doors: 7, fan_size_in: 8, supply_v: 230, frequency_hz: 50, site_ambient_c: 50}
+    expect: {status: warning, warnings: [R-ACC-07], fan: "SK 3239.100", fan_qty: 48, outlet_filter_qty: 48, delivered_airflow_m3h: 3552, fan_positions: 7, airflow_at_positions_m3h: 518, fan_power_w: 912, fan_current_a: 5.76}
+    oracle: "WNS2503 BIO/UF: 3515.4 m³/h (panel VERIFY, 55 °C inside, 50 °C site); 3239.100 p.2 74 m³/h"
+    calc: "3515.4/74 = 47.5 → 48 fans; 7 × 74 = 518 m³/h = 15 % of the need; 48 × 19 = 912 W"
+  - id: A13
+    in: {required_airflow_m3h: 2077, doors: 7, fan_size_in: 8, supply_v: 230, frequency_hz: 50, site_ambient_c: 50}
+    expect: {status: warning, warnings: [R-ACC-07], fan_qty: 29, delivered_airflow_m3h: 2146, airflow_at_positions_m3h: 518, fan_power_w: 551}
+    oracle: "WNS2503 RO: 2077 m³/h (panel VERIFY)"
+    calc: "2077/74 = 28.07 → 29; 29 × 74 = 2146; 29 × 19 = 551 W"
+
+  # --- operating temperature and supply (R-ACC-01, R-ACC-09) ------------------------------------------
+  - id: A14
+    in: {required_airflow_m3h: 300, doors: 5, fan_size_in: 8, supply_v: 230, frequency_hz: 50, site_ambient_c: 55}
+    expect: {status: ok, fan_qty: 5}
+    oracle: "3239.100 p.3: operating temperature range -15 °C … 55 °C — 55 °C is inside"
+  - id: A15
+    in: {required_airflow_m3h: 300, doors: 5, fan_size_in: 8, supply_v: 230, frequency_hz: 50, site_ambient_c: 56}
+    expect: {status: cannot_select, rule: R-ACC-09}
+    oracle: "3239.100 p.3: max 55 °C; the fan draws in site air"
+  - id: A16
+    in: {required_airflow_m3h: 300, doors: 5, fan_size_in: 10, supply_v: 230, frequency_hz: 50, site_ambient_c: -20}
+    expect: {status: ok, fan: "SK 3240.100"}
+    oracle: "3240.100 p.3: -30 °C … 55 °C (the 8 inch fan stops at -15 °C)"
+  - id: A17
+    in: {required_airflow_m3h: 300, doors: 5, fan_size_in: 8, supply_v: 400, frequency_hz: 50}
+    expect: {status: cannot_select, rule: R-ACC-01}
+    oracle: "p.2: rated operating voltage 230 V, 1~, 50 Hz/60 Hz — other voltage variants not held"
+  - id: A18
+    in: {required_airflow_m3h: 300, doors: 5, fan_size_in: 6, supply_v: 230, frequency_hz: 50}
+    expect: {status: cannot_select, rule: R-ACC-02}
+    oracle: "only 204 mm (8 inch) and 255 mm (10 inch) fans are held"
+  - id: A19
+    in: {required_airflow_m3h: 300, doors: 5, fan_size_in: 8, outlet_filters_per_fan: 3, supply_v: 230, frequency_hz: 50}
+    expect: {status: cannot_select, rule: R-ACC-05}
+    oracle: "p.2 prints airflow with 1 and 2 outlet filters only"
+
+  # --- plinth (R-ACC-12 … 14) ----------------------------------------------------------------------------
+  - id: A20
+    in: {required_airflow_m3h: 0, doors: 7, supply_v: 230, frequency_hz: 50, plinth_height_mm: 300, enclosure_depth_mm: 600, suites: 1}
+    expect: {status: warning, warnings: [R-ACC-12, R-ACC-14], fan: null, fan_qty: 0, fan_power_w: 0, plinth_side_trim: null, door_switch_qty: 7, door_light_qty: 7, light_24vdc_a: 0.56}
+    oracle: "ECI 'panel stand 1 feet height': 8601.060 p.2 'At 200 mm height, two 100 mm … may be used' — heights 100 and 200 mm only; no 300 mm"
+  - id: A21
+    in: {required_airflow_m3h: 0, doors: 7, supply_v: 230, frequency_hz: 50, plinth_height_mm: 200, enclosure_depth_mm: 600, suites: 1}
+    expect: {status: warning, warnings: [R-ACC-14], plinth_side_trim: "TS 8602.060", plinth_side_trim_qty: 1}
+    oracle: "8602.060 p.2: height 200 mm, to fit TS = 600 mm (p.3 'for W: 600 mm'), 2 pcs per pack = both ends of one suite; front/rear components not held"
+  - id: A22
+    in: {required_airflow_m3h: 0, doors: 4, supply_v: 230, frequency_hz: 50, plinth_height_mm: 100, enclosure_depth_mm: 600, suites: 2}
+    expect: {status: warning, warnings: [R-ACC-14], plinth_side_trim: "TS 8601.060", plinth_side_trim_qty: 2}
+    oracle: "8601.060 p.2: height 100 mm, W 600 mm, pack of 2"
+  - id: A23
+    in: {required_airflow_m3h: 0, doors: 4, supply_v: 230, frequency_hz: 50, plinth_height_mm: 200, enclosure_depth_mm: 800, suites: 1}
+    expect: {status: warning, warnings: [R-ACC-13, R-ACC-14], plinth_side_trim: null}
+    oracle: "held side trims fit W = 600 mm only"
+
+  # --- input validation ------------------------------------------------------------------------------
+  - id: A24
+    in: {required_airflow_m3h: 300, doors: 0, supply_v: 230, frequency_hz: 50}
+    expect: {status: invalid}
+    oracle: "at least one door"
+  - id: A25
+    in: {required_airflow_m3h: 300, doors: 3, supply_v: 230, frequency_hz: 50, plinth_height_mm: 200}
+    expect: {status: invalid}
+    oracle: "a plinth needs the enclosure depth and the number of suites — no defaults"
+  - id: A26
+    in: {required_airflow_m3h: 300, doors: 3, frequency_hz: 50}
+    expect: {status: invalid}
+    oracle: "supply voltage is required — no default"
+  - id: A27
+    in: {required_airflow_m3h: -5, doors: 3, supply_v: 230, frequency_hz: 50}
+    expect: {status: invalid}
+    oracle: "airflow must be ≥ 0"
+  # --- test-agent findings 2026-10-14, written before the fix ---------------------------------------------------
+  - id: A28
+    in: {required_airflow_m3h: 300, doors: 30, fan_size_in: 8, supply_v: 230, frequency_hz: 50}
+    expect: {status: ok, light_rows: 2}
+    oracle: "R-ACC-16: a row of lights ≤ 2 A (SZ 4140.820 p.3): 30 × 0.08 = 2.4 A > 2 A → 2 rows of ≤ 25 lights (the check said PASS without dividing)"
+  - id: A29
+    in: {required_airflow_m3h: 300, doors: 5, fan_size_in: 8, supply_v: 230, frequency_hz: 50}
+    expect: {status: ok, light_rows: 1}
+    oracle: "5 × 0.08 = 0.4 A ≤ 2 A → one row"
+  - id: A30
+    in: {required_airflow_m3h: 300, doors: 25, fan_size_in: 8, supply_v: 230, frequency_hz: 50}
+    expect: {status: ok, light_rows: 1}
+    oracle: "regression audit 2026-10-14: 25 × 0.08 = 2.0 A ≤ 2 A → one row (2.0 // 0.08 is 24.0 in floating point: gave 2 rows)"

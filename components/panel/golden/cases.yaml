@@ -1,0 +1,134 @@
+# Golden cases for panel — written BEFORE the code (G4).
+# Oracles: the components' own golden cases and source pages (the assembly must reproduce them),
+# and hand-counted quantities / heat. Common inputs: 400 V, 230 V AC coil, IE3, Polycab in air.
+
+cases:
+  - id: P01
+    in: {load_list: "M1 7.5 DOL flc=15.5 cable=50", fault_ka: 50, panel_internal_c: 40, motor_pf: 0.85, cable_ambient_c: 40}
+    expect: {status: warning, n_lines: 1, n_units: 1, n_selected: 1, n_open: 0, heat_known_w: 0, warnings: [R-PNL-07, R-PNL-08]}
+    oracle: "DOL golden D01 (3RV2021-4BA10 + 3RT2027-1AP00); MPCB/contactor losses not sourced → heat incomplete; incomer etc. not built"
+  - id: P02
+    in: {load_list: "F1 37 VFD flc=66 cable=50", fault_ka: 50, panel_internal_c: 45, motor_pf: 0.85, cable_ambient_c: 40, site_ambient_c: 35, altitude_m: 0}
+    expect: {status: warning, n_selected: 1, n_open: 0, heat_known_w: 1130, cooling_method: fan, warnings: [R-PNL-08]}
+    oracle: "VFD golden V04: 6SL3210-1PE27-5UL0, loss 1090 W (SIE-PM240-2 p.103) + Control Unit 40 W (p.34) = 1130 W; 35 °C outside < 45 °C inside → fans"
+  - id: P03
+    in: {load_list: "M2 7.5 DOL cable=50", fault_ka: 50, panel_internal_c: 40, motor_pf: 0.85, cable_ambient_c: 40}
+    expect: {status: warning, n_selected: 1, n_open: 1, warnings: [R-PNL-07, R-PNL-08, R-PNL-09]}
+    oracle: "no nameplate → guide 15.5 A (FLC G01) → DOL warns R-DOL-09 (D20) → carried as an open point"
+  - id: P04
+    in: {load_list: "M3 3.7 DOL cable=30", fault_ka: 50, panel_internal_c: 40, motor_pf: 0.85, cable_ambient_c: 40}
+    expect: {status: warning, n_selected: 0, n_open: 1, warnings: [R-PNL-02, R-PNL-08]}
+    oracle: "FLC golden G07: 3.7 kW refused (not in the Siemens table) → line stops, open point"
+  - id: P07
+    in: {load_list: "P1 7.5 VFD flc=15.5 cable=50 qty=2 standby=1", fault_ka: 50, panel_internal_c: 40, motor_pf: 0.85, cable_ambient_c: 40, line_reactor_up_to_kw: 15}
+    expect: {status: warning, n_units: 2, n_selected: 1, heat_known_w: 280, warnings: [R-PNL-08]}
+    oracle: "VFD golden V07: 6SL3210-1PE21-8UL0 + line reactor; heat = 1 running × 200 W (p.100) + 2 installed × 40 W CU = 280 W"
+  - id: P08
+    in: {load_list: "S1 11 SS cable=40", fault_ka: 50, panel_internal_c: 40, motor_pf: 0.85, cable_ambient_c: 40}
+    expect: {status: warning, n_selected: 1, n_open: 1}
+    oracle: "open point = the soft starter's R-SS-13 warning (guide FLC: confirm the nameplate). (until 2026-10-14: open point, component 5 not built) soft starter component 5: 11 kW guide FLC 22 A, no duty → Class 10A, 40 °C: 3RW5215 (25 A) + 3RV2032-4EA10 Iq 65 ≥ 50 kA (IC 10 p. 6/59, 6/63); cable at In = FLC (soft starter overload, R-PNL-15)"
+  - id: P11
+    in: {load_list: "F1 37 VFD flc=66 cable=50", fault_ka: 50, panel_internal_c: 55, motor_pf: 0.85, cable_ambient_c: 40, site_ambient_c: 50, altitude_m: 0}
+    expect: {status: warning, heat_known_w: 1330, cooling_method: fan, fan_airflow_m3h: 824.6, warnings: [R-PNL-08, R-PNL-09]}
+    oracle: "VFD golden V05: 55 °C → upsized to 45 kW 6SL3210-1PE28-8UL0 (warns R-VFD-04), loss 1290 W + 40 W = 1330 W; Rittal p.12: V = 3.1 × 1330 / 5 = 824.6 m³/h"
+  - id: P12
+    in: {load_list: "M1 7.5 DOL flc=15.5 cable=50\nF1 37 VFD flc=66 cable=50\nM3 3.7 DOL cable=30", fault_ka: 50, panel_internal_c: 45, motor_pf: 0.85, cable_ambient_c: 40, site_ambient_c: 35, altitude_m: 0}
+    expect: {status: warning, n_lines: 3, n_selected: 2, n_open: 1, heat_known_w: 1130, warnings: [R-PNL-02, R-PNL-07, R-PNL-08]}
+    oracle: "P01 + P02 + P04 together; heat only from the drive"
+  - id: P13
+    in: {load_list: "H1 6 HEATER cable=20", fault_ka: 50, panel_internal_c: 40, motor_pf: 0.85, cable_ambient_c: 40}
+    expect: {status: warning, n_selected: 0, n_open: 0, n_excluded: 1, warnings: [R-PNL-08]}
+    oracle: "owner instruction 2026-10-11: heater feeders are out of scope → listed as excluded, not an open point"
+  - id: P05
+    in: {load_list: "M1 7.5 DOL\nM1 5.5 DOL", fault_ka: 50, panel_internal_c: 40, motor_pf: 0.85, cable_ambient_c: 40}
+    expect: {status: invalid}
+    oracle: "duplicate tag"
+  - id: P06
+    in: {load_list: "M1 seven DOL", fault_ka: 50, panel_internal_c: 40, motor_pf: 0.85, cable_ambient_c: 40}
+    expect: {status: invalid}
+    oracle: "kW not a number"
+  - id: P09
+    in: {load_list: "M1 7.5 DOL", panel_internal_c: 40, motor_pf: 0.85, cable_ambient_c: 40}
+    expect: {status: invalid}
+    oracle: "fault level required"
+  - id: P10
+    in: {load_list: "M1 7.5 DOL", fault_ka: 50, panel_internal_c: 40, cable_ambient_c: 40, motor_pf: 1.2}
+    expect: {status: invalid}
+    oracle: "motor power factor outside 0 < cos φ ≤ 1. (Until 2026-10-14 this case was 'motor_pf required'; the owner asked for inputs the tool can work out to be removed: not given → worst-case drop, case P26.)"
+  - id: P14
+    in: {load_list: "D1 0.25 DOL ph=1 cable=20", fault_ka: 50, panel_internal_c: 40, motor_pf: 0.85, cable_ambient_c: 40}
+    expect: {status: warning, n_selected: 0, n_open: 1, warnings: [R-PNL-02, R-PNL-08]}
+    oracle: "FLC golden G11: single-phase motor without nameplate refused (R-FLC-02)"
+  - id: P15
+    in: {load_list: "D1 0.25 DOL ph=1 flc=2.2 cable=20", fault_ka: 50, panel_internal_c: 40, motor_pf: 0.85, cable_ambient_c: 40}
+    expect: {status: warning, n_selected: 0, n_open: 1, warnings: [R-PNL-02, R-PNL-08]}
+    oracle: "nameplate accepted (G23), then DOL golden D14: single-phase refused (R-DOL-01)"
+  - id: P16
+    in: {load_list: "D1 0.25 DOL ph=2", fault_ka: 50, panel_internal_c: 40, motor_pf: 0.85, cable_ambient_c: 40}
+    expect: {status: invalid}
+    oracle: "ph must be 1 or 3"
+  - id: P17
+    in: {load_list: "F1 37 VFD flc=66 cable=50", fault_ka: 50, panel_internal_c: 45, motor_pf: 0.85, cable_ambient_c: 40, site_ambient_c: 35}
+    expect: {status: warning, heat_known_w: 1130, cooling_method: null, warnings: [R-PNL-08]}
+    oracle: "no site altitude given → cooling not assessed (no altitude assumed; Rittal f depends on it, p.12)"
+  - id: P18
+    in: {load_list: "F1 37 VFD flc=66 cable=50", fault_ka: 50, panel_internal_c: 45, motor_pf: 0.85, cable_ambient_c: 40, site_ambient_c: 35, altitude_m: 0, doors: 2, fans_per_door: 1, fan_size_in: 8, fan_supply_v: 230}
+    expect: {status: warning, fan_airflow_m3h: 350.3, fan_qty: 5, warnings: [R-PNL-08, R-PNL-09]}
+    oracle: "airflow 3.1 × 1130 / 10 = 350.3 m³/h; SK 3239.100 with one SK 3239.200 outlet filter 74 m³/h (Rittal data sheet p.2) → ceil(350.3 / 74) = 5 fans > 2 doors × 1 → accessories warn R-ACC-07 (carried)"
+  - id: P19
+    in: {load_list: "F1 37 VFD flc=66 cable=50 qty=2 standby=1", fault_ka: 50, panel_internal_c: 45, motor_pf: 0.85, cable_ambient_c: 40, cu_encoder: false, cu_safety: sto, cu_fieldbus: profinet, mc_copy_parameters: true}
+    expect: {status: warning, n_units: 2, n_selected: 1, warnings: [R-PNL-08]}
+    oracle: "VFD V46: CU240E-2 PN 6SL3244-0BB12-1FA0; BOP-2 per drive; memory card 6SL3054-4AG00-2AA0 (copy parameters) — each × 2 in the BOM (test_panel)"
+  - id: P20
+    in: {load_list: "C1 75 VFD cable=50 duty=heavy", fault_ka: 25, panel_internal_c: 40, motor_pf: 0.86, cable_ambient_c: 30}
+    expect: {status: warning, n_selected: 1, warnings: [R-PNL-08, R-PNL-09]}
+    oracle: "R-PNL-11 heavy duty → HO 75 kW 6SL3210-1PE31-8UL0 (SIE-PM240-2 p.105: HO 75 kW, 145 A ≥ 132 A) instead of LO 75 kW 6SL3210-1PE31-5UL0 (test_panel)"
+  - id: P21
+    in: {load_list: "C1 75 VFD cable=50 duty=extreme", fault_ka: 25, panel_internal_c: 40, motor_pf: 0.86, cable_ambient_c: 30}
+    expect: {status: invalid}
+    oracle: "duty must be normal or heavy"
+  - id: P22
+    in: {load_list: "C1 30 SD", fault_ka: 25, panel_internal_c: 40, motor_pf: 0.86, cable_ambient_c: 30}
+    expect: {status: warning, n_selected: 1}
+    oracle: "R-PNL-12: star-delta from the company kit BELT CONVEYOR 30KW SDL (feeder_kit K07): LC1E50 × 2, LC1E40M7, LRE32, 2ASDT0, LAEN22 × 3; cable open (test_panel)"
+  - id: P23
+    in: {load_list: "M1 5.5 DOL cable=30", fault_ka: 25, panel_internal_c: 40, motor_pf: 0.86, cable_ambient_c: 30, dol_source: company}
+    expect: {status: warning, n_selected: 1}
+    oracle: "R-PNL-13: company kit GZ1E16 + LC1E18 + GZ1AN11 + LAEN22 (feeder_kit K01) instead of 3RV / 3RT (test_panel)"
+  - id: P24
+    in: {load_list: "M1 5.5 DOL cable=30", fault_ka: 25, panel_internal_c: 40, motor_pf: 0.86, cable_ambient_c: 30, kit_accessories: true}
+    expect: {status: warning, n_selected: 1}
+    oracle: "R-PNL-14: Siemens 3RV / 3RT + company accessories (2 lamps, terminals, end plates, clamps, wiring accessories); auxiliary contacts open (test_panel)"
+  - id: P25
+    in: {load_list: "M1 5.5 DOL cable=30", fault_ka: 25, panel_internal_c: 40, motor_pf: 0.86, cable_ambient_c: 30, dol_source: abb}
+    expect: {status: invalid}
+    oracle: "dol_source must be siemens or company"
+  - id: P26
+    in: {load_list: "M1 7.5 DOL flc=15.5 cable=50", fault_ka: 50, panel_internal_c: 40, cable_ambient_c: 40}
+    expect: {status: warning, n_lines: 1, n_selected: 1, n_open: 0}
+    oracle: "as P01 without motor_pf (owner 2026-10-14): the cable takes the worst-case drop √(R² + X²) (R-CAB-09), still selected"
+  - id: P27
+    in: {load_list: "E1 75 SS duty=heavy flc=132 cable=50", fault_ka: 25, panel_internal_c: 40, cable_ambient_c: 40}
+    expect: {status: warning, n_selected: 1, n_open: 1}
+    oracle: "open point = the line contactor's coil version (R-SS-11). R-PNL-15 / soft starter S-oracle: heavy → Class 20E; 3RW5236 129 < 132, 3RW5243 162 ≥ 132 (IC 10 p. 6/62); gG fuses 2 × 3NA3354-6 per phase (p. 6/64) and line contactor 3RT1064 (decision SS-3, coil open → warning)"
+  - id: P28
+    in: {load_list: "P1 5.5 DOL cable=nan", fault_ka: 25, panel_internal_c: 40, cable_ambient_c: 40}
+    expect: {status: invalid}
+    oracle: "test agent 2026-10-14: 'cable=nan' was read as a number (feeder selected, voltage drop 'nan %' PASS, BOM qty nan); a load-list number must be finite and > 0"
+  - id: P29
+    in: {load_list: "P1 inf DOL cable=30", fault_ka: 25, panel_internal_c: 40, cable_ambient_c: 40}
+    expect: {status: invalid}
+    oracle: "kW must be a finite number"
+  # --- 2026-10-18 (owner, RFQ import: "the RFQ value wins, flag if unsafe"): mpcb=… on a DOL line, R-DOL-14
+  - id: P30
+    in: {load_list: "P1 4 DOL cable=30 mpcb=5.5-8", fault_ka: 25, panel_internal_c: 40, cable_ambient_c: 40}
+    expect: {status: warning, n_selected: 1}
+    oracle: "the client's 5.5 … 8 A MPCB is taken (3RV2011-1HA10 + 3RT2024-1AP00, SIE-SIRIUS-CM p.28); 4 kW guide FLC 8.5 A is above its IE3 usable 7 A → open point R-DOL-14 (not protected as stated)"
+  - id: P31
+    in: {load_list: "P1 4 DOL cable=30 mpcb=7-11", fault_ka: 25, panel_internal_c: 40, cable_ambient_c: 40}
+    expect: {status: warning, n_selected: 0, n_open: 1}
+    oracle: "no 3RV2 with 7 … 11 A in the Type 2 table: the feeder is not selected (R-DOL-14 refused)"
+  - id: P32
+    in: {load_list: "E1 7.5 SS cable=30 mpcb=7-10", fault_ka: 25, panel_internal_c: 40, cable_ambient_c: 40}
+    expect: {status: invalid}
+    oracle: "mpcb=… is the client's MPCB range for a DOL line or a drive's MSP (R-VFD-19, owner 2026-10-20) — not a soft starter"

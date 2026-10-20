@@ -1,0 +1,79 @@
+# Polycab XLPE 650/1100 V, copper conductor, galvanised steel round-wire armoured (2XWY), IS 7098-1.
+# "Electrical characteristics — Current carrying capacity" tables (multi-core, one circuit):
+#   2-core p.27, 3-core p.43, 3.5-core p.55, 4-core p.67.  page = PDF page (the catalogue prints the same number).
+# ground = "Buried direct in the ground" (ground 30 °C, 1.5 K.m/W, laying depth 750 mm, p.8 / p.11)
+# duct   = "In single way Ducts" (ground 30 °C)
+# air    = "In air" (air 40 °C)                     — conductor 90 °C; "in accordance with IS 3961 (part 6):2016"
+# product = the size appears in the same page's "Weight & Dimension Data" product-code list.
+#   3.5-core 16 mm² and 4-core 400 mm² have a rating row but no product code: not offered.
+# Strip-armoured 2XFY tables (pp. 25, 41, 53, 65) carry the same ratings; not used (2XWY covers 4 mm² up).
+
+source:
+  ref: POLYCAB-LT-V9
+  section: "MC-2 / MC-3 / MC-3.5 / MC-4 copper XLPE armoured 2XWY — Electrical characteristics (pp. 27, 43, 55, 67)"
+
+basis: {air_c: 40, ground_c: 30, soil_kmw: 1.5, depth_mm: 750, conductor_c: 90}
+basis_page: 11
+
+rows:
+  # 2-core, PDF p.27
+  - {cores: "2", size: 4  , ground: 54 , duct: 45 , air: 48 , product: true , page: 27}
+  - {cores: "2", size: 6  , ground: 67 , duct: 56 , air: 61 , product: true , page: 27}
+  - {cores: "2", size: 10 , ground: 89 , duct: 75 , air: 83 , product: true , page: 27}
+  - {cores: "2", size: 16 , ground: 115, duct: 96 , air: 108, product: true , page: 27}
+  - {cores: "2", size: 25 , ground: 147, duct: 122, air: 140, product: true , page: 27}
+  - {cores: "2", size: 35 , ground: 176, duct: 146, air: 172, product: true , page: 27}
+  - {cores: "2", size: 50 , ground: 208, duct: 173, air: 208, product: true , page: 27}
+  - {cores: "2", size: 70 , ground: 253, duct: 211, air: 262, product: true , page: 27}
+  - {cores: "2", size: 95 , ground: 302, duct: 252, air: 322, product: true , page: 27}
+  - {cores: "2", size: 120, ground: 340, duct: 284, air: 368, product: true , page: 27}
+  - {cores: "2", size: 150, ground: 379, duct: 317, air: 419, product: true , page: 27}
+  - {cores: "2", size: 185, ground: 425, duct: 357, air: 482, product: true , page: 27}
+  - {cores: "2", size: 240, ground: 486, duct: 409, air: 566, product: true , page: 27}
+  - {cores: "2", size: 300, ground: 541, duct: 456, air: 644, product: true , page: 27}
+  - {cores: "2", size: 400, ground: 602, duct: 508, air: 734, product: true , page: 27}
+  # 3-core, PDF p.43
+  - {cores: "3", size: 4  , ground: 45 , duct: 38 , air: 41 , product: true , page: 43}
+  - {cores: "3", size: 6  , ground: 56 , duct: 47 , air: 52 , product: true , page: 43}
+  - {cores: "3", size: 10 , ground: 74 , duct: 62 , air: 70 , product: true , page: 43}
+  - {cores: "3", size: 16 , ground: 95 , duct: 79 , air: 89 , product: true , page: 43}
+  - {cores: "3", size: 25 , ground: 122, duct: 102, air: 119, product: true , page: 43}
+  - {cores: "3", size: 35 , ground: 146, duct: 122, air: 147, product: true , page: 43}
+  - {cores: "3", size: 50 , ground: 173, duct: 144, air: 179, product: true , page: 43}
+  - {cores: "3", size: 70 , ground: 212, duct: 177, air: 226, product: true , page: 43}
+  - {cores: "3", size: 95 , ground: 254, duct: 212, air: 279, product: true , page: 43}
+  - {cores: "3", size: 120, ground: 287, duct: 240, air: 320, product: true , page: 43}
+  - {cores: "3", size: 150, ground: 321, duct: 269, air: 365, product: true , page: 43}
+  - {cores: "3", size: 185, ground: 362, duct: 304, air: 422, product: true , page: 43}
+  - {cores: "3", size: 240, ground: 418, duct: 352, air: 500, product: true , page: 43}
+  - {cores: "3", size: 300, ground: 469, duct: 396, air: 574, product: true , page: 43}
+  - {cores: "3", size: 400, ground: 528, duct: 447, air: 662, product: true , page: 43}
+  # 3.5-core, PDF p.55
+  - {cores: "3.5", size: 16 , ground: 95 , duct: 79 , air: 89 , product: false, page: 55}
+  - {cores: "3.5", size: 25 , ground: 122, duct: 102, air: 119, product: true , page: 55}
+  - {cores: "3.5", size: 35 , ground: 146, duct: 122, air: 147, product: true , page: 55}
+  - {cores: "3.5", size: 50 , ground: 173, duct: 144, air: 179, product: true , page: 55}
+  - {cores: "3.5", size: 70 , ground: 212, duct: 177, air: 226, product: true , page: 55}
+  - {cores: "3.5", size: 95 , ground: 254, duct: 212, air: 279, product: true , page: 55}
+  - {cores: "3.5", size: 120, ground: 287, duct: 240, air: 320, product: true , page: 55}
+  - {cores: "3.5", size: 150, ground: 321, duct: 269, air: 365, product: true , page: 55}
+  - {cores: "3.5", size: 185, ground: 362, duct: 304, air: 422, product: true , page: 55}
+  - {cores: "3.5", size: 240, ground: 418, duct: 352, air: 500, product: true , page: 55}
+  - {cores: "3.5", size: 300, ground: 469, duct: 396, air: 574, product: true , page: 55}
+  - {cores: "3.5", size: 400, ground: 528, duct: 447, air: 662, product: true , page: 55}
+  # 4-core, PDF p.67
+  - {cores: "4", size: 4  , ground: 45 , duct: 38 , air: 41 , product: true , page: 67}
+  - {cores: "4", size: 6  , ground: 56 , duct: 47 , air: 52 , product: true , page: 67}
+  - {cores: "4", size: 10 , ground: 74 , duct: 62 , air: 70 , product: true , page: 67}
+  - {cores: "4", size: 16 , ground: 95 , duct: 79 , air: 89 , product: true , page: 67}
+  - {cores: "4", size: 25 , ground: 122, duct: 102, air: 119, product: true , page: 67}
+  - {cores: "4", size: 35 , ground: 146, duct: 122, air: 147, product: true , page: 67}
+  - {cores: "4", size: 50 , ground: 173, duct: 144, air: 179, product: true , page: 67}
+  - {cores: "4", size: 70 , ground: 212, duct: 177, air: 226, product: true , page: 67}
+  - {cores: "4", size: 95 , ground: 254, duct: 212, air: 279, product: true , page: 67}
+  - {cores: "4", size: 120, ground: 287, duct: 240, air: 320, product: true , page: 67}
+  - {cores: "4", size: 150, ground: 321, duct: 269, air: 365, product: true , page: 67}
+  - {cores: "4", size: 185, ground: 362, duct: 304, air: 422, product: true , page: 67}
+  - {cores: "4", size: 240, ground: 418, duct: 352, air: 500, product: true , page: 67}
+  - {cores: "4", size: 300, ground: 469, duct: 396, air: 574, product: true , page: 67}
+  - {cores: "4", size: 400, ground: 528, duct: 447, air: 662, product: false, page: 67}

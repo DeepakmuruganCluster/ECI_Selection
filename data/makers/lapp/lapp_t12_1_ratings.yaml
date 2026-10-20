@@ -1,0 +1,70 @@
+# Lapp Cable Guide "Power Rating", Table 12-1 "Power rating — Basic Table" (T12), ambient +30 °C,
+# "wires & cables having nominal voltage up to 1000 V and heat resistant wire & cables".
+#   column A: single core cable (rubber / PVC / TPE / heat resistant), 1 current-carrying conductor
+#             (footnote 3), drawing: conductors spaced ≥ d from the wall and from each other.
+#             Source printed: DIN VDE 0298-4, 2003-08, Table 11 column 2.   → PDF p.1 left half, printed p.144
+#   column C: multicore cables + cords excl. home and portable apparatus (all ÖLFLEX power and control
+#             cables), 2 or 3 current-carrying conductors, drawing: one cable on a wall / floor.
+#             Source printed: DIN VDE 0298-4, 2003-08, Table 11 column 5.   → PDF p.1 right half, printed p.145
+# amps: null = the guide prints "-" (not rated in that column).
+# footnote 1: 0.08 … 0.34 mm² are VDE 0891-1 borrowed ratings; footnote 2: 0.5 mm² extended range of Table 11 col 2.
+# Columns B (home / portable cords) and D (heavy-duty rubber) are not transcribed: out of scope (SCOPE.md).
+# page = PDF page (8 PDF pages, each a spread of two printed pages: printed = 2·page + 142 (left) / + 143 (right)).
+
+source:
+  ref: LAPP-POWER
+  section: "Table 12-1 Power rating — Basic Table, columns A and C (PDF p.1 = printed pp. 144/145)"
+
+rows:
+  # column A — single cores, PDF p.1 left (printed 144)
+  - {column: A, size: 0.08, amps: 1.5, footnote: 1, page: 1, printed: 144}
+  - {column: A, size: 0.14, amps: 3,   footnote: 1, page: 1, printed: 144}
+  - {column: A, size: 0.25, amps: 5,   footnote: 1, page: 1, printed: 144}
+  - {column: A, size: 0.34, amps: 8,   footnote: 1, page: 1, printed: 144}
+  - {column: A, size: 0.5,  amps: 12,  footnote: 2, page: 1, printed: 144}
+  - {column: A, size: 0.75, amps: 15,  page: 1, printed: 144}
+  - {column: A, size: 1.0,  amps: 19,  page: 1, printed: 144}
+  - {column: A, size: 1.5,  amps: 24,  page: 1, printed: 144}
+  - {column: A, size: 2.5,  amps: 32,  page: 1, printed: 144}
+  - {column: A, size: 4,    amps: 42,  page: 1, printed: 144}
+  - {column: A, size: 6,    amps: 54,  page: 1, printed: 144}
+  - {column: A, size: 10,   amps: 73,  page: 1, printed: 144}
+  - {column: A, size: 16,   amps: 98,  page: 1, printed: 144}
+  - {column: A, size: 25,   amps: 129, page: 1, printed: 144}
+  - {column: A, size: 35,   amps: 158, page: 1, printed: 144}
+  - {column: A, size: 50,   amps: 198, page: 1, printed: 144}
+  - {column: A, size: 70,   amps: 245, page: 1, printed: 144}
+  - {column: A, size: 95,   amps: 292, page: 1, printed: 144}
+  - {column: A, size: 120,  amps: 344, page: 1, printed: 144}
+  - {column: A, size: 150,  amps: 391, page: 1, printed: 144}
+  - {column: A, size: 185,  amps: 448, page: 1, printed: 144}
+  - {column: A, size: 240,  amps: 528, page: 1, printed: 144}
+  - {column: A, size: 300,  amps: 608, page: 1, printed: 144}
+  - {column: A, size: 400,  amps: 726, page: 1, printed: 144}
+  - {column: A, size: 500,  amps: 830, page: 1, printed: 144}
+  # column C — multicore cables, 2 or 3 loaded conductors, PDF p.1 right (printed 145)
+  - {column: C, size: 0.08, amps: 1,   footnote: 1, page: 1, printed: 145}
+  - {column: C, size: 0.14, amps: 2,   footnote: 1, page: 1, printed: 145}
+  - {column: C, size: 0.25, amps: 4,   footnote: 1, page: 1, printed: 145}
+  - {column: C, size: 0.34, amps: 6,   footnote: 1, page: 1, printed: 145}
+  - {column: C, size: 0.5,  amps: 9,   footnote: 2, page: 1, printed: 145}
+  - {column: C, size: 0.75, amps: 12,  page: 1, printed: 145}
+  - {column: C, size: 1.0,  amps: 15,  page: 1, printed: 145}
+  - {column: C, size: 1.5,  amps: 18,  page: 1, printed: 145}
+  - {column: C, size: 2.5,  amps: 26,  page: 1, printed: 145}
+  - {column: C, size: 4,    amps: 34,  page: 1, printed: 145}
+  - {column: C, size: 6,    amps: 44,  page: 1, printed: 145}
+  - {column: C, size: 10,   amps: 61,  page: 1, printed: 145}
+  - {column: C, size: 16,   amps: 82,  page: 1, printed: 145}
+  - {column: C, size: 25,   amps: 108, page: 1, printed: 145}
+  - {column: C, size: 35,   amps: 135, page: 1, printed: 145}
+  - {column: C, size: 50,   amps: 168, page: 1, printed: 145}
+  - {column: C, size: 70,   amps: 207, page: 1, printed: 145}
+  - {column: C, size: 95,   amps: 250, page: 1, printed: 145}
+  - {column: C, size: 120,  amps: 292, page: 1, printed: 145}
+  - {column: C, size: 150,  amps: 335, page: 1, printed: 145}
+  - {column: C, size: 185,  amps: 382, page: 1, printed: 145}
+  - {column: C, size: 240,  amps: 453, page: 1, printed: 145}
+  - {column: C, size: 300,  amps: 523, page: 1, printed: 145}
+  - {column: C, size: 400,  amps: null, page: 1, printed: 145}
+  - {column: C, size: 500,  amps: null, page: 1, printed: 145}

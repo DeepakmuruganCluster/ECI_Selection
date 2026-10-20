@@ -1,0 +1,24 @@
+# SIRIUS 3RW52 soft starter accessories: communication modules, HMI modules, their mounting (owner 2026-10-20, RFQ
+# part 4: the client asks "3RW-52 Softstarter with Display and Profinet Communication"). Catalog IC 10 · 2026, PDF
+# pp.507-508 (printed 6/75-6/76), "3RW52 soft starters > Accessories", rows read on the page images.
+
+source:
+  ref: SIE-IC10-2026
+  section: "3RW52 accessories: enclosure components, communications modules (6/75), HMI modules, connecting cables (6/76)"
+
+rows:
+  - {item: comm, value: profinet,   article: 3RW5980-0CS00, description: "Communications module PROFINET Standard", page: 507}
+  - {item: comm, value: profibus,   article: 3RW5980-0CP00, description: "Communications module PROFIBUS", page: 507}
+  - {item: comm, value: ethernet_ip, article: 3RW5980-0CE00, description: "Communications module EtherNet/IP", page: 507}
+  - {item: comm, value: modbus_rtu, article: 3RW5980-0CR00, description: "Communications module Modbus RTU", page: 507}
+  - {item: comm, value: modbus_tcp, article: 3RW5980-0CT00, description: "Communications module Modbus TCP", page: 507}
+  - {item: hmi, value: standard,     article: 3RW5980-0HS00, description: "HMI module Standard", page: 508}
+  - {item: hmi, value: high_feature, article: 3RW5980-0HF00, description: "HMI module High-Feature", page: 508}
+  - {item: cover, value: standard,     article: 3RW5950-0GL40, description: "Hinged cover with cutout for the Standard HMI module", page: 507}
+  - {item: cover, value: high_feature, article: 3RW5950-0GL30, description: "Hinged cover with cutout for the High-Feature HMI module", page: 507}
+  - {item: door_kit, value: ip65, article: 3RW5980-0HD00, description: "IP65 door mounting kit for HMI modules", page: 508}
+  - {item: cable, value: "0.1", article: 3UF7931-0AA00-0, description: "HMI connecting cable 0.1 m, flat (for mounting in the device)", page: 508}
+  - {item: cable, value: "0.5", article: 3UF7932-0BA00-0, description: "HMI connecting cable 0.5 m, round (door mounting)", page: 508}
+  - {item: cable, value: "1",   article: 3UF7937-0BA00-0, description: "HMI connecting cable 1.0 m, round (door mounting)", page: 508}
+  - {item: cable, value: "2.5", article: 3UF7933-0BA00-0, description: "HMI connecting cable 2.5 m, round (door mounting)", page: 508}
+  - {item: cable, value: "5",   article: 3RW5980-0HC60, description: "HMI connecting cable 5 m, round (door mounting)", page: 508}

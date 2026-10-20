@@ -1,0 +1,198 @@
+# Golden cases for plc — written BEFORE the code (G4). Oracle: the AutoBOM rows (sheet, row) and hand arithmetic.
+# CPU rows (PLC db.xlsx, sheet db): row 2 CP2E-S30DT1-D 18 DI / 12 DO, 0.02 A 24 V, 0.28 A 5 V, eff 0.7, 3 modules;
+# row 10 CP2E-N14DT1-D 8 / 6, 0.02 / 0.22 A, 0 modules; row 8 CP2E-N14DR-D 8 / 6, 0.05 / 0.15 A.
+# Modules (PLC IO_db.xlsx, db_DIO): row 11 CP1W-20EDT1 12 / 8, 5 V 0.130 A; row 17 CP1W-40EDT1 24 / 16, 0.160 A;
+# row 8 CP1W-16ET1 0 / 16, 0.076 A; 24 V current blank on these rows.
+
+cases:
+  - id: P01
+    in: {make: omron, di: 4, do: 2}
+    expect: {status: ok, cpu: CP2E-N14DT1-D, n_modules: 0, required_di: 6, required_do: 3, i24_a: 0.09}
+    oracle: "4 × 1.4 = 5.6 → 6, 2 × 1.4 = 2.8 → 3; N14DT1 (8 / 6) fits; 0.02 + 0.22 × 5 / (24 × 0.7) = 0.0855 A"
+  - id: P02
+    in: {make: omron, di: 20, do: 10}
+    expect: {status: warning, cpu: CP2E-S30DT1-D, n_modules: 1, module_1: CP1W-20EDT1, i24_a: 0.14, warnings: [R-PLC-05]}
+    oracle: "need 28 / 14; N14, N20 have no expansion; S30DT1 18 / 12 leaves 10 / 2 → one 20EDT1 (12 / 8); 0.02 + 0.28 × 5/16.8 + 0.13 × 5/16.8 = 0.1420 A; 20EDT1 24 V blank → warning"
+  - id: P03
+    in: {make: omron, di: 4, do: 2, fieldbus: profinet}
+    expect: {status: cannot_select, rule: R-PLC-06}
+    oracle: "no CPU records PROFINET"
+  - id: P04
+    in: {make: omron, di: 4, do: 2, ai: 2}
+    expect: {status: cannot_select, rule: R-PLC-02}
+    oracle: "analog not selected yet"
+  - id: P05
+    in: {make: omron, di: 4, do: 2, do_type: relay}
+    expect: {status: ok, cpu: CP2E-N14DR-D, i24_a: 0.09}
+    oracle: "relay outputs: N14DR-D; 0.05 + 0.15 × 5/16.8 = 0.0946 A"
+  - id: P06
+    in: {make: omron, di: 200, do: 10}
+    expect: {status: cannot_select, rule: R-PLC-04}
+    oracle: "280 inputs > any CPU (largest 180 total)"
+  - id: P07
+    in: {make: omron, di: 40, do: 40}
+    expect: {status: warning, cpu: CP2E-S30DT1-D, n_modules: 3, module_1: CP1W-40EDT1, module_2: CP1W-40EDT1, module_3: CP1W-16ET1, i24_a: 0.22}
+    oracle: "need 56 / 56; S30DT1 leaves 38 / 44; 2 × 40EDT1 (48 / 32) + 16ET1 (0 / 16) = 48 / 48 in 3 modules; 0.1033 + 2 × 0.0476 + 0.0226 = 0.2212 A"
+  - id: P08
+    in: {make: omron, di: 0, do: 0}
+    expect: {status: invalid}
+    oracle: "no I/O"
+  # --- Siemens S7-200 SMART (R-PLC-07 … 12), written 2026-10-13 before the code; oracle: system manual V2.7 tables
+  # (CPU pp.800-834, EM pp.845-874) and the Appendix B power budget method, by hand.
+  - id: P09
+    in: {make: siemens, di: 20, do: 10}
+    expect: {status: ok, cpu: CPU ST20, n_modules: 1, module_1: EM DT32, required_di: 28, required_do: 14, bus_5v_ma: 185, i24_ma: 112, supply_24v_a: 0.72}
+    oracle: "20 × 1.4 = 28, 10 × 1.4 = 14; ST20 12/8 leaves 16 DI / 6 DO → EM DT32 (16/16) alone (DE16 + DT08 needs 2); 5 V 185 mA (p.851); 24 V (12 + 16) × 4 = 112 mA ≤ 300; R-PLC-24 (2026-10-14): ST20 'with all expansion accessories at max. load' 720 mA (p.804), sensor load 112 ≤ 300"
+  - id: P10
+    in: {make: siemens, di: 20, do: 10, do_type: relay}
+    expect: {status: warning, cpu: CPU SR20, module_1: EM DR32, warnings: [R-PLC-11]}
+    oracle: "SR20 + EM DR32 (16 DI / 16 relay); DR32 prints no relay-coil current (p.851) → 24 V budget partial"
+  - id: P11
+    in: {make: siemens, di: 8, do: 4, ai: 4}
+    expect: {status: ok, cpu: CPU ST20, n_modules: 1, module_1: EM AE08, required_ai: 6, i24_ma: 118}
+    oracle: "AI 4 × 1.4 = 5.6 → 6: AE08 (one module; AE04 × 2 needs two, AM06 has 4 AI); 24 V 12 × 4 + 70 (AE08 no load, p.857) = 118 mA"
+  - id: P12
+    in: {make: siemens, di: 4, do: 4, ao: 2}
+    expect: {status: ok, cpu: CPU ST20, module_1: EM AQ04, required_ao: 3, i24_ma: 203}
+    oracle: "AO 2 × 1.4 = 2.8 → 3: AQ04 (AQ02 has 2); 24 V 12 × 4 + 155 (AQ04, 20 mA load per channel, p.860) = 203 mA"
+  - id: P13
+    in: {make: siemens, di: 60, do: 30}
+    expect: {status: warning, cpu: CPU ST20, n_modules: 5, required_di: 84, required_do: 42, capacity_di: 84, capacity_do: 48, bus_5v_ma: 725, i24_ma: 336, warnings: [R-PLC-10], supply_24v_a: 0.756}
+    oracle: "84 / 42; ST20 leaves 72 / 34; ≥ 5 modules (16 DI max each); 2 × DT32 + 2 × DE16 + DT16 = 72 / 40, spare 6 (the least); 5 V 2×185 + 2×105 + 145 = 725; 24 V (12 + 72) × 4 = 336 > 300 mA → external 24 V ≥ 36 mA; R-PLC-24 (2026-10-14): 720 mA + shortfall 336 − 300 = 36 mA"
+  - id: P14
+    in: {make: siemens, di: 100, do: 60}
+    expect: {status: cannot_select, rule: R-PLC-09}
+    oracle: "140 / 84: ST60 leaves 104 DI; 6 modules × 16 DI = 96 < 104"
+  - id: P15
+    in: {make: siemens, di: 10, do: 5, do_type: sinking}
+    expect: {status: cannot_select, rule: R-PLC-07}
+    oracle: "no sinking outputs in the S7-200 SMART family"
+  - id: P16
+    in: {make: siemens, di: 10, do: 5, fieldbus: profinet, fieldbus_devices: 6}
+    expect: {status: ok, cpu: CPU ST20}
+    oracle: "PROFINET controller, 6 ≤ 8 devices (p.801)"
+  - id: P17
+    in: {make: siemens, di: 10, do: 5, fieldbus: profinet, fieldbus_devices: 9}
+    expect: {status: cannot_select, rule: R-PLC-12}
+    oracle: "max. 8 PROFINET devices"
+  - id: P18
+    in: {make: siemens, di: 10, do: 5, fieldbus: profinet}
+    expect: {status: warning, cpu: CPU ST20, warnings: [R-PLC-12]}
+    oracle: "number of PROFINET devices not given"
+  - id: P19
+    in: {make: abb, di: 10, do: 5}
+    expect: {status: invalid}
+    oracle: "make must be omron or siemens"
+  # --- Siemens S7-1200 G2 (R-PLC-13 … 17), written 2026-10-13 before the code; oracle: ST 70 · 2026 pp.392-461 by hand
+  - id: P20
+    in: {make: siemens, family: s7-1200g2, di: 20, do: 10}
+    expect: {status: ok, cpu: CPU 1212C DC/DC/DC, n_modules: 2, module_1: SM 1221 DI 16x24VDC, module_2: "SM 1223 DI 8x24VDC/DQ 8x24VDC 0.5A", bus_5v_ma: 200, i24_lplus_ma: 143.4, supply_24v_a: 0.8434}
+    oracle: "28 / 14; 1212C 8 / 6 leaves 20 / 8; one module: SM 1223 16/16 has 16 DI < 20; pairs: SM 1221 + SM 1223 8/8 = 24 / 8, spare 4 (all others 20); 5 V 90 + 110 (p.421, 432); L+ 16 × 4.1 + 8 × 4.1 + 45 = 143.4 mA; 2026-10-13 G2 system manual: outputs sourcing (p.376), 5 V 200 ≤ 1000 mA (p.369); R-PLC-24 (2026-10-14): 1212C DC/DC/DC 700 mA with all accessories (G2 p.375) + modules L+ 143.4 mA"
+  - id: P21
+    in: {make: siemens, family: s7-1200g2, di: 20, do: 10, do_type: relay}
+    expect: {status: ok, cpu: CPU 1212C DC/DC/RLY, module_1: SM 1221 DI 16x24VDC, module_2: "SM 1223 DI 8x24VDC/DQ 8x relay", bus_5v_ma: 195, i24_lplus_ma: 170.4, supply_24v_a: 0.9354}
+    oracle: "relay, 24 V DC supply → DC/DC/RLY; SM 1221 + SM 1223 8DI/8RLY; 5 V 90 + 105; L+ 24 × 4.1 + 8 × 9 = 98.4 + 72 = 170.4 mA; 2026-10-13 G2 system manual: 195 ≤ 1000 mA; R-PLC-24 (2026-10-14): 1212C DC/DC/RLY 765 mA + 170.4 mA"
+  - id: P22
+    in: {make: siemens, family: s7-1200g2, di: 20, do: 10, do_type: relay, cpu_supply: AC}
+    expect: {status: ok, cpu: CPU 1212C AC/DC/RLY, supply_24v_a: 0.1704}
+    oracle: "AC supply → AC/DC/RLY (p.392); 2026-10-13 G2 system manual: budget held; R-PLC-24 (2026-10-14): AC/DC/RLY is AC-fed: 0 + modules L+ 170.4 mA"
+  - id: P23
+    in: {make: siemens, family: s7-1200g2, di: 150, do: 100, do_type: relay}
+    expect: {status: cannot_select, rule: R-PLC-14}
+    oracle: "210 / 140; 1214C leaves 196 DI; 10 modules × 16 DI = 160 < 196"
+  - id: P24
+    in: {make: siemens, family: s7-1200g2, di: 2, do: 2, ai: 6}
+    expect: {status: ok, cpu: CPU 1212C DC/DC/DC, n_modules: 2, module_1: SM 1231 AI 8x14bit, module_2: SM 1231 AI 8x14bit, required_ai: 9, bus_5v_ma: 150, i24_lplus_ma: 90}
+    oracle: "AI 6 × 1.4 = 8.4 → 9; 2 × SM 1231 (16 AI, spare 7) ties SM 1231 + SM 1233 (12 AI + 4 AO, spare 7) → lower 5 V 150 < 155; L+ 45 + 45; 2026-10-13 G2 system manual: 150 ≤ 1000 mA"
+  - id: P25
+    in: {make: siemens, family: s7-1200g2, di: 2, do: 2, do_type: relay, ambient_c: 45}
+    expect: {status: warning, cpu: CPU 1212C DC/DC/RLY, n_modules: 0, warnings: [R-PLC-17]}
+    oracle: "on-board I/O suffices (no modules: no backplane budget to verify); 45 °C > 40 °C (p.403); 2026-10-13 G2 system manual: 45 °C: derating range, 50 % budgets (p.361)"
+  - id: P26
+    in: {make: siemens, family: s7-1200g2, di: 10, do: 5, fieldbus: profinet, fieldbus_devices: 40}
+    expect: {status: cannot_select, rule: R-PLC-17}
+    oracle: "max. 31 IO devices (p.395)"
+  - id: P27
+    in: {make: siemens, family: s7-1200g2, di: 10, do: 5, do_type: sinking}
+    expect: {status: cannot_select, rule: R-PLC-13}
+    oracle: "CPU output type not printed: sinking not selectable"
+  - id: P28
+    in: {make: siemens, family: s7-1300, di: 10, do: 5}
+    expect: {status: invalid}
+    oracle: "family must be s7-200smart or s7-1200g2"
+  # --- S7-1500 + ET 200SP (R-PLC-18 … 22), written 2026-10-13 before the code; oracle: ST 70 pp.519-532, 1372-1451 and the
+  # CPU 1513-1 PN equipment manual pp.44-45, by hand
+  - id: P29
+    in: {make: siemens, family: s7-1500-et200sp, di: 100, do: 50, ai: 6, ao: 2}
+    expect: {status: ok, cpu: CPU 1513-1 PN, memory_card: SIMATIC Memory Card 24 MB, n_stations: 1, n_modules: 18, n_di16: 9, n_di8: 0, n_dq16: 5, n_dq8: 0, n_ai4: 3, n_aq4: 1, n_bu_light: 5, n_bu_dark: 13, i24_a: 2.371, supply_24v_a: 2.371}
+    oracle: "140 DI → 9 × DI16; 70 DO → 5 × DQ16 (16-channel only, owner 2026-10-13); AI 9 → 3 × AI4; AO 3 → AQ4; 18 ≤ 32 → 1 station; groups at 0.5 A: DI 9 × 0.09 = 0.81, DQ16 #1 + 8.03 = 8.84, #2 … #5 each 8.03 → 4 more light (+ first) = 5; AI 3 × 0.117 + AQ 0.15 join the last group (8.53 ≤ 10); 24 V 0.56 + 0.35 + 0.81 + 5 × 0.03 + 0.351 + 0.15 = 2.371 A, all sourced; R-PLC-24 (2026-10-14): = R-PLC-22"
+  - id: P30
+    in: {make: siemens, family: s7-1500-et200sp, di: 100, do: 50, ai: 6, ao: 2, dq_load_a: 0.0104}
+    expect: {status: ok, n_bu_light: 1, n_bu_dark: 17}
+    oracle: "interface relay coil 10.4 mA per output: 5 × (16 × 0.0104 + 0.03) + 0.81 + 0.351 + 0.15 = 2.30 A ≤ 10 A → one group"
+  - id: P31
+    in: {make: siemens, family: s7-1500-et200sp, di: 600, do: 0}
+    expect: {status: ok, n_stations: 2, n_modules: 53, n_di16: 53, n_di8: 0, n_bu_light: 2, i24_a: 6.03}
+    oracle: "840 DI → 53 × DI16 (848) → 2 stations (32 + 21); one light BU per station (32 × 0.09 = 2.88 A ≤ 10); 24 V 0.56 + 2 × 0.35 + 53 × 0.09 = 6.03 A"
+  - id: P32
+    in: {make: siemens, family: s7-1500-et200sp, di: 10, do: 10, do_type: relay}
+    expect: {status: cannot_select, rule: R-PLC-19}
+    oracle: "relay outputs on ET 200SP not built"
+  - id: P33
+    in: {make: siemens, family: s7-1500-et200sp, di: 10, do: 10, cpu: CPU 1515-2 PN}
+    expect: {status: warning, cpu: CPU 1515-2 PN, i24_a: 0.47, warnings: [R-PLC-22]}
+    oracle: "14 / 14 → DI16 + DQ16 (both manuals held: group 0.09 + 8.03 ≤ 10, pass); CPU 1515-2 PN current not held → 0.35 + 0.09 + 0.03 = 0.47 A, partial"
+  - id: P34
+    in: {make: siemens, family: s7-1500-et200sp, di: 10, do: 0, fieldbus: profinet, fieldbus_devices: 130}
+    expect: {status: cannot_select, rule: R-PLC-20}
+    oracle: "1 station + 130 drives = 131 > 128 IO devices (CPU 1513-1 PN, p.527)"
+  - id: P35
+    in: {make: siemens, family: s7-1500-et200sp, di: 10, do: 0, memory_card_mb: 12}
+    expect: {status: ok, memory_card: SIMATIC Memory Card 12 MB, n_modules: 1, n_di16: 1, i24_a: 1.0}
+    oracle: "14 DI → DI16 (14 > 8); memory card 12 MB 6ES7954-8LE04-0AA0 (p.524); every figure held: 0.56 + 0.35 + 0.09 = 1.0 A"
+  # --- with the ET 200SP module manuals (R-PLC-21 … 23), written 2026-10-13 before the code
+  - id: P36
+    in: {make: siemens, family: s7-1500-et200sp, di: 0, do: 20, ambient_c: 50}
+    expect: {status: warning, n_dq16: 2, n_bu_light: 2, i24_a: 0.97, warnings: [R-PLC-23]}
+    oracle: "28 DO → 2 × DQ16 (rest 12 > 8); 16 × 0.5 = 8 A > 6 A derated at 50 °C horizontal (Fig. 7-1); groups 8.03 + 8.03 > 10 → 2 light; 24 V 0.56 + 0.35 + 2 × 0.03 = 0.97"
+  - id: P37
+    in: {make: siemens, family: s7-1500-et200sp, di: 0, do: 20, ambient_c: 50, dq_load_a: 0.3}
+    expect: {status: ok, n_dq16: 2, n_bu_light: 1, n_bu_dark: 1}
+    oracle: "16 × 0.3 = 4.8 A ≤ 6 A at 50 °C; groups 4.83 + 4.83 = 9.66 ≤ 10 → 1 light"
+  - id: P38
+    in: {make: siemens, family: s7-1500-et200sp, di: 0, do: 10, ambient_c: 45, dq_load_a: 0.4}
+    expect: {status: warning, n_dq16: 1, warnings: [R-PLC-23]}
+    oracle: "14 DO → DQ16; 45 °C → next grid point 50 °C → 6 A; 16 × 0.4 = 6.4 A > 6 A (interpolation would give 7 A: not used)"
+  - id: P39
+    in: {make: siemens, family: s7-1500-et200sp, di: 0, do: 10, ambient_c: 65}
+    expect: {status: cannot_select, rule: R-PLC-23}
+    oracle: "65 °C beyond the horizontal curve (ends at 60 °C)"
+  - id: P40
+    in: {make: siemens, family: s7-1500-et200sp, di: 0, do: 10, ambient_c: 45, dq_load_a: 0.3, mounting: vertical}
+    expect: {status: warning, warnings: [R-PLC-23]}
+    oracle: "vertical: 45 °C → 50 °C point = 4 A; 16 × 0.3 = 4.8 A > 4 A"
+  # --- G2 power budget and temperature (system manual V4.1), written 2026-10-13 before the code
+  - id: P41
+    in: {make: siemens, family: s7-1200g2, di: 2, do: 2, ambient_c: 65}
+    expect: {status: cannot_select, rule: R-PLC-17}
+    oracle: "65 °C > 60 °C (Table A-3, p.361)"
+  - id: P42
+    in: {make: siemens, family: s7-1200g2, di: 60, do: 50, do_type: relay, ambient_c: 50}
+    expect: {status: warning, cpu: CPU 1214C DC/DC/RLY, n_modules: 5, module_1: SM 1223 DI 16x24VDC/DQ 16x relay, bus_5v_ma: 730, warnings: [R-PLC-17]}
+    oracle: "84 / 70; at 50 °C budgets halve (p.361): 1212C 500 mA < the cheapest 5-module set 730 mA (4 × 16DI/16RLY + SM 1221) → no; 1214C 800 mA: leaves 70 / 60, 4 × SM 1223 16DI/16RLY + SM 1221 = 80 / 64 spare 14 (3 × + SM 1222 RLY + 2 × SM 1221 also spare 14 but 775 mA) → 730 ≤ 800"
+  - id: P43
+    in: {make: siemens, family: s7-1200g2, di: 60, do: 50, do_type: relay}
+    expect: {status: ok, cpu: CPU 1212C DC/DC/RLY, n_modules: 5, module_1: SM 1223 DI 16x24VDC/DQ 16x relay, module_5: SM 1221 DI 16x24VDC, bus_5v_ma: 730}
+    oracle: "84 / 70; 1212C 8 / 6 leaves 76 / 64; 5 modules (76 / 16 → 5): 4 × SM 1223 16DI/16RLY + SM 1221 = 80 / 64, spare 4 (5 × 16/16 relay: spare 20); 5 V 4 × 160 + 90 = 730 ≤ 1000"
+  - id: P44
+    in: {make: siemens, family: s7-1500-et200sp, di: 10, do: 10, cpu: none}
+    expect: {status: ok, cpu: none, n_stations: 1, n_modules: 2, n_di16: 1, n_dq16: 1, i24_a: 0.47}
+    oracle: "remote-I/O panel: 14 / 14 → DI16 + DQ16, one IM; 24 V 0.35 + 0.09 + 0.03 = 0.47 A, no CPU"
+  - id: P45
+    in: {make: siemens, di: 0, do: 0, fieldbus: profinet, fieldbus_devices: 1}
+    expect: {status: ok, cpu: CPU ST20, n_modules: 0, supply_24v_a: 0.72}
+    oracle: "no wired I/O but one PROFINET device: a CPU is still needed; smallest ST (ST20, controller for 8 devices p.801); supply 720 mA (p.804)"
+  - id: P46
+    in: {make: siemens, di: 0, do: 0}
+    expect: {status: invalid}
+    oracle: "no wired I/O and no PROFINET devices: nothing to control"

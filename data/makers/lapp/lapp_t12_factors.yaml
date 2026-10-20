@@ -1,0 +1,63 @@
+# Lapp Cable Guide "Power Rating" — factors applied to Table 12-1 (page = PDF page; printed page in `printed`).
+#   bundle   : footnote 3 to Table 12-1 (PDF p.1, text on PDF p.2): single cores in touch / bundled —
+#              "on surfaces": 1~AC or DC 0.76, 3~AC 0.67, "before applying conversion factor of Table 12-6";
+#              "free in air or on cable trays": 1~AC or DC 0.8, 3~AC 0.7, before Table 12-8.     printed 146 / 147
+#   temp     : Table 12-2 (DIN VDE 0298-4 Table 17), ambient ≠ 30 °C, by rated conductor temperature
+#              (60 / 70 / 80 / 85 / 90 °C, "see product page"). Keys = ambient °C; a "-" ends the column.  printed 148
+#   heat     : Table 12-4 (DIN VDE 0298-4 Table 18), heat-resistant wires and cables, "applying to current value
+#              of Table 12-1, column A, C or D". Key 50 = "up to 50". No 145 °C row is printed.        printed 149
+#   cores    : Table 12-3 (DIN VDE 0298-4 Table 26), multiconductor cables up to 10 mm², more than 3 loaded
+#              conductors: free-air and in-earth columns.                                                 printed 148
+#   group    : Table 12-6 (DIN VDE 0298-4 Table 21), number of current-carrying multicore cables or groups of
+#              2- or 3-phase AC circuits of single cores; 1 … 8 on printed p.150, 9 … 20 on p.151.
+#              Notice (p.151): only for similarly loaded cables of a similar installation, nominal cross sections
+#              differing by one step only.
+
+source:
+  ref: LAPP-POWER
+  section: "Table 12-1 footnote 3; Tables 12-2, 12-3, 12-4, 12-6 (PDF pp. 2-4 = printed pp. 146-151)"
+
+rows:
+  # --- footnote 3 (single cores in touch / bundled) — PDF p.2
+  - {kind: bundle, place: surface,  factors: {"1ac": 0.76, "dc": 0.76, "3ac": 0.67}, then: "Table 12-6", page: 2, printed: 146}
+  - {kind: bundle, place: free_air, factors: {"1ac": 0.8,  "dc": 0.8,  "3ac": 0.7},  then: "Table 12-8", page: 2, printed: 147}
+
+  # --- Table 12-2 — PDF p.3 left (printed 148)
+  - {kind: temp, insulation: "60", factors: {10: 1.29, 15: 1.22, 20: 1.15, 25: 1.08, 30: 1.00, 35: 0.91, 40: 0.82, 45: 0.71, 50: 0.58, 55: 0.41}, page: 3, printed: 148}
+  - {kind: temp, insulation: "70", factors: {10: 1.22, 15: 1.17, 20: 1.12, 25: 1.06, 30: 1.00, 35: 0.94, 40: 0.87, 45: 0.79, 50: 0.71, 55: 0.61, 60: 0.50, 65: 0.35}, page: 3, printed: 148}
+  - {kind: temp, insulation: "80", factors: {10: 1.18, 15: 1.14, 20: 1.10, 25: 1.05, 30: 1.00, 35: 0.95, 40: 0.89, 45: 0.84, 50: 0.77, 55: 0.71, 60: 0.63, 65: 0.55, 70: 0.45, 75: 0.32}, page: 3, printed: 148}
+  - {kind: temp, insulation: "85", factors: {10: 1.17, 15: 1.13, 20: 1.09, 25: 1.04, 30: 1.00, 35: 0.95, 40: 0.90, 45: 0.85}, page: 3, printed: 148}
+  - {kind: temp, insulation: "90", factors: {10: 1.15, 15: 1.12, 20: 1.08, 25: 1.04, 30: 1.00, 35: 0.96, 40: 0.91, 45: 0.87, 50: 0.82, 55: 0.76, 60: 0.71, 65: 0.65, 70: 0.58, 75: 0.50, 80: 0.41, 85: 0.29}, page: 3, printed: 148}
+
+  # --- Table 12-4 — PDF p.3 right (printed 149)
+  - {kind: heat, insulation: heat_90,  label: "ÖLFLEX HEAT 105 H07V2-K / ÖLFLEX-FD ROBUST / H07Z-K 90 °C", factors: {50: 1.00, 55: 0.94, 60: 0.87, 65: 0.79, 70: 0.71, 75: 0.61, 80: 0.50, 85: 0.35}, page: 3, printed: 149}
+  - {kind: heat, insulation: heat_110, label: "Halogen-free single core H07Z-K 110 °C", factors: {50: 1.00, 55: 1.00, 60: 1.00, 65: 1.00, 70: 1.00, 75: 1.00, 80: 1.00, 85: 0.91, 90: 0.82, 95: 0.71, 100: 0.58, 105: 0.41}, page: 3, printed: 149}
+  - {kind: heat, insulation: heat_145, label: "ÖLFLEX HEAT 145", factors: {50: 1.00, 55: 1.00, 60: 1.00, 65: 1.00, 70: 1.00, 75: 1.00, 80: 1.00, 85: 1.00, 90: 1.00, 95: 1.00, 100: 0.94, 105: 0.87, 110: 0.79, 115: 0.71, 120: 0.61, 125: 0.50, 130: 0.35}, page: 3, printed: 149}
+  - {kind: heat, insulation: heat_180, label: "ÖLFLEX HEAT 180 silicone rubber", factors: {50: 1.00, 55: 1.00, 60: 1.00, 65: 1.00, 70: 1.00, 75: 1.00, 80: 1.00, 85: 1.00, 90: 1.00, 95: 1.00, 100: 1.00, 105: 1.00, 110: 1.00, 115: 1.00, 120: 1.00, 125: 1.00, 130: 1.00, 135: 1.00, 140: 1.00, 150: 1.00, 155: 0.91, 160: 0.82, 165: 0.71, 170: 0.58, 175: 0.41}, page: 3, printed: 149}
+
+  # --- Table 12-3 — PDF p.3 left (printed 148)
+  - {kind: cores, n: 5,  free_air: 0.75, earth: 0.70, page: 3, printed: 148}
+  - {kind: cores, n: 7,  free_air: 0.65, earth: 0.60, page: 3, printed: 148}
+  - {kind: cores, n: 10, free_air: 0.55, earth: 0.50, page: 3, printed: 148}
+  - {kind: cores, n: 14, free_air: 0.50, earth: 0.45, page: 3, printed: 148}
+  - {kind: cores, n: 19, free_air: 0.45, earth: 0.40, page: 3, printed: 148}
+  - {kind: cores, n: 24, free_air: 0.40, earth: 0.35, page: 3, printed: 148}
+  - {kind: cores, n: 40, free_air: 0.35, earth: 0.30, page: 3, printed: 148}
+  - {kind: cores, n: 61, free_air: 0.30, earth: 0.25, page: 3, printed: 148}
+
+  # --- Table 12-6 — PDF p.4 (1 … 8 printed 150, 9 … 20 printed 151)
+  #   bunched          : "On floors or walls with contact between each other bunched directly as well as in conduits or in wireways"
+  #   wall_touching    : "In touch between each other, directly attached to walls or floors in one layer"
+  #   wall_spaced      : "With clearance of d between each other, directly attached to walls or floors in one layer"
+  #   ceiling_touching : "In touch between each other, directly attached to ceilings"
+  #   ceiling_spaced   : "With clearance of d between each other, directly attached to ceilings in one layer"
+  - {kind: group, method: bunched,          factors: {1: 1.00, 2: 0.80, 3: 0.70, 4: 0.65, 5: 0.60, 6: 0.57, 7: 0.54, 8: 0.52}, page: 4, printed: 150}
+  - {kind: group, method: bunched,          factors: {9: 0.50, 10: 0.48, 12: 0.45, 14: 0.43, 16: 0.41, 18: 0.39, 20: 0.38}, page: 4, printed: 151}
+  - {kind: group, method: wall_touching,    factors: {1: 1.00, 2: 0.85, 3: 0.79, 4: 0.75, 5: 0.73, 6: 0.72, 7: 0.72, 8: 0.71}, page: 4, printed: 150}
+  - {kind: group, method: wall_touching,    factors: {9: 0.70, 10: 0.70, 12: 0.70, 14: 0.70, 16: 0.70, 18: 0.70, 20: 0.70}, page: 4, printed: 151}
+  - {kind: group, method: wall_spaced,      factors: {1: 1.00, 2: 0.94, 3: 0.90, 4: 0.90, 5: 0.90, 6: 0.90, 7: 0.90, 8: 0.90}, page: 4, printed: 150}
+  - {kind: group, method: wall_spaced,      factors: {9: 0.90, 10: 0.90, 12: 0.90, 14: 0.90, 16: 0.90, 18: 0.90, 20: 0.90}, page: 4, printed: 151}
+  - {kind: group, method: ceiling_touching, factors: {1: 0.95, 2: 0.81, 3: 0.72, 4: 0.68, 5: 0.66, 6: 0.64, 7: 0.63, 8: 0.62}, page: 4, printed: 150}
+  - {kind: group, method: ceiling_touching, factors: {9: 0.61, 10: 0.61, 12: 0.61, 14: 0.61, 16: 0.61, 18: 0.61, 20: 0.61}, page: 4, printed: 151}
+  - {kind: group, method: ceiling_spaced,   factors: {1: 0.95, 2: 0.85, 3: 0.85, 4: 0.85, 5: 0.85, 6: 0.85, 7: 0.85, 8: 0.85}, page: 4, printed: 150}
+  - {kind: group, method: ceiling_spaced,   factors: {9: 0.85, 10: 0.85, 12: 0.85, 14: 0.85, 16: 0.85, 18: 0.85, 20: 0.85}, page: 4, printed: 151}

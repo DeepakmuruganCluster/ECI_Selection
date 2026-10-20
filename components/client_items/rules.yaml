@@ -1,0 +1,14 @@
+# Client-specified items rules. Authority: CLIENT = the client's specification (a stored, cited document),
+# PHYS = arithmetic, RULE = our decision.
+
+component: client_items
+
+rules:
+  R-CLI-01: {authority: CLIENT, text: "Items the client specifies are listed exactly as written, with page; never changed. A quantity the spec does not state is an open point."}
+  R-CLI-02: {authority: RULE,   text: "A quantity we had to interpret (e.g. one surge arrester per incomer) is listed and flagged for the client to confirm."}
+  R-CLI-03: {authority: RULE,   text: "Each item names the engineering component that must check it; until that component is built, the item is 'client-specified, not verified'."}
+  R-CLI-04: {authority: PHYS,   text: "The spec's own arithmetic must hold: required + spare = final I/O, panel I/O add up to the stated totals, section widths add up to the stated panel length. A difference is a warning."}
+  R-CLI-05: {authority: RULE,   text: "Spare I/O is reported as a percentage of the required I/O (information; no minimum is imposed)."}
+
+params:
+  built_components: [motor_flc, dol_starter, mccb, vfd, cable, enclosure, panel, metering, enclosure_accessories, internal_wiring, load_list, aux_switchgear]

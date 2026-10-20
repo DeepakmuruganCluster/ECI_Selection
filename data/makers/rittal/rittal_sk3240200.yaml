@@ -1,0 +1,17 @@
+# Rittal SK 3240.200 outlet filter — data sheet (pdf-creator, 3 pages). PDF page = printed page.
+
+source:
+  ref: RITTAL-3240200
+  section: "SK 3240.200 outlet filter: features (pp. 2–3)"
+
+article: "SK 3240.200"
+
+rows:
+  - {quantity: to_fit,           value: "3240.1xx/3240.5xx/3241.1xx/3241.5xx", printed: "To fit Model No. 3240.1xx/3240.5xx/3241.1xx/3241.5xx", page: 2}
+  - {quantity: cutout_width_mm,  value: 224, page: 2}
+  - {quantity: cutout_height_mm, value: 224, page: 2}
+  - {quantity: width_mm,         value: 255, page: 2}
+  - {quantity: height_mm,        value: 255, page: 2}
+  - {quantity: depth_mm,         value: 25,  page: 2}
+  - {quantity: ip_standard,      value: 54, printed: "IP 54 with chopped-fibre filter/pleated filter", page: 2}
+  - {quantity: supply_includes_mat, value: "Chopped-fibre filter mat", page: 2}

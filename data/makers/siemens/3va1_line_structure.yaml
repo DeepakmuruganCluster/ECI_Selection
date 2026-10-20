@@ -1,0 +1,41 @@
+# SENTRON 3VA1 moulded-case circuit breakers, line protection with the TM240 ATAM trip unit (adjustable thermal and
+# magnetic): frames, rated currents, breaking capacities and how the article number is built.
+# Catalog LV 10 · 2026 (SIE-LV10-2026), chapter Molded Case Circuit Breakers:
+#   PDF p.183 (printed 2/9)   3VA1 quick selection guide: rated current In at 50 °C ambient per size; breaking capacity
+#                             classes with Icu and Ics at 380 … 415 V AC (3/4-pole columns)
+#   PDF p.200 (printed 2/26)  structure of the article numbers, 3VA1 line protection: size digit (pos. 5), rated
+#                             current code (pos. 6-7) per size
+#   PDF p.201 (printed 2/27)  breaking-capacity code (pos. 8); TM240 ATAM = F on 3VA11 … 3VA15; without neutral
+#                             conductor protection = E; 3-pole = 3; nut keeper kit = 2
+# Same structure in the 10/2021 chapter (SIE-LV10-3VA-2021 pp.26-27). The catalogue: "For a complete and valid
+# configuration … please use our online configurator" — an article built here is confirmed by its data sheet (R-3VA-07).
+
+source:
+  ref: SIE-LV10-2026
+  section: "3VA1 quick selection guide (2/9) and structure of the article numbers (2/26, 2/27)"
+
+conditions:
+  rated_ambient_c: 50
+  trip_code: F
+  neutral_code: E
+  poles_code: "3"
+  connection_code: "2"
+  suffix: "-0AA0"
+  pages: {ratings: 183, structure: 200, breaking: 201, trip: 201}
+
+rows:   # TM240 line protection, 3/4-pole: rated currents (p.200) and breaking classes with Icu / Ics at 380 … 415 V (p.183)
+  - {frame: 3VA11, digit: "1", size_a: 160, in_a: [16, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160],
+     classes: [{class: N, icu_ka: 25, ics_ka: 25}, {class: S, icu_ka: 36, ics_ka: 36}, {class: M, icu_ka: 55, ics_ka: 55}, {class: H, icu_ka: 70, ics_ka: 70}], page: 200}
+  - {frame: 3VA12, digit: "2", size_a: 250, in_a: [160, 200, 250],
+     classes: [{class: S, icu_ka: 36, ics_ka: 36}, {class: M, icu_ka: 55, ics_ka: 55}, {class: H, icu_ka: 70, ics_ka: 70}], page: 200}
+  - {frame: 3VA13, digit: "3", size_a: 400, in_a: [320, 400],
+     classes: [{class: S, icu_ka: 36, ics_ka: 36}, {class: M, icu_ka: 55, ics_ka: 55}, {class: H, icu_ka: 70, ics_ka: 70}, {class: C, icu_ka: 110, ics_ka: 110}], page: 200}
+  - {frame: 3VA14, digit: "4", size_a: 630, in_a: [500, 630],
+     classes: [{class: S, icu_ka: 36, ics_ka: 36}, {class: M, icu_ka: 55, ics_ka: 55}, {class: H, icu_ka: 70, ics_ka: 70}, {class: C, icu_ka: 110, ics_ka: 110}], page: 200}
+  - {frame: 3VA15, digit: "5", size_a: 1000, in_a: [630, 800, 1000],
+     classes: [{class: M, icu_ka: 55, ics_ka: 55}, {class: H, icu_ka: 70, ics_ka: 70}, {class: C, icu_ka: 110, ics_ka: 85}], page: 200}
+
+codes:  # p.200 right-hand column (rated current) and p.201 right-hand column (breaking capacity, by Icu at 415 V)
+  in_a: {16: "96", 20: "20", 25: "25", 32: "32", 40: "40", 50: "50", 63: "63", 80: "80", 100: "10", 125: "12", 160: "16",
+         200: "20", 250: "25", 320: "32", 400: "40", 500: "50", 630: "63", 800: "80", 1000: "10"}
+  breaking_ka: {16: "2", 25: "3", 36: "4", 55: "5", 70: "6", 110: "7"}

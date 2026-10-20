@@ -1,0 +1,23 @@
+# Siemens surge suppressors (varistors, with LED) for SIRIUS 3RT2 contactors, by contactor size and coil voltage
+# (owner 2026-10-20, RFQ part 3: the client asks a surge suppressor on each contactor). Catalog IC 10 · 2026, PDF p.224
+# (printed 3/96), "Accessories … > Surge suppressors", rows read on the page image. Rated control supply voltage Uc:
+# AC operation (50/60 Hz) and DC operation, as printed. Sizes S2/S3: "the varistor without LED is already integrated on
+# the DC and AC/DC contactors" (footnote 2).
+
+source:
+  ref: SIE-IC10-2026
+  section: "Surge suppressors with LED: varistors, sizes S00, S0, S2 and S3 (3/96)"
+
+rows:
+  - {size: S00, article: 3RT2916-1JJ00, ac_v: [24, 48],   dc_v: [12, 24],  page: 224}
+  - {size: S00, article: 3RT2916-1JK00, ac_v: [48, 127],  dc_v: [24, 70],  page: 224}
+  - {size: S00, article: 3RT2916-1JL00, ac_v: [127, 240], dc_v: [70, 150], page: 224}
+  - {size: S0,  article: 3RT2926-1JJ00, ac_v: [24, 48],   dc_v: [12, 24],  page: 224}
+  - {size: S0,  article: 3RT2926-1JK00, ac_v: [48, 127],  dc_v: [24, 70],  page: 224}
+  - {size: S0,  article: 3RT2926-1JL00, ac_v: [127, 240], dc_v: [70, 150], page: 224}
+  - {size: S2,  article: 3RT2936-1JJ00, ac_v: [24, 48],   dc_v: [12, 24],  page: 224}
+  - {size: S2,  article: 3RT2936-1JK00, ac_v: [48, 127],  dc_v: [24, 70],  page: 224}
+  - {size: S2,  article: 3RT2936-1JL00, ac_v: [127, 240], dc_v: [70, 150], page: 224}
+  - {size: S3,  article: 3RT2936-1JJ00, ac_v: [24, 48],   dc_v: [12, 24],  page: 224}
+  - {size: S3,  article: 3RT2936-1JK00, ac_v: [48, 127],  dc_v: [24, 70],  page: 224}
+  - {size: S3,  article: 3RT2936-1JL00, ac_v: [127, 240], dc_v: [70, 150], page: 224}

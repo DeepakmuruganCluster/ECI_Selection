@@ -1,0 +1,21 @@
+# Control-circuit devices: control supply (transformer or phase-neutral), its MCBs, and the panel's operator devices.
+# Authority: OWN = company costing sheet / switchgear template (owner decisions CC-1 … CC-5); RULE = our decision.
+
+component: control_circuit
+
+rules:
+  R-CC-01: {authority: RULE, text: "The 230 V AC control load is the sum of what the designer gives: contactor coils × holding VA, pilot lamps × VA, solenoid valves, 230 V instruments and other loads. A count without its VA → warning (the load is partial; the transformer is not sized)."}
+  R-CC-02: {authority: OWN,  text: "With a control transformer (CC-1): required VA = load × 1.5 (switchgear template OWN-SWG-CALC 'U1_Transformer' G13); the smallest company-standard transformer (costing sheet ratings) at or above it. None large enough → warning."}
+  R-CC-03: {authority: RULE, text: "Transformer MCBs from the own switchgear database: primary 2-pole D-curve (inrush) at its rated current VA / 415 V; secondary 2-pole C-curve at VA / 230 V. Phase-neutral supply instead (CC-1): one 2-pole C-curve MCB at load / 230 V."}
+  R-CC-04: {authority: OWN,  text: "Operator devices from the company costing sheet, with indicative prices: emergency stop (mushroom push button + hood + NC element), reset push button (+ NO element), phase indication lamps R / Y / B (CC-3), hour meter (CC-4)."}
+  R-CC-05: {authority: RULE, text: "Device consumption: Siemens 3RT2 contactor coils come from the DOL selection (IC 10 technical specifications, R-DOL-13); other devices (lamps, other makes' coils) must be given from the maker's data. A coil VA given by the designer replaces the catalogue values."}
+  R-CC-06: {authority: RULE, text: "Contactor coils from the catalogue (owner decision CC-6): coil load = Σ holding VA of all coils + the largest single step (closing VA − holding VA), since coils are switched one at a time. A coil without catalogue power → the load is partial (R-CC-01)."}
+
+params:
+  primary_v: 415
+  secondary_v: 230
+  devices:
+    estop: [{match: "XB5AS442N", qty: 1}, {match: "EMERGENCY STOP HOOD", qty: 1}, {match: "ZBE102N", qty: 1}]
+    reset: [{match: "XB5AA61N", qty: 1}, {match: "ZBE101N", qty: 1}]
+    phase_lamps: [{match: "XB7EV04MPN", qty: 1}, {match: "XB7EV05MPN", qty: 1}, {match: "XB7EV06MPN", qty: 1}]
+    hour_meter: [{match: "LA25F1", qty: 1}]

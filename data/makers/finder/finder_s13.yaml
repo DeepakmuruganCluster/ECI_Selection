@@ -1,0 +1,19 @@
+# Finder Series 13 electronic step relays (catalogue S13EN, IX-2026). Transcribed 2026-10-11, checked
+# against the page images. page = PDF page; printed page numbers equal PDF page numbers (offset 0).
+#
+# 13.12 "Call & Reset relay 12 V or 24 V AC/DC, 2 pole" is the only relay in the five Finder catalogues
+# held that LATCHES on a SET input and is released only by a separate RESET input with a DC supply
+# usable from a 24 V DC PLC output (wiring p.11: + to A1 and to the S / R push-buttons, − to A2).
+# 13.01 (step relay "BISTABLE", p.8) toggles on every impulse — kept as a rejected candidate.
+
+source:
+  ref: FINDER-S13
+  section: "13.11/13.12/13.31 (p.5), ordering codes (p.7), functions (p.8), wiring diagrams (p.11)"
+  printed_page_offset: 0
+
+rows:
+  - {kind: latching, article: "13.12.0.024.0000", function: set_reset, contacts: "1 CO (SPDT) + 1 NO (SPST-NO)", rated_a: 8, rated_v_ac: 250, max_v_ac: 400, ac1_va: 2000, ac15_va: 400, supply: "12 - 24 V AC/DC", un_v: 24, umin_v: 19.2, umax_v: 26.4, p_w_impulse: 2.5, impulse_min_s: 0.1, impulse_max_s: 10, ambient_min_c: -10, ambient_max_c: 60, width_mm: 17.5, inputs: "S (set), R (reset)", page: 5}
+  - {kind: code, article: "13.12.0.024.0000", text: "13.12.0.024.0000 (24 V AC/DC)", page: 7}
+  - {kind: wiring, article: "13.12.0.024.0000", note: "+ (A1) and − (A2) supply; Set (S) and Reset (R) push-buttons switched from +", page: 11}
+  - {kind: function, article: "13.12.0.024.0000", text: "On momentary closure of the Set switch (S), the output contact closes. Only a momentary closure of the Reset switch (R) will open the output contact.", page: 8}
+  - {kind: rejected, article: "13.01.0.024.0000", function: step_toggle, text: "Step relay (bistable). After every impulse (B1-B2), the output contact changes state alternately switching from open to closed and vice versa.", reason: "toggles on every impulse: the PLC cannot command a known ON or OFF state", page: 8}

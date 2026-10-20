@@ -1,0 +1,14 @@
+# Independent cross-check of the Rittal airflow formula.
+# Siemens PM240-2 Hardware Installation Manual 07/2022, section 3.3 "Power losses and air cooling requirements",
+# PDF page 34 (printed 32): "airflow [l/s] = power loss [W] * 0.86 / ΔT [K]" (ΔT: permissible temperature rise
+# in the control cabinet) and "The Control Unit power loss is less than 0.04 kW". Text on the page.
+# Rittal f = 3.1 m³·K/Wh (0 – 100 m) = 3.1 / 3.6 = 0.861 l·K/(W·s): the two agree within rounding.
+# The Siemens formula has no altitude factor.
+
+source:
+  ref: SIE-PM240-2
+  section: "3.3 Power losses and air cooling requirements (PDF p. 34, printed 32)"
+
+rows:
+  - {quantity: airflow_coefficient, value: 0.86, unit: "l/s per W/K", printed: "airflow [l/s] = power loss [W] * 0.86 / ΔT [K]", page: 34}
+  - {quantity: control_unit_loss_max, value: 40, unit: W, printed: "The Control Unit power loss is less than 0.04 kW", page: 34}

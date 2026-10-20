@@ -1,0 +1,14 @@
+# Polycab "De-Rating factor table", p.87 (maximum conductor temperature 90 °C).
+#   air    : ambient air temperature, cable in free air (25 … 60 °C)
+#   ground : ground temperature, direct buried cables (15 … 50 °C)
+#   duct   : ground temperature, cable in duct (15 … 50 °C)
+# Polycab gives NO grouping factors (p.11 note 1 says they "must be used" but none are printed): see R-CAB-06.
+
+source:
+  ref: POLYCAB-LT-V9
+  section: "De-Rating factor table (p.87)"
+
+rows:
+  - {kind: air,    factors: {25: 1.14, 30: 1.10, 35: 1.05, 40: 1.00, 45: 0.95, 50: 0.89, 55: 0.84, 60: 0.77}, page: 87}
+  - {kind: ground, factors: {15: 1.12, 20: 1.08, 25: 1.04, 30: 1.00, 35: 0.96, 40: 0.91, 45: 0.87, 50: 0.82}, page: 87}
+  - {kind: duct,   factors: {15: 1.12, 20: 1.08, 25: 1.04, 30: 1.00, 35: 0.96, 40: 0.91, 45: 0.87, 50: 0.82}, page: 87}

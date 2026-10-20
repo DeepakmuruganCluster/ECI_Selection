@@ -1,0 +1,32 @@
+# Permissible motor cable length, 400 V converters, factory pulse frequency.
+# Section 4.2.2, Table 4-1 (FSA … FSC, p. 62), Table 4-2 (FSD … FSE, p. 62), Table 4-3 (FSF, p. 63).
+#   filter: none = "without filter" / "No EMC category"; C2 = "with internal C2 filter" / "Second Environment, C2"
+#   reactors: number of output reactors (FSA-FSC: one; FSD-FSF: "two output reactors in series")
+#   v_min / v_max: Table 4-1 footnotes 3) and 4) give separate values for 380 … 415 V and 440 … 480 V
+# Combinations that are not listed (e.g. C2 filter with output reactor, C2 with unshielded cable) are not permitted.
+
+source:
+  ref: SIE-PM240-2
+  section: "4.2.2 Length of the motor cable (Tables 4-1 … 4-3)"
+
+rows:
+  # FSA … FSC (Table 4-1)
+  - {group: FSA-FSC, filter: none, shielded: true,  reactors: 0, v_min: 380, v_max: 480, max_m: 150, page: 62}
+  - {group: FSA-FSC, filter: none, shielded: false, reactors: 0, v_min: 380, v_max: 480, max_m: 150, page: 62}
+  - {group: FSA-FSC, filter: none, shielded: true,  reactors: 1, v_min: 380, v_max: 415, max_m: 150, page: 62}
+  - {group: FSA-FSC, filter: none, shielded: true,  reactors: 1, v_min: 440, v_max: 480, max_m: 100, page: 62}
+  - {group: FSA-FSC, filter: none, shielded: false, reactors: 1, v_min: 380, v_max: 415, max_m: 225, page: 62}
+  - {group: FSA-FSC, filter: none, shielded: false, reactors: 1, v_min: 440, v_max: 480, max_m: 150, page: 62}
+  - {group: FSA-FSC, filter: C2,   shielded: true,  reactors: 0, v_min: 380, v_max: 480, max_m: 50,  page: 62}
+  # FSD … FSE (Table 4-2)
+  - {group: FSD-FSE, filter: C2,   shielded: true,  reactors: 0, v_min: 380, v_max: 480, max_m: 150, page: 62}
+  - {group: FSD-FSE, filter: none, shielded: true,  reactors: 0, v_min: 380, v_max: 480, max_m: 200, page: 62}
+  - {group: FSD-FSE, filter: none, shielded: false, reactors: 0, v_min: 380, v_max: 480, max_m: 300, page: 62}
+  - {group: FSD-FSE, filter: none, shielded: true,  reactors: 2, v_min: 380, v_max: 480, max_m: 350, page: 62}
+  - {group: FSD-FSE, filter: none, shielded: false, reactors: 2, v_min: 380, v_max: 480, max_m: 525, page: 62}
+  # FSF (Table 4-3)
+  - {group: FSF,     filter: C2,   shielded: true,  reactors: 0, v_min: 380, v_max: 480, max_m: 150, page: 63}
+  - {group: FSF,     filter: none, shielded: true,  reactors: 0, v_min: 380, v_max: 480, max_m: 300, page: 63}
+  - {group: FSF,     filter: none, shielded: false, reactors: 0, v_min: 380, v_max: 480, max_m: 450, page: 63}
+  - {group: FSF,     filter: none, shielded: true,  reactors: 2, v_min: 380, v_max: 480, max_m: 525, page: 63}
+  - {group: FSF,     filter: none, shielded: false, reactors: 2, v_min: 380, v_max: 480, max_m: 800, page: 63}

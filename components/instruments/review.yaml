@@ -1,0 +1,54 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 24
+title: Field devices (instruments, switches, valves)
+what_it_does: >
+  Reads every field device from ECI's equipment specification (level switches, transmitters,
+  analysers, flow meters, solenoid valves, pneumatic panels, remote and emergency switches, tower
+  lamps) and works out what the panel needs for them: 230 V MCBs for analysers, flow meters and
+  valves, a fused terminal for every analog loop (company practice), and the 24 V current of the
+  loop-powered transmitters, pneumatic panels and tower lamps. It also checks ECI's own numbers:
+  motor I/O plus field-device I/O must give ECI's required I/O, and tag ranges must match quantities.
+  Currents of instruments and valves are not in any document we hold, so they are asked.
+
+# project tables this component reads (shown and fingerprinted on the Review tab)
+data_files: [projects/ECI-WNS2503/data/eci_wns2503_field_devices.yaml]
+
+how_to_check:
+  - "Press 'Try it: BIO/UF'. It must say ECI's I/O adds up: motors 96 DI + field devices 163 DI = 259 DI (ECI page 1), and likewise for DO, AI and AO."
+  - "Press 'Try it: RO'. It must warn that PV301 to PV360 is 60 valves while ECI writes 65 (130 DI)."
+  - "Press 'Try it: BIO/UF with currents'. 7 valves × 10 VA / 230 V = 0.30 A → one 2-pole C 0.5 A MCB; 12 analysers / flow meters get one 0.5 A MCB each; 34 analog loops get 34 fused terminals."
+
+spot_checks:
+  - {label: "BIO/UF", tab: instruments, inputs: {panel: BIO_UF}}
+  - {label: "RO", tab: instruments, inputs: {panel: RO}}
+  - {label: "BIO/UF with currents", tab: instruments, inputs: {panel: BIO_UF, instrument_230v_a: 0.5, valve_va: 10, pneumatic_24v_a: 1, tower_lamp_24v_a: 0.2}}
+
+decisions:
+  - id: INS-1
+    question: "A 4-20 mA transmitter is counted at 22 mA on the 24 V supply (20 mA full scale plus alarm over-range). Accept?"
+    options: {"yes": "Yes, 22 mA", "no": "Use 20 mA"}
+    recommended: "yes"
+  - id: INS-2
+    question: "Every 230 V analyser and flow meter gets its own 2-pole MCB. Is that your practice, or one MCB per group?"
+    options: {each: "One MCB per instrument", group: "One MCB per group of instruments"}
+    recommended: each
+  - id: INS-3
+    question: "Every analog loop gets a fused terminal block with a glass fuse (Elmex KUDF 4, as in the company costing sheet). Keep?"
+    options: {"yes": "Yes", "no": "No, plain terminals"}
+    recommended: "yes"
+  - id: INS-4
+    question: "All solenoid valves of a panel share one 2-pole MCB. Keep, or one MCB per valve?"
+    options: {shared: "One shared MCB", each: "One MCB per valve"}
+    recommended: shared
+  - id: INS-5
+    question: "Five ECI rows give no supply (PV201-PV250 feedback, RS_P301A/B, RS_601A/B, CP03, LS601) and PV301-PV360 is 60 valves but quantity 65. Ask ECI?"
+    options: {ask: "Yes, ask ECI", assume: "No, assume 24 V DC and keep 65"}
+    recommended: ask
+
+fields:
+  panel: {label: "Panel", options: ["BIO_UF", "RO"]}
+  instrument_230v_a: "230 V current per analyser / flow meter (A, data sheet)"
+  valve_va: "Solenoid valve coil (VA, data sheet)"
+  pneumatic_24v_a: "Pneumatic panel 24 V current (A)"
+  tower_lamp_24v_a: "Tower lamp 24 V current (A)"

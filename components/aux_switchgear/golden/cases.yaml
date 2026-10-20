@@ -1,0 +1,74 @@
+# Golden cases for aux_switchgear — written BEFORE the code (G4).
+# Oracle: the rows of the own database by CSV line number (sources/pdf/own/switchgears/*.csv), by hand.
+# 2026-10-13: breaking capacity and RCCB type from Catalog LV 10 · 2026 (SIE-LV10-2026), read by hand on the pages cited.
+
+cases:
+  - id: A01
+    in: {circuits: [{name: socket, ib_a: 10, poles: 2, curve: C}], make: Siemens}
+    expect: {status: warning, n_mcb: 1, mcb_1: 5SL42107RC, mcb_1_in_a: 10, mcb_1_icn_ka: 10, warnings: [R-AUX-03]}
+    oracle: "MCB.csv line 217: Siemens 2P C 10 A 5SL42107RC (smallest ≥ 10 A); LV 10 p.284 5SL4210-7 = 5SL4 10 kA; fault level not given → warning"
+  - id: A02
+    in: {circuits: [{name: socket, ib_a: 10, poles: 2, curve: C, rcd_ma: 30}], make: Siemens}
+    expect: {status: warning, mcb_1: 5SL42107RC, rccb_1: 5SV43120RC, rccb_1_type: AC, warnings: [R-AUX-03]}
+    oracle: "RCCB.csv line 30: Siemens 2P 25 A 30 mA (smallest ≥ 10 A); LV 10 p.382 5SV4312-0 type AC, 1P+N"
+  - id: A03
+    in: {circuits: [{name: control transformer, ib_a: 3, poles: 2, kind: transformer}], make: Siemens}
+    expect: {status: warning, mcb_1: 5SY72038CC, mcb_1_curve: D, mcb_1_icn_ka: 15}
+    oracle: "AX-2 transformer → D; MCB.csv line 278: Siemens 2P D 3 A; LV 10 p.304 5SY7203-8 = 5SY7 15 kA"
+  - id: A04
+    in: {spd: "3Ph+N+PE", spd_make: Phoenix}
+    expect: {status: warning, spd: "VAL-MS 320/3+1/FM", warnings: [R-AUX-05]}
+    oracle: "sa.csv line 4"
+  - id: A05
+    in: {pmr: true, pmr_make: Siemens}
+    expect: {status: ok, pmr: "7UG0 753 1AA20"}
+    oracle: "pmr.csv line 3"
+  - id: A06
+    in: {isolator_ib_a: 20, isolator_make: Siemens}
+    expect: {status: warning, isolator: 3LD22030TK53, isolator_in_a: 32}
+    oracle: "20 A × 1.5 = 30 A → isolator.csv line 12: Siemens 32 A"
+  - id: A07
+    in: {circuits: [{name: big, ib_a: 140, poles: 3, curve: C}], make: Siemens}
+    expect: {status: cannot_select, rule: R-AUX-02}
+    oracle: "largest Siemens 3P C is 125 A (line 243)"
+  - id: A08
+    in: {circuits: [{name: socket, ib_a: 10, poles: 2, curve: C}], make: ABB}
+    expect: {status: cannot_select, rule: R-AUX-01}
+    oracle: "no ABB rows"
+  - id: A09
+    in: {circuits: [{name: x, ib_a: 10, poles: 2}], make: Siemens}
+    expect: {status: invalid}
+    oracle: "no curve and no kind"
+  - id: A10
+    in: {circuits: [{name: socket, ib_a: 10, poles: 2, curve: C}], make: Siemens, margin: 1.25}
+    expect: {status: warning, mcb_1: 5SL42137RC, mcb_1_in_a: 13}
+    oracle: "10 × 1.25 = 12.5 A → line 218: 13 A"
+  # --- breaking capacity against the fault level (R-AUX-03) and Siemens SPD (R-AUX-08), written 2026-10-13 ---------
+  - id: A11
+    in: {circuits: [{name: socket, ib_a: 10, poles: 2, curve: C}], make: Siemens, fault_ka: 6}
+    expect: {status: ok, mcb_1: 5SL42107RC, mcb_1_icn_ka: 10}
+    oracle: "5SL4 10 kA ≥ 6 kA (LV 10 p.284)"
+  - id: A12
+    in: {circuits: [{name: socket, ib_a: 10, poles: 2, curve: C}], make: Siemens, fault_ka: 15}
+    expect: {status: warning, mcb_1: 5SL42107RC, mcb_1_icn_ka: 10, warnings: [R-AUX-03]}
+    oracle: "5SL4 10 kA < 15 kA → back-up protection or a higher series"
+  - id: A13
+    in: {circuits: [{name: control transformer, ib_a: 3, poles: 2, kind: transformer}], make: Siemens, fault_ka: 15}
+    expect: {status: ok, mcb_1: 5SY72038CC, mcb_1_icn_ka: 15}
+    oracle: "5SY7 15 kA ≥ 15 kA (LV 10 p.304)"
+  - id: A14
+    in: {spd: "3Ph+N+PE", spd_make: Siemens, fault_ka: 20}
+    expect: {status: ok, spd: 5SD7464-1, spd_backup_fuse_a: 125}
+    oracle: "LV 10 p.519 (6/17): TN-S and TT, 3+1, with remote signalling 5SD7464-1; 25 kA with max. back-up fuse 125 A (p.518)"
+  - id: A15
+    in: {spd: "3Ph+N+PE", spd_make: Siemens, fault_ka: 30}
+    expect: {status: warning, spd: 5SD7464-1, warnings: [R-AUX-08]}
+    oracle: "30 kA > short-circuit strength 25 kA"
+  - id: A16
+    in: {spd: "1Ph+N+PE", spd_make: Siemens, fault_ka: 10}
+    expect: {status: cannot_select, rule: R-AUX-08}
+    oracle: "no 1+1 combination in the held 5SD74 type 2 table"
+  - id: A17
+    in: {circuits: [{name: socket, ib_a: 10, poles: 2.7, curve: C}], make: Siemens}
+    expect: {status: invalid}
+    oracle: "regression audit 2026-10-14: poles must be a whole number (2.7 was truncated to 2)"

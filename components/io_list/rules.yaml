@@ -1,0 +1,29 @@
+# I/O list rules — the PLC signals each motor feeder needs. Holds no catalogue data.
+# Authority: RULE = our signal standard (owner decisions IO-1 … IO-3 in SIGNOFF.md); CLIENT = client I/O table.
+
+component: io_list
+
+rules:
+  R-IO-01: {authority: RULE, text: "Load list in the panel format (R-PNL-01). Every installed unit (running + standby) gets its own signals; a unit is named TAG.n when qty > 1."}
+  R-IO-02: {authority: RULE, text: "DOL feeder: DI running (contactor auxiliary contact), DI tripped (MPCB auxiliary / trip contact); DO run through an interface relay: one DO with a slim relay, two DO (set, reset) with a latching relay."}
+  R-IO-03: {authority: RULE, text: "Soft-starter feeder: DI running, DI fault, one DO run."}
+  R-IO-04: {authority: RULE, text: "VFD feeder over a fieldbus (PROFINET, EtherNet/IP, PROFIBUS, Modbus): commands, setpoint, status and actual values travel on the bus; the drive is one bus device, no hardwired I/O. Hardwired: DO run, DI running, DI fault, AO speed setpoint, AI actual speed."}
+  R-IO-05: {authority: RULE, text: "STO on a drive: one safety signal per drive (safety relay or F-DO to the drive's fail-safe input), counted apart from standard I/O."}
+  R-IO-06: {authority: RULE, text: "Heater feeders are out of scope (owner 2026-10-11): listed as excluded, no signals."}
+  R-IO-07: {authority: CLIENT, text: "When the available channels are given (client I/O table), the motor signals must fit in them; more signals than channels → warning. Instruments and other signals are not counted here."}
+  R-IO-08: {authority: RULE, text: "Star-delta feeder: DI running (main contactor auxiliary), DI tripped (overload relay), one DO run; the star → delta change-over is done by the starter's timer, not the PLC (as in the company drawing AVELCPSDL08WPLC)."}
+
+  R-IO-09: {authority: RULE, text: "Owner 2026-10-16: every PLC signal has a name — inputs (DI, AI) I_<unit>_<Signal>, outputs (DO, AO) O_<unit>_<Signal>; the unit is the tag with every other character written '_' (P1.2 → P1_2, P301A/B → P301A_B); signals Running, Tripped, Fault, Run, Start (latching set), Stop (latching reset), SpeedSetpoint, ActualSpeed. Drives on the fieldbus are PN_<unit>; STO signals O_<unit>_STO."}
+  R-IO-10: {authority: RULE, text: "Owner 2026-10-16, company drawing AVELCPSDL08WPLC sheet 12 (OWN-PROPEL-SCH160 p.12): a machine panel also has the panel signals EMERGENCY STOP, RESET (inputs) and GENERAL TRIP, GENERAL WARNING (outputs), and PHASE FAILURE (input) when a phase monitoring relay is fitted — I_EmergencyStop, I_Reset, I_PhaseFailure, O_GeneralTrip, O_GeneralWarning, listed before the motor signals. Switched on by panel_signals (the requirement does; a project follows the client's I/O table, decision IO-4)."}
+  R-IO-11: {authority: RULE, text: "Owner 2026-10-16: inputs and outputs are listed separately, each numbered per type in list order (DI01 …, AI01 … / DO01 …, AO01 …); drives on the fieldbus and STO signals are listed apart — they use no PLC I/O channel. The numbers are list positions, not PLC addresses (the address follows the PLC configuration)."}
+
+  R-IO-12: {authority: RULE, text: "Owner 2026-10-16 (every output editable): the designer's I/O edits — add a signal (type DI / DO / AI / AO, name, description), remove one, rename one, or change its type within its direction (DI ↔ AI, DO ↔ AO) — are applied after the rules' list and before the numbering; names follow R-IO-09 (I_ inputs, O_ outputs, unique, letters / digits / '_', at most 40 characters). An edit that names no signal of the list → invalid. Removed, renamed or changed signals → warning; added signals → listed (info). Every count the other components use (relays, terminals, PLC channels, 24 V load) follows the edited list."}
+params:
+  panel_signals:   # R-IO-10, OWN-PROPEL-SCH160 p.12
+    - {type: DI, name: I_EmergencyStop, signal: "emergency stop", drawing: "EMERGENCY STOP"}
+    - {type: DI, name: I_Reset, signal: "reset", drawing: "RESET"}
+    - {type: DI, name: I_PhaseFailure, signal: "phase failure (phase monitoring relay)", drawing: "PHASE FAILURE", needs: pmr}
+    - {type: DO, name: O_GeneralTrip, signal: "general trip", drawing: "GENERAL TRIP"}
+    - {type: DO, name: O_GeneralWarning, signal: "general warning", drawing: "GENERAL WARNING"}
+  dol_relays_default: slim      # IO-1: a client's 'latch relay' (e.g. ECI C-1) is a project option
+  vfd_control_default: fieldbus # IO-2

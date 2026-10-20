@@ -1,0 +1,25 @@
+# Branch MCCB rules. Authority: MFR = manufacturer document, RULE = our decision (SIGNOFF.md).
+
+component: mccb
+
+rules:
+  R-MCCB-01: {authority: MFR,  text: "Scope: 3-phase 380 … 415 V AC 50/60 Hz (Icu/Ics row, p.10), altitude ≤ 2000 m (p.19), 3VM line protection 3- or 4-pole, TM210 FTFM / TM220 ATFM, fixed-mounted, lug terminal. Anything else: cannot select."}
+  R-MCCB-02: {authority: RULE, text: "Required rated current = load current Ib × margin. Margin default 1.0 (owner decision M-1); a margin below 1 is rejected."}
+  R-MCCB-03: {authority: MFR,  text: "Rated current In ≥ required current, In taken from the ordering tables (pp. 28–35; 16 … 630 A, rated at 50 °C). Above 630 A: cannot select."}
+  R-MCCB-04: {authority: MFR,  text: "Ambient around the breaker: no derating up to +50 °C (p.9; In rated at 50 °C, p.10). Above +50 °C the current is reduced but the catalogue gives no values: cannot select (no extrapolation). Below −25 °C: outside the operating range (p.19)."}
+  R-MCCB-05: {authority: MFR,  text: "Rated ultimate short-circuit breaking capacity Icu at 380 … 415 V (pp. 10–11) ≥ prospective short-circuit current at the breaker. Ics is reported. Above 55 kA: no 3VM can be used."}
+  R-MCCB-06: {authority: RULE, text: "Breaking-capacity basis: Icu ≥ fault current (default, IEC 60947-2 minimum) or, as a client option, Ics ≥ fault current (owner decision M-2)."}
+  R-MCCB-07: {authority: RULE, text: "Among the article numbers that satisfy In and breaking capacity: smallest In, then smallest frame, then lowest breaking-capacity class (B < N < S < M) (owner decision M-7)."}
+  R-MCCB-08: {authority: MFR,  text: "Poles, trip unit and neutral protection only as printed in the ordering tables (pp. 28–35): e.g. 3VM10 has no TM220 or neutral-protection version, class B exists only for 3VM10 TM210. A 4-pole breaker without a stated neutral protection is taken as 'without N protection' with a warning."}
+  R-MCCB-09: {authority: MFR,  text: "Overload setting Ir: TM210 FTFM fixed (= In); TM220 ATFM adjustable over the printed range — set Ir ≥ required current (lowest setting = the larger of the required current and the bottom of the range)."}
+  R-MCCB-10: {authority: MFR,  text: "Instantaneous short-circuit trip current Ii as printed (fixed for TM210 and TM220): reported for the cable and discrimination checks."}
+  R-MCCB-11: {authority: RULE, text: "Let-through energy I²t and cut-off current are not published in LV 31: not given. The cable component must not assume a value (owner decision M-4)."}
+  R-MCCB-12: {authority: RULE, text: "Article numbers come from the 2018 catalogue edition: confirm them in the current Siemens Industry Mall before ordering (owner decision M-5)."}
+
+params:
+  margin_default: 1.0
+  breaking_basis_default: icu
+  release_default: TM210
+  poles_default: 3
+  class_order: [B, N, S, M]
+  frame_order: [3VM10, 3VM11, 3VM12, 3VM13, 3VM14]

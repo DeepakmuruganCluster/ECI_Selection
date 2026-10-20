@@ -1,0 +1,24 @@
+# G120 control units and operator panel — company database (ECI-VFD-Selection, database.xlsx).
+# Sheet "Control Unit" rows 2–13 and sheet "Operator panel" row 2, transcribed 2026-10-11.
+# This is our own compiled database, not a Siemens document: values are cross-checked against Siemens
+# documents when those are held (CU240E-2 manual is in the inbox list).
+
+source:
+  ref: OWN-VFD-DB
+  section: "sheets 'Control Unit' and 'Operator panel'"
+
+rows:
+  # functions: STO, SS1, SLS, SSM, SDI, SBC  ("License" = available with a licence on the memory card)
+  - {series: "CU230P-2 HVAC", article: 6SL3243-0BB30-1HA3, fieldbus: [uss, modbus, bacnet],      safety: {}, row: 2}
+  - {series: "CU230P-2 DP",   article: 6SL3243-0BB30-1PA3, fieldbus: [profibus],                 safety: {}, row: 3}
+  - {series: "CU230P-2 PN",   article: 6SL3243-0BB30-1FA0, fieldbus: [profinet, ethernet_ip],    safety: {}, row: 4}
+  - {series: "CU240E-2",      article: 6SL3244-0BB12-1BA1, fieldbus: [uss, modbus],              safety: {STO: "yes"}, row: 5}
+  - {series: "CU240E-2 DP",   article: 6SL3244-0BB12-1PA1, fieldbus: [profibus],                 safety: {STO: "yes"}, row: 6}
+  - {series: "CU240E-2 PN",   article: 6SL3244-0BB12-1FA0, fieldbus: [profinet, ethernet_ip],    safety: {STO: "yes"}, row: 7}
+  - {series: "CU240E-2 F",    article: 6SL3244-0BB13-1BA1, fieldbus: [uss, modbus],              safety: {STO: "yes", SS1: "yes", SLS: "yes", SSM: "yes", SDI: "yes"}, row: 8}
+  - {series: "CU240E-2 DP-F", article: 6SL3244-0BB13-1PA1, fieldbus: [profibus],                 safety: {STO: "yes", SS1: "yes", SLS: "yes", SSM: "yes", SDI: "yes"}, row: 9}
+  - {series: "CU240E-2 PN-F", article: 6SL3244-0BB13-1FA0, fieldbus: [profinet, ethernet_ip],    safety: {STO: "yes", SS1: "yes", SLS: "yes", SSM: "yes", SDI: "yes"}, row: 10}
+  - {series: "CU250S-2",      article: 6SL3246-0BA22-1BA0, fieldbus: [uss, modbus],              safety: {STO: "yes", SS1: "yes", SLS: "License", SSM: "License", SDI: "License", SBC: "yes"}, row: 11}
+  - {series: "CU250S-2 DP",   article: 6SL3246-0BA22-1PA0, fieldbus: [profibus],                 safety: {STO: "yes", SS1: "yes", SLS: "License", SSM: "License", SDI: "License", SBC: "yes"}, row: 12}
+  - {series: "CU250S-2 PN",   article: 6SL3246-0BA22-1FA0, fieldbus: [profinet, ethernet_ip],    safety: {STO: "yes", SS1: "yes", SLS: "License", SSM: "License", SDI: "License", SBC: "yes"}, row: 13}
+operator_panel: {article: 6SL3255-0AA00-4CA1, name: BOP-2, rule: "Add BOP-2 (6SL3255-0AA00-4CA1) for every module", sheet: "Operator panel", row: 2}

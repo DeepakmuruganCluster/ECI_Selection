@@ -1,0 +1,57 @@
+# SENTRON 3VM thermal-magnetic trip units for line protection: rated current In, overload
+# setting Ir and instantaneous setting Ii, as printed in the selection and ordering data.
+#   TM210 FTFM: fixed Ir, fixed Ii — PDF p.28 (3-pole table, columns In / Ir / Ii)
+#   TM220 ATFM: adjustable Ir (ir_min_a … ir_max_a), fixed Ii — PDF p.30 (3-pole table)
+# The 4-pole tables (p.32 TM210, p.34 TM220) print the same In / Ir / Ii values;
+# scripts/verify_mccb.py checks all six printed blocks against these rows.
+# For TM210, ir_min_a = ir_max_a = the fixed Ir. page = PDF page (printed page numbers are
+# section/page, e.g. PDF p.28 = printed "2/4").
+
+source:
+  ref: SIE-3VM-LV31
+  section: "Line protection, selection and ordering data: TM210 FTFM (p. 28), TM220 ATFM (p. 30)"
+
+rows:
+  - {release: TM210, frame: 3VM10, in_a: 16 , ir_min_a: 16 , ir_max_a: 16 , ii_a: 320 , page: 28}
+  - {release: TM210, frame: 3VM10, in_a: 20 , ir_min_a: 20 , ir_max_a: 20 , ii_a: 320 , page: 28}
+  - {release: TM210, frame: 3VM10, in_a: 25 , ir_min_a: 25 , ir_max_a: 25 , ii_a: 320 , page: 28}
+  - {release: TM210, frame: 3VM10, in_a: 32 , ir_min_a: 32 , ir_max_a: 32 , ii_a: 320 , page: 28}
+  - {release: TM210, frame: 3VM10, in_a: 40 , ir_min_a: 40 , ir_max_a: 40 , ii_a: 400 , page: 28}
+  - {release: TM210, frame: 3VM10, in_a: 50 , ir_min_a: 50 , ir_max_a: 50 , ii_a: 500 , page: 28}
+  - {release: TM210, frame: 3VM10, in_a: 63 , ir_min_a: 63 , ir_max_a: 63 , ii_a: 630 , page: 28}
+  - {release: TM210, frame: 3VM10, in_a: 80 , ir_min_a: 80 , ir_max_a: 80 , ii_a: 800 , page: 28}
+  - {release: TM210, frame: 3VM10, in_a: 100, ir_min_a: 100, ir_max_a: 100, ii_a: 1000, page: 28}
+  - {release: TM210, frame: 3VM11, in_a: 16 , ir_min_a: 16 , ir_max_a: 16 , ii_a: 320 , page: 28}
+  - {release: TM210, frame: 3VM11, in_a: 20 , ir_min_a: 20 , ir_max_a: 20 , ii_a: 320 , page: 28}
+  - {release: TM210, frame: 3VM11, in_a: 25 , ir_min_a: 25 , ir_max_a: 25 , ii_a: 320 , page: 28}
+  - {release: TM210, frame: 3VM11, in_a: 32 , ir_min_a: 32 , ir_max_a: 32 , ii_a: 320 , page: 28}
+  - {release: TM210, frame: 3VM11, in_a: 40 , ir_min_a: 40 , ir_max_a: 40 , ii_a: 400 , page: 28}
+  - {release: TM210, frame: 3VM11, in_a: 50 , ir_min_a: 50 , ir_max_a: 50 , ii_a: 500 , page: 28}
+  - {release: TM210, frame: 3VM11, in_a: 63 , ir_min_a: 63 , ir_max_a: 63 , ii_a: 630 , page: 28}
+  - {release: TM210, frame: 3VM11, in_a: 80 , ir_min_a: 80 , ir_max_a: 80 , ii_a: 800 , page: 28}
+  - {release: TM210, frame: 3VM11, in_a: 100, ir_min_a: 100, ir_max_a: 100, ii_a: 1000, page: 28}
+  - {release: TM210, frame: 3VM11, in_a: 125, ir_min_a: 125, ir_max_a: 125, ii_a: 1250, page: 28}
+  - {release: TM210, frame: 3VM11, in_a: 160, ir_min_a: 160, ir_max_a: 160, ii_a: 1600, page: 28}
+  - {release: TM210, frame: 3VM12, in_a: 200, ir_min_a: 200, ir_max_a: 200, ii_a: 2000, page: 28}
+  - {release: TM210, frame: 3VM12, in_a: 250, ir_min_a: 250, ir_max_a: 250, ii_a: 2500, page: 28}
+  - {release: TM210, frame: 3VM13, in_a: 320, ir_min_a: 320, ir_max_a: 320, ii_a: 3200, page: 28}
+  - {release: TM210, frame: 3VM13, in_a: 400, ir_min_a: 400, ir_max_a: 400, ii_a: 4000, page: 28}
+  - {release: TM210, frame: 3VM14, in_a: 500, ir_min_a: 500, ir_max_a: 500, ii_a: 5000, page: 28}
+  - {release: TM210, frame: 3VM14, in_a: 630, ir_min_a: 630, ir_max_a: 630, ii_a: 6300, page: 28}
+  - {release: TM220, frame: 3VM11, in_a: 16 , ir_min_a: 11 , ir_max_a: 16 , ii_a: 320 , page: 30}
+  - {release: TM220, frame: 3VM11, in_a: 20 , ir_min_a: 14 , ir_max_a: 20 , ii_a: 320 , page: 30}
+  - {release: TM220, frame: 3VM11, in_a: 25 , ir_min_a: 18 , ir_max_a: 25 , ii_a: 320 , page: 30}
+  - {release: TM220, frame: 3VM11, in_a: 32 , ir_min_a: 22 , ir_max_a: 32 , ii_a: 320 , page: 30}
+  - {release: TM220, frame: 3VM11, in_a: 40 , ir_min_a: 28 , ir_max_a: 40 , ii_a: 400 , page: 30}
+  - {release: TM220, frame: 3VM11, in_a: 50 , ir_min_a: 35 , ir_max_a: 50 , ii_a: 500 , page: 30}
+  - {release: TM220, frame: 3VM11, in_a: 63 , ir_min_a: 44 , ir_max_a: 63 , ii_a: 630 , page: 30}
+  - {release: TM220, frame: 3VM11, in_a: 80 , ir_min_a: 56 , ir_max_a: 80 , ii_a: 800 , page: 30}
+  - {release: TM220, frame: 3VM11, in_a: 100, ir_min_a: 70 , ir_max_a: 100, ii_a: 1000, page: 30}
+  - {release: TM220, frame: 3VM11, in_a: 125, ir_min_a: 88 , ir_max_a: 125, ii_a: 1250, page: 30}
+  - {release: TM220, frame: 3VM11, in_a: 160, ir_min_a: 112, ir_max_a: 160, ii_a: 1600, page: 30}
+  - {release: TM220, frame: 3VM12, in_a: 200, ir_min_a: 140, ir_max_a: 200, ii_a: 2000, page: 30}
+  - {release: TM220, frame: 3VM12, in_a: 250, ir_min_a: 175, ir_max_a: 250, ii_a: 2500, page: 30}
+  - {release: TM220, frame: 3VM13, in_a: 320, ir_min_a: 220, ir_max_a: 320, ii_a: 3200, page: 30}
+  - {release: TM220, frame: 3VM13, in_a: 400, ir_min_a: 280, ir_max_a: 400, ii_a: 4000, page: 30}
+  - {release: TM220, frame: 3VM14, in_a: 500, ir_min_a: 350, ir_max_a: 500, ii_a: 5000, page: 30}
+  - {release: TM220, frame: 3VM14, in_a: 630, ir_min_a: 440, ir_max_a: 630, ii_a: 6300, page: 30}

@@ -1,0 +1,62 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 11
+title: Auxiliary switchgear (MCB, RCCB, surge arrester, phase monitoring relay, isolator)
+what_it_does: >
+  Picks the small switchgear from the company's own switchgear database (the CSV files from the
+  previous version): MCBs for auxiliary circuits, an RCCB where a circuit needs earth-leakage
+  protection, a surge arrester, a phase monitoring relay and an isolator. The database has 785 MCBs,
+  100 RCCBs, 17 isolators, 4 surge arresters and 3 phase monitoring relays in five makes. There is
+  no manufacturer document behind these rows, so every article number must be confirmed before
+  ordering, and the breaking capacity (kA) and surge-arrester class are not in the database: the
+  tool says so on every answer instead of assuming them.
+
+how_to_check:
+  - "Press 'Try it: socket 10 A with 30 mA RCCB'. Open MCB.csv: line 217 is Siemens 2-pole C 10 A 5SL42107RC, and RCCB.csv line 30 is Siemens 2-pole 25 A 30 mA 5SV43120RC (the smallest RCCB at or above 10 A)."
+  - "Press 'Try it: isolator for 20 A'. It multiplies by 1.5 (the old template's factor, workbook sheet U1_Main_Switchgear row 27) = 30 A and takes isolator.csv line 12, Siemens 32 A 3LD22030TK53."
+  - "The database was checked: its 21 Siemens MPCB rows match the Siemens SIRIUS manual exactly."
+
+spot_checks:
+  - {label: "socket 10 A with 30 mA RCCB", tab: aux_switchgear, inputs: {circuits: '[{"name": "socket", "ib_a": 10, "poles": 2, "curve": "C", "rcd_ma": 30}]', make: Siemens}}
+  - {label: "isolator for 20 A", tab: aux_switchgear, inputs: {isolator_ib_a: 20, isolator_make: Siemens}}
+  - {label: "surge arrester and phase monitoring relay", tab: aux_switchgear, inputs: {spd: "3Ph+N+PE", spd_make: Phoenix, pmr: true, pmr_make: Siemens}}
+
+decisions:
+  - id: AX-1
+    question: "An MCB is chosen with a rated current at least equal to the circuit current (no extra margin). Should there be a margin (e.g. 1.25)?"
+    options: {"1.0": "No margin (rated current ≥ circuit current)", "1.25": "1.25 margin"}
+    recommended: "1.0"
+  - id: AX-2
+    question: "When no trip curve is given: C for power supplies, sockets, lamps, fans; D for transformers (high inrush). Is that your standard?"
+    options: {"yes": "Yes", "no": "No, always ask the curve"}
+    recommended: "yes"
+  - id: AX-3
+    question: "The isolator is sized at 1.5 × the design current, as in the old template. Keep it?"
+    options: {"yes": "Yes, 1.5", "no": "No, another factor"}
+    recommended: "yes"
+  - id: AX-4
+    question: "The database has no breaking capacity (kA). Until Siemens LV 10 is downloaded, should the tool still give MCBs with a caution, or refuse?"
+    options: {caution: "Give them with a caution", refuse: "Refuse until the kA is known"}
+    recommended: caution
+  - id: AX-5
+    question: "The database article numbers are written without hyphens (e.g. 5SL42107RC = 5SL4210-7RC). Use them as written?"
+    options: {"yes": "Yes, as written", "format": "Format them in the maker's style"}
+    recommended: "yes"
+  - id: AX-6
+    question: "Siemens surge arrester 5SD7464 (type 2, TN-S / TT): with remote signalling (-1, a contact the PLC can read) or without (-0)?"
+    options: {remote: "With remote signalling 5SD7464-1", plain: "Without 5SD7464-0"}
+    recommended: remote
+  - id: AX-7
+    question: "Siemens MCBs below the fault level (e.g. 5SL4 10 kA at 15 kA): the tool warns. Should it instead move up to a higher series automatically (5SY7 15 kA, 5SY8 25 kA)?"
+    options: {warn: "Warn only; the designer decides (back-up protection may cover it)", upgrade: "Pick the next series that meets the fault level"}
+    recommended: warn
+
+fields:
+  circuits: {label: "Circuits (JSON list)", textarea: true, help: '[{"name": "socket", "ib_a": 10, "poles": 2, "curve": "C", "rcd_ma": 30}] — or "kind": smps / socket / lamp / fan / transformer / general instead of curve'}
+  make: {label: "Make", options: ["Siemens", "Schneider", "Mitsubishi", "Legrand", "AB"]}
+  spd: {label: "Surge arrester", options: ["3Ph+N+PE", "1Ph+N+PE"]}
+  spd_make: {label: "Surge arrester make", options: ["Phoenix", "OBO"]}
+  pmr_make: {label: "Phase monitoring relay make", options: ["Siemens", "Schneider", "Crouzet"]}
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/company/switchgear/own_isolator.yaml, data/company/switchgear/own_mcb.yaml, data/company/switchgear/own_pmr.yaml, data/company/switchgear/own_rccb.yaml, data/company/switchgear/own_sa.yaml, data/makers/siemens/lv10_5sd74_type2.yaml, data/makers/siemens/lv10_mcb.yaml, data/makers/siemens/lv10_rccb.yaml]

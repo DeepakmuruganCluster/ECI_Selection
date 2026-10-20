@@ -1,0 +1,22 @@
+# Motor FLC rules. Every rule has an id and an authority:
+#   MFR  — manufacturer document     PHYS — physics / definition
+#   RULE — our design decision (needs the sign-off owner's approval; see SIGNOFF.md)
+
+component: motor_flc
+
+rules:
+  R-FLC-01: {authority: RULE, text: "Precedence: nameplate / data-sheet current > Siemens guide value. The client list value is never used as design FLC."}
+  R-FLC-02: {authority: MFR,  text: "Guide value applies only to 3-phase, 4-pole, 50 Hz standard motors at the table voltage (400 V), for kW listed in the table."}
+  R-FLC-03: {authority: RULE, text: "No interpolation between table ratings and no extrapolation beyond 0.04–250 kW: cannot select."}
+  R-FLC-04: {authority: PHYS, text: "Resistive load (cos φ = 1): I = P / (√3·U) three-phase, I = P / U single-phase."}
+  R-FLC-05: {authority: RULE, text: "Voltage within ±voltage_window_pct of 400 V: I = I_400 × 400 / U (constant power, η and cos φ unchanged). Outside the window: cannot select."}
+  R-FLC-06: {authority: RULE, text: "Nameplate value more than nameplate_vs_guide_pct away from the guide value (same conditions) → warning: check the entry."}
+  R-FLC-07: {authority: PHYS, text: "With η and cos φ given: I = P / (√3·U·η·cos φ) (1-ph: P / (U·η·cos φ)); more than nameplate_vs_formula_pct away from the nameplate value → warning."}
+  R-FLC-08: {authority: RULE, text: "Client list FLC more than client_vs_design_pct away from the design FLC → warning (client value reported, not used)."}
+
+params:
+  voltage_window_pct: 5          # R-FLC-05; set 0 to allow 400 V only
+  nameplate_vs_guide_pct: 15     # R-FLC-06
+  nameplate_vs_formula_pct: 5    # R-FLC-07
+  client_vs_design_pct: 10       # R-FLC-08
+  round_decimals: 2

@@ -1,0 +1,42 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 13
+title: Client-specified items (ECI WNS2503)
+what_it_does: >
+  Puts every item ECI's specification names directly (PLC CPU, SITOP supplies, main incomer,
+  busbar size, energy meter, UPS, network switches, tower lamps, enclosure sizes, plinth …)
+  into the BOM exactly as ECI wrote it, with the page. It never changes ECI's words. Where
+  ECI gives no quantity, or where we had to read a quantity into the text, it says so as
+  an open point. It also checks ECI's own arithmetic, such as I/O totals and section widths.
+
+# project tables this component reads (shown and fingerprinted on the Review tab)
+data_files: [projects/ECI-WNS2503/data/eci_wns2503_items.yaml]
+
+how_to_check:
+  - "Open the page 1 picture. Each line in the tool must match a line in the lower part of the page (left column = item, right column = what ECI asks for)."
+  - "Check the quantities: e.g. 'Siemens 8 Port Ethernet Hub -4No's' → 4; 'Tower lamp with Buzzer - 3No's' → 3; SITOP for BIO: 10 A × 1 and 20 A × 1."
+  - "Check the RO finding: page 1 says the RO panel is 7800 mm long with sections 600 × 1, 1200 × 4 and 1000 × 2. 600 + 4800 + 2000 = 7400 mm, not 7800. Press 'Try it: RO panel'. The tool must report this."
+  - "Lines marked 'interpreted' are our reading (e.g. one surge arrester per incomer). Confirm them with ECI."
+
+spot_checks:
+  - {label: "BIO_UF panel with plant items", tab: client_items, inputs: {panel: BIO_UF}}
+  - {label: "RO panel (section widths don't add up)", tab: client_items, inputs: {panel: RO}}
+  - {label: "whole job", tab: client_items, inputs: {panel: all}}
+
+decisions:
+  - id: K-1
+    question: "ECI gives no quantity for some items (7-inch HMI, 55-inch display, CTs, fans 'on each door', door switch and light, relays, terminals, internal wiring). What should the BOM do?"
+    options: {ask: "Show them as 'not stated' and send the list to ECI", assume: "Let the designer type quantities"}
+    recommended: ask
+  - id: K-2
+    question: "RO panel: the sections add up to 7400 mm but ECI states 7800 mm. Which do we follow?"
+    options: {ask: "Ask ECI before the layout is drawn", sections: "Follow the section list (7400 mm)", length: "Follow the stated length (7800 mm)"}
+    recommended: ask
+  - id: K-3
+    question: "Spare I/O in ECI's table ranges from 2 % (RO digital inputs) to 300 % (0–10 V inputs). Accept ECI's numbers as they are?"
+    options: {"yes": "Yes, ECI's numbers", rule: "Apply our own minimum spare rule when the PLC component is built"}
+    recommended: "yes"
+
+fields:
+  panel: {label: "Panel", options: ["all", "BIO_UF", "RO"]}
+  include_plant: {label: "Include plant-wide items (SCADA, UPS, switches …)", options: [true, false]}

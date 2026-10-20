@@ -1,0 +1,214 @@
+# Golden cases for dol_starter — written BEFORE the code (G4).
+# Oracle: the Type 2 table on SIRIUS manual pp. 28–29 (rendered page images) and
+# Table 2-1 p. 22, plus hand calculation of the margin rule R-DOL-04 where several rows fit.
+# margin(row) = min(FLC − min, max − FLC) / (max − min)
+
+cases:
+  # --- single qualifying row (PDF only) ----------------------------------------------
+  - id: D01
+    in: {flc_a: 15.5, flc_basis: nameplate, ie_class: IE3, fault_ka: 50}
+    expect: {status: ok, mpcb: 3RV2021-4BA10, contactor: 3RT2027-1AP00, size: S0/S0, link_module: 3RA2921-1AA00}
+    oracle: "p.28: only 3RV2021-4BA10 IE3 13…16 holds 15.5 (4AA10 IE3 is 10…13); link S0 AC p.22"
+  - id: D04
+    in: {flc_a: 0.16, flc_basis: nameplate, ie_class: IE3, fault_ka: 50}
+    expect: {status: ok, mpcb: 3RV2011-0BA10, contactor: 3RT2015-1AP01, size: S00/S00, link_module: 3RA1921-1DA00}
+    oracle: "p.28: 0AA10 IE3 0.11…0.14 excludes 0.16; 0BA10 IE3 0.14…0.18"
+  - id: D10
+    in: {flc_a: 100, flc_basis: nameplate, ie_class: IE3, fault_ka: 50}
+    expect: {status: ok, mpcb: 3RV2042-4MA10, contactor: 3RT2047-1AP00, size: S3/S3, link_module: 3RA1941-1AA00}
+    oracle: "p.29 last 3RV2 row, 80…100 A, range end inclusive"
+
+  # --- several rows: margin rule (hand calc) -----------------------------------------
+  - id: D02
+    in: {flc_a: 15.5, flc_basis: nameplate, ie_class: IE2, fault_ka: 50}
+    expect: {status: ok, mpcb: 3RV2021-4BA10, contactor: 3RT2027-1AP00}
+    oracle: "hand calc: 4AA10 10…16 → min(5.5,0.5)/6 = 0.083; 4BA10 13…20 → min(2.5,4.5)/7 = 0.357"
+  - id: D25
+    in: {flc_a: 15.5, flc_basis: nameplate, ie_class: IE1, fault_ka: 50}
+    expect: {status: ok, mpcb: 3RV2021-4BA10}
+    oracle: "IE1 uses the IE1/IE2 column, as D02"
+  - id: D03
+    in: {flc_a: 0.16, flc_basis: nameplate, ie_class: IE2, fault_ka: 50}
+    expect: {status: ok, mpcb: 3RV2011-0BA10, contactor: 3RT2015-1AP01}
+    oracle: "hand calc: 0AA10 0.11…0.16 → 0; 0BA10 0.14…0.20 → min(0.02,0.04)/0.06 = 0.333"
+  - id: D08
+    in: {flc_a: 78, flc_basis: nameplate, ie_class: IE3, fault_ka: 50}
+    expect: {status: ok, mpcb: 3RV2042-4RA10, contactor: 3RT2046-1AP00, size: S3/S3}
+    oracle: "hand calc IE3: 4RA10/2045 65…80 → 0.133; 4RA10/2046 65…84 → min(13,6)/19 = 0.316; 4YA10 75…93 → 0.167; S2 4RA10 IE3 70…77 excludes 78"
+  - id: D09
+    in: {flc_a: 74, flc_basis: nameplate, ie_class: IE2, fault_ka: 50}
+    expect: {status: ok, mpcb: 3RV2042-4RA10, contactor: 3RT2045-1AP00}
+    oracle: "hand calc IE2: S2 4RA10 70…80 → 0.4; S3 4RA10 65…84 with 3RT2045 and with 3RT2046 → both min(9,10)/19 = 0.474 → tie → earlier row (3RT2045)"
+
+  # --- starting-current limit (R-DOL-03) -----------------------------------------------
+  - id: D05
+    in: {flc_a: 29, flc_basis: nameplate, ie_class: IE3, fault_ka: 50}
+    expect: {status: ok, mpcb: 3RV2032-4PA10, contactor: 3RT2035-1AP00, size: S2/S2, link_module: 3RA2931-1AA00}
+    oracle: "p.28–29 IE3: 4NA10 23…27 no; 4EA10 27…30 needs Ia ≤ 256 A, not given → skipped; 3RV2032-4EA10 22…28 no; 4PA10 28…32 yes"
+  - id: D06
+    in: {flc_a: 29, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, starting_current_a: 220}
+    expect: {status: ok, mpcb: 3RV2021-4EA10, contactor: 3RT2027-1AP00, size: S0/S0, link_module: 3RA2921-1AA00}
+    oracle: "Ia 220 ≤ 256 → 4EA10 allowed; margins 4EA10 min(2,1)/3 = 0.333 > 4PA10 min(1,3)/4 = 0.25"
+  - id: D07
+    in: {flc_a: 29, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, starting_current_a: 300}
+    expect: {status: ok, mpcb: 3RV2032-4PA10}
+    oracle: "Ia 300 > 256 → 4EA10 excluded"
+
+  # --- link module (R-DOL-08) -------------------------------------------------------------
+  - id: D19
+    in: {flc_a: 5, flc_basis: nameplate, ie_class: IE3, fault_ka: 50}
+    expect: {status: warning, mpcb: 3RV2011-1GA10, contactor: 3RT2024-1AP00, size: S00/S0, warnings: [R-DOL-08]}
+    oracle: "p.28 IE3: 1FA10 3.5…4.5 no, 1GA10 4.5…5.5 yes; S00/S0 has no row in Table 2-1 p.22"
+
+  # --- FLC basis (R-DOL-09) and IE default (R-DOL-11) -----------------------------------
+  - id: D20
+    in: {flc_a: 15.5, flc_basis: guide, ie_class: IE3, fault_ka: 50}
+    expect: {status: warning, mpcb: 3RV2021-4BA10, warnings: [R-DOL-09]}
+    oracle: "p.29 footnote 1"
+  - id: D26
+    in: {flc_a: 15.5, ie_class: IE3, fault_ka: 50}
+    expect: {status: warning, mpcb: 3RV2021-4BA10, warnings: [R-DOL-09]}
+    oracle: "basis not stated"
+  - id: D27
+    in: {flc_a: 15.5, flc_basis: nameplate, fault_ka: 50}
+    expect: {status: ok, mpcb: 3RV2021-4BA10}
+    oracle: "IE class missing → IE3 column (info only); same as D01"
+
+  # --- short circuit (R-DOL-06) -------------------------------------------------------------
+  - id: D18
+    in: {flc_a: 15.5, flc_basis: nameplate, ie_class: IE3, fault_ka: 150}
+    expect: {status: ok, mpcb: 3RV2021-4BA10}
+    oracle: "Iq 150 kA = Ik, allowed (≥)"
+  - id: D17
+    in: {flc_a: 15.5, flc_basis: nameplate, ie_class: IE3, fault_ka: 160}
+    expect: {status: cannot_select, rule: R-DOL-06}
+    oracle: "160 kA > Iq 150 kA"
+
+  # --- out of scope ---------------------------------------------------------------------
+  - id: D11
+    in: {flc_a: 101, flc_basis: nameplate, ie_class: IE3, fault_ka: 50}
+    expect: {status: cannot_select, rule: R-DOL-10}
+    oracle: "above the largest 3RV2 range (100 A)"
+  - id: D12
+    in: {flc_a: 0.10, flc_basis: nameplate, ie_class: IE2, fault_ka: 50}
+    expect: {status: cannot_select, rule: R-DOL-10}
+    oracle: "below the smallest range (0.11 A)"
+  - id: D13
+    in: {flc_a: 12, flc_basis: calculated, load_type: heater, fault_ka: 50}
+    expect: {status: cannot_select, rule: R-DOL-01}
+    oracle: "scope: motor table, heaters are AC-1"
+  - id: D14
+    in: {flc_a: 5, flc_basis: nameplate, phases: 1, voltage_v: 230, fault_ka: 10}
+    expect: {status: cannot_select, rule: R-DOL-01}
+    oracle: "scope: 3-phase table"
+  - id: D15
+    in: {flc_a: 15, flc_basis: nameplate, voltage_v: 415, fault_ka: 50}
+    expect: {status: cannot_select, rule: R-DOL-01}
+    oracle: "scope: table is AC 400 V"
+  # --- 24 V DC coils (R-DOL-07, 12, 13): IC 10 · 2026 ordering data + technical specifications ---------------
+  # Written 2026-10-13 before the code; articles looked up by hand in the IC 10 pages cited.
+  - id: D16
+    in: {flc_a: 15.5, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, coil: 24VDC, coil_driver: plc}
+    expect: {status: ok, mpcb: 3RV2021-4BA10, contactor: 3RT2027-1KB40, size: S0/S0, link_module: 3RA2921-1BA00, coil_hold: 4.5}
+    oracle: "row 3RT2027-1AP00 (1 NO + 1 NC, ident 11) → IC 10 p.183 (3/55) coupling contactor 3RT2027-1KB40; coil 4.5 W p.158 (3/30); S0 DC link module p.22"
+  - id: D28
+    in: {flc_a: 15.5, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, coil: 24VDC, coil_driver: relay}
+    expect: {status: ok, contactor: 3RT2027-1DB40, link_module: 3RA2921-1BA00, coil_hold: 5.9}
+    oracle: "IC 10 p.181 (3/53) 'varistor plugged in at factory' 3RT2027-1DB40; DC coil 5.9 W p.158"
+  - id: D29
+    in: {flc_a: 0.16, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, coil: 24VDC, coil_driver: plc}
+    expect: {status: ok, mpcb: 3RV2011-0BA10, contactor: 3RT2015-1KB41, link_module: 3RA1921-1DA00, coil_hold: 2.8}
+    oracle: "3RT2015-1AP01 is 1 NO (ident 10) → IC 10 p.180 (3/52) coupling 3RT2015-1KB41; 2.8 W p.155 (3/27)"
+  - id: D30
+    in: {flc_a: 0.16, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, coil: 24VDC, coil_driver: relay}
+    expect: {status: ok, contactor: 3RT2015-1UB41, coil_hold: 4}
+    oracle: "IC 10 p.177 (3/49) 'varistor integrated at factory' 3RT2015-1UB41; DC 4 W p.155"
+  - id: D31
+    in: {flc_a: 29, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, coil: 24VDC, coil_driver: plc}
+    expect: {status: ok, mpcb: 3RV2032-4PA10, contactor: 3RT2035-1KB40, link_module: 3RA2931-1AA00, coil_close: 21.5, coil_hold: 1}
+    oracle: "as D05; IC 10 p.184 (3/56) 3RT2035-1KB40; 21.5 W / 1 W p.161 (3/33)"
+  - id: D32
+    in: {flc_a: 29, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, coil: 24VDC, coil_driver: relay}
+    expect: {status: ok, contactor: 3RT2035-1NB30, coil_close: 23, coil_hold: 1}
+    oracle: "IC 10 p.186 (3/58) 3RT2035-1NB30 (20 … 33 V AC/DC, varistor in electronics); DC 23 / 1 p.161"
+  - id: D33
+    in: {flc_a: 100, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, coil: 24VDC, coil_driver: plc}
+    expect: {status: warning, mpcb: 3RV2042-4MA10, contactor: 3RT2047-1NB30, coil_close: 76, coil_hold: 1.8, warnings: [R-DOL-12]}
+    oracle: "IC 10 p.184 lists coupling contactors only up to 3RT2046 → 3RT2047-1NB30 p.187 with interposing relay (pickup 6.5 A p.164 footnote 2)"
+  - id: D34
+    in: {flc_a: 15.5, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, coil: 24VDC}
+    expect: {status: ok, contactor: 3RT2027-1KB40}
+    oracle: "driver not given → PLC (R-DOL-12, noted); as D16"
+  - id: D35
+    in: {flc_a: 15.5, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, coil: 110VAC}
+    expect: {status: cannot_select, rule: R-DOL-07}
+    oracle: "coil voltages in scope: 230 V AC and 24 V DC"
+  - id: D36
+    in: {flc_a: 15.5, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, coil: 24VDC, coil_driver: timer}
+    expect: {status: invalid}
+    oracle: "coil_driver must be plc or relay"
+  - id: D37
+    in: {flc_a: 15.5, flc_basis: nameplate, ie_class: IE3, fault_ka: 50}
+    expect: {status: ok, contactor: 3RT2027-1AP00, coil_close: 77, coil_hold: 9.8}
+    oracle: "230 V AC 50 Hz (AP00, owner 2026-10-13: 50 Hz figures): IC 10 p.158 (3/30), column 3RT2026 … 3RT2028, AC 50 Hz standard version: closing 77 VA, holding 9.8 VA"
+  - id: D38
+    in: {flc_a: 0.16, flc_basis: nameplate, ie_class: IE3, fault_ka: 50}
+    expect: {status: ok, contactor: 3RT2015-1AP01, coil_close: 27, coil_hold: 4.2}
+    oracle: "S00 prints only the 50/60 Hz standard version: 27/24.3 VA closing, 4.2/3.3 VA holding → 50 Hz values 27 and 4.2 (IC 10 p.155, 3/27)"
+
+  # --- invalid input ---------------------------------------------------------------------
+  - id: D21
+    in: {flc_a: 0, fault_ka: 50}
+    expect: {status: invalid}
+    oracle: "FLC must be > 0"
+  - id: D22
+    in: {flc_a: 15.5, flc_basis: nameplate}
+    expect: {status: invalid}
+    oracle: "fault level is required"
+  - id: D23
+    in: {flc_a: 15.5, ie_class: IE5, fault_ka: 50}
+    expect: {status: invalid}
+    oracle: "IE class must be IE1…IE4"
+
+  # --- 2026-10-18 (owner, RFQ import: "the RFQ value wins, flag if unsafe"): the client's MPCB range, R-DOL-14
+  - id: D39
+    in: {flc_a: 6.3, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, mpcb_range: "7-10"}
+    expect: {status: warning, mpcb: 3RV2011-1JA10, contactor: 3RT2024-1AP00, warnings: [R-DOL-08, R-DOL-14]}
+    oracle: "SIE-SIRIUS-CM p.28: the 7 … 10 A row is 3RV2011-1JA10 + 3RT2024-1AP00; 6.3 A is below its 7 A minimum → not protected as stated (warning)"
+  - id: D40
+    in: {flc_a: 8.0, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, mpcb_range: "7-10"}
+    expect: {status: warning, mpcb: 3RV2011-1JA10, contactor: 3RT2024-1AP00, setting_range_a: "7 … 9", device_range_a: "7 … 10", warnings: [R-DOL-08]}
+    oracle: "p.28: 7 … 10 A printed, 7 … 9 A usable for IE3; 8 A inside → the client's MPCB with its Type 2 contactor (S00/S0: no link module in Table 2-1, R-DOL-08)"
+  - id: D41
+    in: {flc_a: 8.0, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, mpcb_range: "7-11"}
+    expect: {status: cannot_select, rule: R-DOL-14}
+    oracle: "no 3RV2 with a 7 … 11 A range in the Type 2 table: refused, nothing invented"
+  - id: D42
+    in: {flc_a: 8.0, fault_ka: 50, mpcb_range: "ten"}
+    expect: {status: invalid}
+    oracle: "mpcb_range must be 'low-high'"
+  - id: D43
+    in: {flc_a: 9.5, flc_basis: nameplate, ie_class: IE3, fault_ka: 50, mpcb_range: "7-10"}
+    expect: {status: warning, mpcb: 3RV2011-1JA10, warnings: [R-DOL-08, R-DOL-14]}
+    oracle: "p.28: 9.5 A is inside the printed 7 … 10 A but above the IE3 usable 9 A → warning 'confirm the IE class' (not 'not protected')"
+  - id: D44
+    in: {flc_a: 9.5, flc_basis: nameplate, ie_class: IE2, fault_ka: 50, mpcb_range: "7-10"}
+    expect: {status: warning, mpcb: 3RV2011-1JA10, warnings: [R-DOL-08]}
+    oracle: "p.28: for an IE2 motor the usable range is the printed 7 … 10 A → 9.5 A inside, no R-DOL-14 warning"
+  # --- 2026-10-20 (owner, RFQ part 3): a varistor surge suppressor by contactor size and coil, R-DOL-15
+  - id: D45
+    in: {flc_a: 3.0, flc_basis: nameplate, ie_class: IE3, fault_ka: 55, suppressor: varistor}
+    expect: {status: ok, contactor: 3RT2015-1AP01, suppressor: 3RT2916-1JL00}
+    oracle: "3.0 A → 2.8 … 4 A row (IE3 2.8 … 3.5) → S00 contactor 3RT2015 (SIE-SIRIUS-CM p.28); 230 V AC coil → S00 varistor 127 … 240 V AC = 3RT2916-1JL00 (IC 10 · 2026 p.3/96) — the client's article"
+  - id: D46
+    in: {flc_a: 6.5, flc_basis: nameplate, ie_class: IE3, fault_ka: 55, suppressor: varistor}
+    expect: {status: warning, contactor: 3RT2024-1AP00, suppressor: 3RT2926-1JL00}
+    oracle: "6.5 A → 3RV2011-1HA10 + S0 contactor 3RT2024 (p.28; S00/S0 no link module, R-DOL-08 warning); S0 varistor 127 … 240 V AC = 3RT2926-1JL00 (p.3/96)"
+  - id: D47
+    in: {flc_a: 3.0, flc_basis: nameplate, ie_class: IE3, fault_ka: 55, coil: 24VDC, suppressor: varistor}
+    expect: {status: ok, suppressor: 3RT2916-1JJ00}
+    oracle: "24 V DC coil (the S00 coupling contactor for the PLC, R-DOL-12) → varistor 12 … 24 V DC = 3RT2916-1JJ00 (p.3/96)"
+  - id: D48
+    in: {flc_a: 3.6, fault_ka: 55, suppressor: rc}
+    expect: {status: invalid}
+    oracle: "suppressor: varistor or none"

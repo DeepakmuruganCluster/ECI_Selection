@@ -1,0 +1,48 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 2
+title: DOL starter (motor starter protector + contactor)
+what_it_does: >
+  For a motor started direct-on-line, it picks the Siemens motor starter
+  protector (MPCB), the contactor that Siemens tested with it (Type 2), and the
+  link module that joins them. Everything comes from the Siemens table on pages
+  28–29 and the link-module table on page 22. For a 24 V DC coil it takes the
+  same contactor type from the Siemens IC 10 catalogue (coupling contactor when a
+  PLC output drives the coil, varistor version otherwise) and gives the coil power.
+  If the table does not cover the case (over 100 A, heaters, other voltages), it refuses.
+
+how_to_check:
+  - Open the page 28 picture. Each row has a setting range (two columns, IE1/IE2 and IE3/IE4), an MPCB article number and a contactor article number.
+  - Pick a row and take a current in the middle of its IE3/IE4 range, e.g. 3RV2021-4CA10 with 16 … 18 A → try 17 A.
+  - Press "Try it", or go to the DOL starter tab, enter that current with IE class IE3, and press Select. The MPCB and contactor must be the ones in that row.
+  - Check the link module against the page 22 picture (it depends on the size, e.g. S0/S0).
+  - When two rows overlap, the tool picks the one where your current sits nearest the middle. That is a rule we chose (decision E-1), not Siemens'.
+
+spot_checks:
+  - {label: "17 A, IE3 (page 28: 3RV2021-4CA10 + 3RT2027)", tab: dol_starter, inputs: {flc_a: 17, ie_class: IE3, flc_basis: nameplate}}
+  - {label: "60 A, IE3 (page 29: 3RV2032-4JA10 + 3RT2037)", tab: dol_starter, inputs: {flc_a: 60, ie_class: IE3, flc_basis: nameplate}}
+  - {label: "15.5 A, 24 V DC from a PLC (IC 10 p.3/55: 3RT2027-1KB40, 4.5 W)", tab: dol_starter, inputs: {flc_a: 15.5, ie_class: IE3, coil: 24VDC, coil_driver: plc, flc_basis: nameplate}}
+  - {label: "100 A, 24 V DC from a PLC (no coupling version: interposing relay warning)", tab: dol_starter, inputs: {flc_a: 100, ie_class: IE3, coil: 24VDC, coil_driver: plc, flc_basis: nameplate}}
+
+decisions:
+  - id: E-1
+    question: "When two Siemens ranges both fit the motor current, which should the tool pick?"
+    options: {margin: "The one where the current sits nearest the middle (safer if the nameplate differs a little)", smallest: "The smallest size that fits (cheaper, narrower)"}
+    recommended: margin
+  - id: E-2
+    question: "A small MPCB (size S00) with a bigger contactor (S0) has no link module in Siemens' table (20 feeders on WNS2503)."
+    options: {source: "Find the right link module in the Siemens catalogue", wire: "Wire them without a link module"}
+    recommended: source
+  - id: E-3
+    question: "ECI uses 24 V DC contactor coils, which the manual we hold does not cover. May Claude download the Siemens IC 10 catalogue (or the contactor data sheets) to add them?"
+    options: {"yes": "Yes, download it (Claude will show the file name and size first)", "no": "No"}
+    recommended: "yes"
+    answered: "yes — IC 10 · 2026 downloaded and registered 2026-10-13 (SIE-IC10-2026)"
+  - id: E-4
+    question: "24 V DC coil: which contactor version? (IC 10: S2/S3 AC/DC coils draw 2.6–6.5 A for the first 150–230 ms.)"
+    options: {coupling: "Coupling contactor (KB4.) when a PLC output drives the coil, varistor version otherwise", varistor: "Always the varistor version", plain: "Plain coil (no suppression)"}
+    recommended: coupling
+    answered: "coupling — owner 2026-10-13 (rule R-DOL-12); no coupling version (3RT2047) → interposing relay"
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/makers/siemens/ic10_3rt2_coil_power.yaml, data/makers/siemens/ic10_3rt2_contactors.yaml, data/makers/siemens/siemens_link_modules.yaml, data/makers/siemens/siemens_type2_400v.yaml, data/makers/siemens/3rt2_surge_suppressors.yaml]

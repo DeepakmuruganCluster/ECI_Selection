@@ -1,0 +1,17 @@
+# Maximum permitted output current (% of LO / HO base load output current) vs ambient
+# temperature, installation altitude up to 1000 m (first row of each table).
+# Section 6.9, Tables 6-37 / 6-38 (FSD-FSF, 400 V; p. 118) and 6-39 / 6-40 (FSA-FSC, 400 V; p. 119).
+# In the PDF the leading "100" is one merged cell spanning the lower temperatures
+# (LO: 20 … 40 °C, HO: 20 … 50 °C); it is written out per column here.
+
+source:
+  ref: SIE-PM240-2
+  section: "6.9 Current reduction depending on installation altitude and ambient temperature (Tables 6-37 … 6-40)"
+
+conditions: {altitude_max_m: 1000}
+
+rows:
+  - {group: FSD-FSF, duty: LO, table: "6-37", pct: {20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 93, 50: 85, 55: 76, 60: 66}, page: 118}
+  - {group: FSD-FSF, duty: HO, table: "6-38", pct: {20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100, 55: 87, 60: 74}, page: 118}
+  - {group: FSA-FSC, duty: LO, table: "6-39", pct: {20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 93, 50: 85, 55: 60, 60: 35}, page: 119}
+  - {group: FSA-FSC, duty: HO, table: "6-40", pct: {20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100, 55: 75, 60: 50}, page: 119}

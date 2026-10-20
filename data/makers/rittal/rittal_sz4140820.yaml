@@ -1,0 +1,18 @@
+# Rittal SZ 4140.820 LED compact system light — data sheet (pdf-creator, 4 pages). PDF page = printed page.
+# 24 V DC (SELV) — its supply comes from the 24 V DC control power (hand-off to control power).
+
+source:
+  ref: RITTAL-4140820
+  section: "SZ 4140.820 LED compact system light: features (pp. 2–4)"
+
+article: "SZ 4140.820"
+
+rows:
+  - {quantity: rated_voltage_vdc,   value: 24, printed: "Rated operating voltage 24 V (DC)", page: 4}
+  - {quantity: current_a,           value: 0.08, printed: "With DC 0.08 A", page: 3}
+  - {quantity: row_current_max_a,   value: 2, printed: "When configuring rows of lights, the maximum rated current is 2 amperes", page: 3}
+  - {quantity: switch_type,         value: "Integral on/off/door-operated switch", page: 3}
+  - {quantity: door_switch_connectable, value: "May be connected to a door-operated switch.", page: 2}
+  - {quantity: width_mm,            value: 330, page: 3}
+  - {quantity: ip_standard,         value: 20, printed: "IP 20", page: 4}
+  - {quantity: leds,                value: 20, page: 3}

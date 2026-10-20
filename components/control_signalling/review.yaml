@@ -1,0 +1,92 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 16
+title: Control and signalling (interface relays, terminals, Rittal door switch and light)
+what_it_does: >
+  Picks the relays between the PLC outputs and the panel: a latching relay for each DOL starter
+  (ECI asks for "Latch Relay") and a slim relay for every other output, with their jumper links,
+  separators and markers. It works out how many PLC outputs that needs. It picks the screwless
+  (push-in) terminal blocks for the I/O and power wiring, with end plates, end clamps, marker cards
+  and the short links that join terminals together. It adds one Rittal door switch and one LED
+  light per door. Every article number is taken from the Finder, Connectwell and Rittal pages.
+  It refuses Phoenix Contact (data sheets not held yet), loads the relay is not rated for, and
+  panels hotter than the relay allows.
+
+how_to_check:
+  - "Latching relay: open FINDER-S13 page 5. Column 13.12: 'Call & Reset Relay 12 V or 24 V AC/DC', 1 CO + 1 NO, 8 A, AC15 400 VA, impulse '10 s (100 ms minimum)'. Page 11 shows two inputs, Set (S) and Reset (R). So each DOL starter needs TWO PLC outputs. Press 'Try it: BIO_UF'."
+  - "Slim relay: open FINDER-S38 PDF page 18 (printed 14). Under 'Screwless terminal - 1 Pole relay 6 A' the row '24 V DC' reads 38.61.7.024.0050. Page 20 (printed 16): jumper 093.20 is 20-way, separator 093.01 is 'required at the start and the end of a group', marker sheet 093.48 has 48 tags."
+  - "Contact load: FINDER-S38 PDF page 5 (printed 1): 'Rated load AC15 (230 V AC) 300 VA', i.e. 1.3 A at 230 V. A 1.5 A contactor coil must be refused. Connectwell page 44 (printed 41) gives no AC15 value at all, so Connectwell is refused for contactor coils."
+  - "Terminals: CW-TB PDF page 12 (printed 9): CP1.5 takes only 0.2 - 1.0 mm² with a ferrule, so a 1.5 mm² wire with ferrule needs CP2.5 (page 13: 0.2 - 2.5 mm², end plate EPCX2.5, marking tag MC5). Page 289 (printed 286): one MC5 card has 84 tags. Press 'Try it: 100 I/O terminals'."
+  - "Rittal: SZ 4140.820 page 3: 24 V DC, 0.08 A, 'When configuring rows of lights, the maximum rated current is 2 amperes'. SZ 4127.010 page 2: 24 V DC / 6 A."
+  - "Page numbers: the pictures are PDF pages. Finder 38 prints page numbers 4 lower than the PDF; Connectwell 3 lower; the others are the same."
+
+spot_checks:
+  - {label: "BIO_UF: 36 DOL + 44 other outputs, 80 DO (116 needed: warning)", tab: control_signalling, inputs: {dol_outputs: 36, other_outputs: 44, do_available: 80, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 45}}
+  - {label: "100 I/O terminals 1.5 mm² (page 13: CP2.5, MC5 ×2)", tab: control_signalling, inputs: {io_terminals: 100, io_conductor_mm2: 1.5}}
+  - {label: "Contactor coil 1.5 A at 230 V (page 5: refused)", tab: control_signalling, inputs: {other_outputs: 4, contact_v: 230, contact_a: 1.5, contact_load: ac15, panel_internal_c: 45}}
+
+decisions:
+  - id: C-1
+    question: "ECI asks for a 'Latch Relay' on DOL outputs. The only relay in the Finder and Connectwell catalogues that latches is Finder 13.12 (Call & Reset): it switches ON with a pulse on one input and OFF with a pulse on a second input, so every DOL starter needs two PLC outputs. Is that what ECI means?"
+    options: {"set_reset": "Yes: Finder 13.12 set/reset relay, two PLC outputs per DOL", "ask": "Not sure: ask ECI before ordering (keep 13.12 until answered)", "slim": "No: DOL outputs get a normal slim relay too"}
+    recommended: "ask"
+  - id: C-2
+    question: "With the 13.12 relay, BIO_UF needs 2 × 36 + 44 = 116 PLC outputs but ECI's table has 80 (RO: 135 against 96). Should ECI's DO count be raised?"
+    options: {"yes": "Yes, tell ECI the DO count must be raised", "no": "No, keep ECI's count (then C-1 must be 'slim')"}
+    recommended: "yes"
+  - id: C-3
+    question: "Spare relays: ECI's DO count already includes spare outputs (BIO_UF 12, RO 13). Give relays only for the outputs entered (0 % spare), or add a percentage?"
+    options: {"0": "0 % (one relay per output entered)", "10": "10 % spare relays"}
+    recommended: "0"
+  - id: C-4
+    question: "Finder slim relay: the 38 series (38.61, 6.2 mm, screwless) is the default. Use the 39 MasterINTERFACE (39.01) instead?"
+    options: {"38": "38 series (default)", "39": "39 MasterBASIC"}
+    recommended: "38"
+  - id: C-5
+    question: "Connectwell slim relays have no AC-15 or DC-13 rating, so the tool refuses them when they switch a contactor coil. Keep refusing until Connectwell gives a rating in writing?"
+    options: {"yes": "Yes, keep refusing (use Finder for contactor coils)", "no": "No, accept Connectwell without the rating"}
+    recommended: "yes"
+  - id: C-6
+    question: "Terminal wires: the tool assumes flexible wire with ferrules and Connectwell CP push-in terminals. Correct?"
+    options: {"ferrule": "Flexible wire with ferrules, CP push-in", "flex": "Flexible wire without ferrules"}
+    recommended: "ferrule"
+  - id: C-7
+    question: "One Rittal door switch SZ 4127.010 and one LED light SZ 4140.820 per door?"
+    options: {"per_door": "One of each per door", "per_section": "One of each per section"}
+    recommended: "per_door"
+  - id: C-8
+    question: "End clamps: Connectwell says they go on both sides of each terminal assembly. When the number of strips is not given, the tool assumes one strip per terminal type (more clamps, never too few). Keep that, with end clamp CA103?"
+    options: {"yes": "Yes, one strip per type, CA103", "no": "No, always one strip per panel"}
+    recommended: "yes"
+  - id: C-9
+    question: "The catalogues were downloaded on 2026-10-11. Confirm every article number with the supplier before ordering?"
+    options: {"yes": "Yes, confirm before ordering", "no": "No, use them as they are"}
+    recommended: "yes"
+
+# labels for the web form (built automatically from select())
+fields:
+  dol_outputs: "DOL starter outputs (latching relays)"
+  other_outputs: "Other digital outputs (slim relays)"
+  coil_v_dc: {label: "Relay coil voltage (V DC)", options: [24]}
+  relay_make: {label: "Relay make", options: ["finder", "connectwell", "phoenix"], help: "Phoenix: data sheets not held yet"}
+  latch_make: {label: "Latching relay make (if different)", options: ["finder", "connectwell", "phoenix"]}
+  finder_series: {label: "Finder slim relay series", options: ["38", "39"]}
+  relay_connection: {label: "Relay terminals", options: ["screwless", "screw"]}
+  relay_groups: "Number of slim relay groups (rows)"
+  spare_pct: "Spare relays (%)"
+  contact_v: "Load voltage switched by the relay (V)"
+  contact_a: "Load current switched by the relay (A)"
+  contact_load: {label: "Load type", options: ["ac15", "ac1", "dc13", "dc1"], help: "ac15 = AC contactor coil, dc13 = DC contactor coil"}
+  panel_internal_c: "Air inside the panel (°C)"
+  do_available: "PLC digital outputs available (client's DO count)"
+  terminal_make: {label: "Terminal make", options: ["connectwell", "phoenix"]}
+  io_terminals: "I/O terminals (number)"
+  io_conductor_mm2: "I/O wire size (mm²)"
+  conductor_type: {label: "Wire type at the terminals", options: ["ferrule", "flex", "solid"]}
+  jumper_groups: {label: "Commoned terminal groups", help: "JSON list of group sizes, e.g. [10, 25]"}
+  power_terminals: {label: "Power terminals", help: "JSON list, e.g. [{\"mm2\": 4, \"count\": 3, \"a\": 25}]"}
+  terminal_strips: "Number of terminal strips"
+  doors: "Panel doors"
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/makers/connectwell/connectwell_es.yaml, data/makers/connectwell/connectwell_tb.yaml, data/makers/finder/finder_s13.yaml, data/makers/finder/finder_s20.yaml, data/makers/finder/finder_s38.yaml, data/makers/finder/finder_s39.yaml, data/makers/finder/finder_s40.yaml, data/makers/rittal/rittal_door_switch.yaml, data/makers/rittal/rittal_system_light.yaml]

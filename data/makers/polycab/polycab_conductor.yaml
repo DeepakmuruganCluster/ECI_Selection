@@ -1,0 +1,57 @@
+# Polycab copper conductor data used for voltage drop and short-circuit withstand.
+#   r_ac90 : "A.C Resistance at 90 °C, Plain copper" (Ω/km), p.11 (conductor table, IS 8130 class 2)
+#   x50    : "Approximate Reactance at 50 Hz, Multi core" (Ω/km), p.10
+#   isc1   : "Short circuit rating for 1 second duration, XLPE insulated, Copper" (kA), p.9;
+#            formula on p.9: Ish = K·A/√t  →  rating for t seconds = isc1 / √t.
+# page = PDF page (= printed page).
+
+source:
+  ref: POLYCAB-LT-V9
+  section: "Technical data: SC rating (p.9), reactance (p.10), AC resistance at 90 °C (p.11)"
+
+rows:
+  - {qty: r_ac90, size: 4,   value: 5.88,   page: 11}
+  - {qty: r_ac90, size: 6,   value: 3.93,   page: 11}
+  - {qty: r_ac90, size: 10,  value: 2.33,   page: 11}
+  - {qty: r_ac90, size: 16,  value: 1.47,   page: 11}
+  - {qty: r_ac90, size: 25,  value: 0.93,   page: 11}
+  - {qty: r_ac90, size: 35,  value: 0.668,  page: 11}
+  - {qty: r_ac90, size: 50,  value: 0.494,  page: 11}
+  - {qty: r_ac90, size: 70,  value: 0.342,  page: 11}
+  - {qty: r_ac90, size: 95,  value: 0.247,  page: 11}
+  - {qty: r_ac90, size: 120, value: 0.196,  page: 11}
+  - {qty: r_ac90, size: 150, value: 0.159,  page: 11}
+  - {qty: r_ac90, size: 185, value: 0.128,  page: 11}
+  - {qty: r_ac90, size: 240, value: 0.0985, page: 11}
+  - {qty: r_ac90, size: 300, value: 0.0796, page: 11}
+  - {qty: r_ac90, size: 400, value: 0.0637, page: 11}
+  - {qty: x50,    size: 4,   value: 0.0933, page: 10}
+  - {qty: x50,    size: 6,   value: 0.0888, page: 10}
+  - {qty: x50,    size: 10,  value: 0.0842, page: 10}
+  - {qty: x50,    size: 16,  value: 0.0802, page: 10}
+  - {qty: x50,    size: 25,  value: 0.0808, page: 10}
+  - {qty: x50,    size: 35,  value: 0.0787, page: 10}
+  - {qty: x50,    size: 50,  value: 0.0780, page: 10}
+  - {qty: x50,    size: 70,  value: 0.0742, page: 10}
+  - {qty: x50,    size: 95,  value: 0.0725, page: 10}
+  - {qty: x50,    size: 120, value: 0.0713, page: 10}
+  - {qty: x50,    size: 150, value: 0.0718, page: 10}
+  - {qty: x50,    size: 185, value: 0.072,  page: 10}
+  - {qty: x50,    size: 240, value: 0.0713, page: 10}
+  - {qty: x50,    size: 300, value: 0.0703, page: 10}
+  - {qty: x50,    size: 400, value: 0.0702, page: 10}
+  - {qty: isc1,   size: 4,   value: 0.57,   page: 9}
+  - {qty: isc1,   size: 6,   value: 0.86,   page: 9}
+  - {qty: isc1,   size: 10,  value: 1.43,   page: 9}
+  - {qty: isc1,   size: 16,  value: 2.29,   page: 9}
+  - {qty: isc1,   size: 25,  value: 3.58,   page: 9}
+  - {qty: isc1,   size: 35,  value: 5.01,   page: 9}
+  - {qty: isc1,   size: 50,  value: 7.16,   page: 9}
+  - {qty: isc1,   size: 70,  value: 10.02,  page: 9}
+  - {qty: isc1,   size: 95,  value: 13.59,  page: 9}
+  - {qty: isc1,   size: 120, value: 17.17,  page: 9}
+  - {qty: isc1,   size: 150, value: 21.47,  page: 9}
+  - {qty: isc1,   size: 185, value: 26.47,  page: 9}
+  - {qty: isc1,   size: 240, value: 34.34,  page: 9}
+  - {qty: isc1,   size: 300, value: 42.93,  page: 9}
+  - {qty: isc1,   size: 400, value: 57.24,  page: 9}

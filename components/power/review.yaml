@@ -1,0 +1,40 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 26
+title: Power calculation (AC per phase with load balancing, 24 V DC)
+what_it_does: >
+  Adds up what the panel draws. AC: every running motor feeder on all three phases (drives at their input current,
+  DOL / soft-starter / star-delta at the motor current), and the single-phase loads — the control transformer across two
+  lines, the 24 V supply's input, single-phase motors — each placed on the least-loaded phase, largest first. It gives the
+  current on L1, L2 and L3, how unbalanced they are, the neutral current and the kVA at the supply. DC: every 24 V load
+  with its source, × 1.25 (company template), against the supply. Motor power is shown as rated output; nothing without
+  data (meter, surge arrester, phase monitoring relay, HMI) is guessed — it is listed as not counted.
+
+how_to_check:
+  - "Open a New machine design, tab Power. Each motor line shows running units × current per phase; check one drive's input current against PM240-2 manual page 100–105."
+  - "Check that the control transformer sits on two phases and the 24 V supply on the third (the least loaded)."
+  - "Imbalance = (largest phase − mean) / mean. No limit is set until you choose one (decision PWR-3)."
+
+spot_checks:
+  - {label: "One 11 kW DOL + three single-phase loads 2.0 / 1.0 / 0.5 A (24 / 23 / 22.5 A, 3.6 %)", tab: power, inputs: {voltage_v: 400}}
+
+decisions:
+  - id: PWR-2
+    question: "How should single-phase loads be spread over the phases?"
+    options: {greedy: "Largest first onto the least-loaded phase (as calculated now)", fixed: "As wired on the drawing (phase given per load)"}
+    recommended: greedy
+  - id: PWR-3
+    question: "Should the tool warn above a phase imbalance? No standard limit is held in the tool's sources; many companies use 10 %."
+    options: {none: "No limit: show the figure only", "10": "Warn above 10 %", "5": "Warn above 5 %"}
+    recommended: none
+  - id: PWR-4
+    question: "The 24 V supply's AC current is worked out at power factor 1 because its power factor is not in the database (so the current is a little low). Accept, or add power factors to the supply database?"
+    options: {accept: "Accept (shown as a lower bound)", data: "Add the supplies' power factor to the database"}
+    recommended: data
+
+fields:
+  voltage_v: Supply voltage line to line (V)
+  imbalance_limit_pct: Warn above this phase imbalance (%, optional)
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: []

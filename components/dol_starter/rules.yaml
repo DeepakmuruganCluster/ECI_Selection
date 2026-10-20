@@ -1,0 +1,26 @@
+# DOL starter rules. Authority: MFR = manufacturer document, RULE = our decision (SIGNOFF.md).
+
+component: dol_starter
+
+rules:
+  R-DOL-01: {authority: MFR,  text: "Table scope: 3-phase motor at 400 V AC. Other voltage, 1-phase or resistive load: cannot select."}
+  R-DOL-02: {authority: MFR,  text: "Overload setting range must contain the FLC: IE1/IE2 column, or the lower IE3/IE4 column for IE3/IE4 motors."}
+  R-DOL-03: {authority: MFR,  text: "A row whose IE3/IE4 cell states a starting-current limit is used for IE3/IE4 motors only when the motor starting current is given and within that limit; otherwise the row is skipped."}
+  R-DOL-04: {authority: RULE, text: "Several rows qualify: take the largest margin min(FLC − min, max − FLC)/(max − min); a tie goes to the earlier row in table order (smaller contactor)."}
+  R-DOL-05: {authority: MFR,  text: "Contactor = the one printed in the same row (Type 2 combination). No substitution."}
+  R-DOL-06: {authority: MFR,  text: "Short-circuit breaking capacity of the combination Iq = 150 kA must be ≥ the prospective fault current at the starter."}
+  R-DOL-07: {authority: MFR,  text: "Coil voltage. 230 V AC 50 Hz: the article printed in the row (footnote 2). 24 V DC: footnote 2 allows other control voltages — the same contactor type from the IC 10 ordering data, screw terminals, same auxiliary contacts (Ident. No.), Uc 24 V DC (or 20 … 33 V AC/DC). Other coil voltages: cannot select (scope)."}
+  R-DOL-08: {authority: MFR,  text: "Link module from Table 2-1 when MPCB and contactor have the same size (S0: AC or DC coil version). Mixed sizes (S00/S0): not in the table → no link module, warning."}
+  R-DOL-09: {authority: MFR,  text: "FLC basis is a guide value or not stated → warning: the table's selection depends on the motor's actual rated and start-up data (footnote 1)."}
+  R-DOL-10: {authority: RULE, text: "FLC above the largest 3RV2 range (100 A) or below the smallest (0.11 A): cannot select with this component."}
+  R-DOL-11: {authority: RULE, text: "IE class not given → IE3/IE4 limits (the lower maximum setting) are applied and noted."}
+  R-DOL-12: {authority: RULE, text: "24 V DC coil version (owner decision 2026-10-13): coil driven by a PLC output → the coupling contactor for direct PLC control (coil code KB4.); driven by a relay contact → the version with a varistor. No coupling version for the type (e.g. 3RT2047) → varistor version and a warning: an interposing relay is needed. Driver not given → PLC (noted)."}
+  R-DOL-15: {authority: MFR, text: "Owner 2026-10-20 (RFQ part 3): with a surge suppressor asked, the varistor (with LED) for the contactor's size and coil voltage — 230 V AC coil: 127 … 240 V AC row; 24 V DC coil: 12 … 24 V DC row (IC 10 · 2026 p.3/96): S00 3RT2916-1J.00, S0 3RT2926-1J.00, S2/S3 3RT2936-1J.00. None for the size / voltage → warning."}
+  R-DOL-14: {authority: RULE, text: "Owner 2026-10-18 (RFQ import: 'the RFQ value wins, flag if unsafe'): with the client's MPCB setting range given, the Type 2 row whose 3RV2 has that printed setting range is taken with its own contactor (a tested pair); several rows → the one whose usable range contains the motor current, largest margin, then table order. The motor current outside the row's usable range → warning (not protected as the client states). No row with that range → refused (no source)."}
+  R-DOL-13: {authority: MFR,  text: "Coil power of the chosen contactor from the IC 10 technical specifications (closing / holding, cold coil, 1.0 × Uc), with the pickup-current footnote for sizes S2 / S3."}
+
+params:
+  coil_default: 230VAC
+  coils_in_scope: [230VAC, 24VDC]
+  coil_driver_default: plc
+  ie_class_default: IE3

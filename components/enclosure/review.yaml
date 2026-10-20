@@ -1,0 +1,62 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 9
+title: Enclosure heat and cooling (Rittal method)
+what_it_does: >
+  Works out whether the heat made inside a panel (drives, power supplies …) can leave through the
+  panel walls on its own, or whether the panel needs filter fans or a cooling unit (air conditioner).
+  It gives the fan airflow in m³/h or the cooling-unit output in watts, using Rittal's printed formulas.
+  Fans can only cool when the outside air is cooler than the temperature wanted inside; for an inside
+  temperature below the outside air only a cooling unit works. Rittal's catalogue does not print the
+  table that turns panel sizes into the "effective surface area", so the designer enters that area
+  and the tool marks it as not checked.
+
+how_to_check:
+  - "Fan airflow: open page 12. The pink box says airflow = f × heat loss ÷ ΔT, and the list below says f = 3.1 up to 100 m and f = 3.5 at 750–1000 m. 1000 W with a 10 K rise at sea level is 3.1 × 1000 ÷ 10 = 310 m³/h. Press 'Try it: 1000 W, 35 → 45 °C': it must say 310 m³/h."
+  - "Same check against Siemens: open SIE-PM240-2 page 34 (printed 32). It says airflow in l/s = loss × 0.86 ÷ ΔT = 1000 × 0.86 ÷ 10 = 86 l/s. 310 m³/h ÷ 3.6 = 86.1 l/s: the two makers agree."
+  - "Walls only: open page 13. Temperature rise = heat loss ÷ (k × A), with k = 5.5 for sheet steel. 300 W in a panel with 5 m² of area rises 300 ÷ 27.5 = 10.9 K, so at 35 °C outside it reaches 45.9 °C. Press 'Try it: 300 W, 5 m²': it must say no cooling needed (passive)."
+  - "Cooling unit: open page 30. Cooling output = heat loss − k × A × ΔT, with ΔT = inside − outside. For 35 °C inside on a 50 °C site, ΔT is −15 K, so heat also comes in through the walls: 2000 W, 6 m² → 2000 + 5.5 × 6 × 15 = 2495 W. Press 'Try it: 35 °C inside a 50 °C site'."
+  - Page numbers printed on the Rittal pages are the same as the PDF page numbers.
+
+spot_checks:
+  - {label: "1000 W, 35 → 45 °C (page 12: 310 m³/h)", tab: enclosure, inputs: {heat_loss_w: 1000, ambient_c: 35, max_internal_c: 45, altitude_m: 0, siting: indoor}}
+  - {label: "300 W, 5 m² (page 13: 45.9 °C, no cooling)", tab: enclosure, inputs: {heat_loss_w: 300, ambient_c: 35, max_internal_c: 55, altitude_m: 0, area_m2: 5, material: sheet_steel, siting: indoor}}
+  - {label: "35 °C inside a 50 °C site (page 30: 2495 W)", tab: enclosure, inputs: {heat_loss_w: 2000, ambient_c: 50, max_internal_c: 35, altitude_m: 1000, area_m2: 6, material: sheet_steel, siting: indoor}}
+
+decisions:
+  - id: H-1
+    question: "Rittal's catalogue names IEC 890 for the panel's effective surface area but does not print its table, and we don't hold IEC TR 60890 yet. Until we do, should the tool accept an area typed in by the designer, marked 'not checked'?"
+    options: {"warn": "Yes, accept it with a caution, and buy IEC TR 60890", "refuse": "No, refuse every calculation that needs the area until the standard is held"}
+    recommended: warn
+  - id: H-2
+    question: "With only a few degrees between outside air and the inside limit, fans need a huge airflow. Rittal's fan chart (page 12) starts at a 5 K difference. Below what difference should the tool recommend a cooling unit instead of fans?"
+    options: {"5": "Below 5 K (Rittal's lowest chart line)", "10": "Below 10 K (more cautious)"}
+    recommended: "5"
+  - id: H-3
+    question: "Should the tool add a safety margin to the cooling-unit output it asks for? Rittal's formula has none; the heat losses entered are already full-load values."
+    options: {"0": "No margin (Rittal's formula as printed)", "10": "Add 10 %", "20": "Add 20 %"}
+    recommended: "0"
+  - id: H-4
+    question: "Rittal's altitude list overlaps at its end points (e.g. '0 to 100 m' and '100 to 250 m'). Exactly at 100, 250, 500 or 750 m, which factor?"
+    options: {"higher": "The higher factor (a little more airflow, safe)", "lower": "The lower factor"}
+    recommended: higher
+  - id: H-5
+    question: "WNS2503 (50 °C site): fans keep the inside at 55 °C at best (all 18 drives then go up a size, and the fans need about 0.7 m³/h per watt). 35 °C inside needs cooling units, as the inside is below the outside air. Plan WNS2503 panels for cooling units at 35 °C?"
+    options: {"yes": "Yes, cooling units, 35 °C inside (drives not upsized)", "no": "No, filter fans, 55 °C inside (drives upsized)"}
+    recommended: "yes"
+
+# labels for the web form (built automatically from select())
+fields:
+  heat_loss_w: "Total heat loss inside the panel (W)"
+  ambient_c: "Air outside the panel (°C)"
+  max_internal_c: "Highest allowed temperature inside (°C)"
+  altitude_m: "Site altitude (m)"
+  siting: {label: "Siting", options: ["indoor", "outdoor"]}
+  area_m2: {label: "Cooling surface area A (m²)", help: "from IEC TR 60890; not checked by the tool"}
+  material: {label: "Enclosure material", options: ["sheet_steel"]}
+  sections: {label: "Sections (optional, JSON list)", help: "recorded only until IEC TR 60890 is held"}
+
+out_of_scope: true   # owner instruction 2026-10-11: enclosures left out of the BOM
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/makers/rittal/rittal_altitude_factor.yaml, data/makers/rittal/rittal_formulas.yaml, data/makers/rittal/rittal_heat_transfer.yaml, data/makers/rittal/rittal_products.yaml, data/makers/siemens/siemens_cooling_air.yaml]

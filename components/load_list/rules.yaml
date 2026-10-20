@@ -1,0 +1,21 @@
+# Load-list import rules. Authority: CLIENT = the client's document (a stored, cited file),
+# PHYS = arithmetic / physics, RULE = our decision (an interpretation, always flagged).
+
+component: load_list
+
+rules:
+  R-LL-01: {authority: CLIENT, text: "The client's Word load list is read directly from the registered file (SHA-256 checked) at run time. Every motor/heater row becomes one load line; kW, quantity, voltage, client current and MPCB range are copied from the cells as written and cited as table T row R. A row whose kW or quantity cannot be read is left out and listed."}
+  R-LL-02: {authority: RULE,   text: "Panel of a row = the panel named in the next 'Panel Total' row of the same section (e.g. 'BIO/UF Panel Total VFD' closes the BIO/UF drive rows). A row not closed by a total row is listed and left without a panel."}
+  R-LL-03: {authority: CLIENT, text: "Starter = the 'Req' column that holds the count (Req Inverter → VFD, Req DOL → DOL, Req Soft Starter → SS); quantity = that count. It must agree with the section header (VFD / Soft Starter / DOL Requirement); a disagreement is a warning."}
+  R-LL-04: {authority: RULE,   text: "Load type from the item wording: 'Heater' → HEATER line (the client asks for a DOL feeder; the heater feeder is a separate component); 'Extra' or 'Spare' → spare starters, kept in the load list (the client counts them in its totals) and flagged. Otherwise motor."}
+  R-LL-05: {authority: CLIENT, text: "Phases and voltage from 'Operating Voltage' (e.g. '1PH 230V 50HZ' → ph=1 v=230). 3PH 400V is the panel default and is not written; any other voltage is written as ph= v=."}
+  R-LL-06: {authority: RULE,   text: "The client's Amps and MPCB range are kept as CLIENT values for comparison only and never written as flc= (they are formula values, not nameplates)."}
+  R-LL-07: {authority: RULE,   text: "The client gives no cable lengths. cable= is written only when the user gives default_cable_m, and is then flagged as the user's value on every line. No default is invented."}
+  R-LL-08: {authority: RULE,   text: "The client gives total quantities only. A tag group (A/B, A/B/C …) may be duty/standby, but that is an interpretation: standby = 0 unless standby_per_group is given (then min(standby_per_group, qty − 1) per group, spare rows excluded). Either way the groups are listed. QA 2026-10-16 (H1): standby units can also be given per tag group (standby: {tag: units}, 0 ≤ units < qty), saved per panel in the project's overrides.yaml from the Power tab; a group not set stays all running with the warning. The output lists every group with its units, kW and standby."}
+  R-LL-09: {authority: RULE,   text: "Tag = Instrument ID as written. A tag already used earlier in the document is kept, renamed TAG_2 (TAG_3 …) so the load list stays unique, and flagged."}
+  R-LL-10: {authority: CLIENT, text: "Instrument ID and Group Marking must name the same equipment (A/B and '&' lists expanded, case ignored). A difference is a warning; the Instrument ID is used."}
+  R-LL-11: {authority: PHYS,   text: "Row arithmetic: Total KW = KW × Total Qty; Total Qty = the Req count; the number of tags in the Instrument ID = the Req count. A difference is a warning; the Req count is used (it is what the panel total rows add up)."}
+  R-LL-12: {authority: PHYS,   text: "Each panel total row must equal the sum of its rows' Req counts, and is also compared with the sum of Total Qty. A difference is a warning."}
+  R-LL-13: {authority: RULE,   text: "Garbled cells are repaired only by splitting text that is plainly there: an MPCB range and device type run together in one cell ('1.1A To 1.6AMPCB-3RV') or written one column to the right. Every repair is listed with its table/row."}
+  R-LL-14: {authority: PHYS,   text: "The client's current must lie inside the client's MPCB setting range (an MPCB cannot be set outside its range). A row outside is a warning about the client document; nothing is changed."}
+  R-LL-15: {authority: CLIENT, text: "Cross-check with the client's complete equipment list (the project's 'equipment' document): rows are matched by panel + tag (then by Group Marking, then by item text); kW, Amps, quantity, starter count and supply must agree, and the panel starter totals must agree. Every difference and every unmatched row is a warning; the Word load list is used."}

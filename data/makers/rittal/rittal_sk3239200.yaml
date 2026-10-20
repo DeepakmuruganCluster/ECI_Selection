@@ -1,0 +1,18 @@
+# Rittal SK 3239.200 outlet filter — data sheet (pdf-creator, 3 pages). PDF page = printed page.
+# Supplied with a chopped-fibre filter mat (p.2) — the same mat the fan's "with outlet filter" airflow assumes.
+
+source:
+  ref: RITTAL-3239200
+  section: "SK 3239.200 outlet filter: features (pp. 2–3)"
+
+article: "SK 3239.200"
+
+rows:
+  - {quantity: to_fit,           value: "SK 3239.1xx", printed: "To fit Model No. SK 3239.1xx", page: 2}
+  - {quantity: cutout_width_mm,  value: 177, page: 2}
+  - {quantity: cutout_height_mm, value: 177, page: 2}
+  - {quantity: width_mm,         value: 204, page: 2}
+  - {quantity: height_mm,        value: 204, page: 2}
+  - {quantity: depth_mm,         value: 24,  page: 2}
+  - {quantity: ip_standard,      value: 54, printed: "IP 54 with chopped-fibre filter/pleated filter", page: 2}
+  - {quantity: supply_includes_mat, value: "Chopped-fibre filter mat", page: 2}

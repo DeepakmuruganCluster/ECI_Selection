@@ -1,0 +1,4 @@
+# Maker / company tables that are extracted and verified but not yet read by a component.
+# Each entry names the component that will read it. Remove the entry when that component lists the table in its
+# review.yaml (tests/test_catalog.py checks every table is either read or listed here).
+tables:

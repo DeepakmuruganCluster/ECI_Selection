@@ -1,0 +1,81 @@
+# Siemens SIRIUS 3RT2 contactors: power consumption of the solenoid coils (cold coil, 1.0 x Uc).
+#
+# Transcribed 2026-10-13 from Catalog IC 10 · 2026, technical specifications, read against the rendered page images:
+#   S00 PDF p.155 (printed 3/27), S0 p.158 (3/30), S2 p.161 (3/33), S3 p.164 (3/36).
+# One row per type group and coil version as the column heads print them. "a/b" values are 50 Hz / 60 Hz.
+# A value printed once without a column separator next to it spans the whole size (e.g. S00 DC 4 W) — checked on
+# the page images: the white separator bars only run beside values that differ per column.
+#   ac_*:        AC operation, standard version (VA); pf = power factor
+#   dc_close_w / dc_hold_w: DC operation (W). For S00 / S0 standard DC coils the catalogue prints
+#                "closing power = holding power".
+#   acdc_*:      AC/DC (electronic) coils: AC and DC closing / holding, as printed (VA)
+#   pickup_note: footnote on the inrush of the electronic / DC coils, verbatim in substance
+#   operating_range: solenoid coil operating range as printed
+
+source:
+  ref: SIE-IC10-2026
+  section: "SIRIUS 3RT contactors, 3-pole up to 250 kW — technical specifications, Control: power consumption of the solenoid coils"
+
+rows:
+  # ---- S00, p.155 (3/27)
+  - {size: S00, types: [3RT2015, 3RT2016], coil: "AC", version: "AC operation, 50/60 Hz, standard version",
+     ac_close_va: "27/24.3", ac_close_pf: "0.8/0.75", ac_hold_va: "4.2/3.3", ac_hold_pf: "0.25/0.25",
+     operating_range: "50 Hz 0.8 ... 1.1 x Uc; 60 Hz 0.85 ... 1.1 x Uc", page: 155, printed: "3/27"}
+  - {size: S00, types: [3RT2017, 3RT2018], coil: "AC", version: "AC operation, 50/60 Hz, standard version",
+     ac_close_va: "37/33", ac_close_pf: "0.8/0.75", ac_hold_va: "5.7/4.4", ac_hold_pf: "0.25/0.25",
+     operating_range: "50 Hz 0.8 ... 1.1 x Uc; 60 Hz 0.85 ... 1.1 x Uc", page: 155, printed: "3/27"}
+  - {size: S00, types: [3RT2015, 3RT2016, 3RT2017, 3RT2018], coil: "DC", version: "DC operation (closing power = holding power)",
+     dc_close_w: 4, dc_hold_w: 4, operating_range: "up to 50 °C 0.8 ... 1.1 x Uc; up to 60 °C 0.85 ... 1.1 x Uc", page: 155, printed: "3/27"}
+  - {size: S00, types: [3RT2015, 3RT2016, 3RT2017, 3RT2018], coil: "DC coupling", version: "Coupling contactors 3RT201.-.HB4. / .JB4. / .KB4.",
+     dc_close_w: 2.8, dc_hold_w: 2.8, operating_range: "0.7 ... 1.25 x Uc", page: 155, printed: "3/27"}
+  - {size: S00, types: [3RT2015, 3RT2016, 3RT2017, 3RT2018], coil: "DC coupling", version: "Coupling contactors 3RT201.-.MB4.-0KT0 / .VB4. / .SB4.",
+     dc_close_w: 1.6, dc_hold_w: 1.6, operating_range: "0.85 ... 1.85 x Uc", page: 155, printed: "3/27"}
+  # ---- S0, p.158 (3/30)
+  - {size: S0, types: [3RT2023, 3RT2024, 3RT2025], coil: "AC", version: "AC operation, 50 Hz, standard version",
+     ac_close_va: "65", ac_close_pf: "0.82", ac_hold_va: "7.6", ac_hold_pf: "0.25", operating_range: "0.8 ... 1.1 x Uc (60 Hz: 0.85 ... 1.1 x Uc)", page: 158, printed: "3/30"}
+  - {size: S0, types: [3RT2026, 3RT2027, 3RT2028], coil: "AC", version: "AC operation, 50 Hz, standard version",
+     ac_close_va: "77", ac_close_pf: "0.82", ac_hold_va: "9.8", ac_hold_pf: "0.25", operating_range: "0.8 ... 1.1 x Uc (60 Hz: 0.85 ... 1.1 x Uc)", page: 158, printed: "3/30"}
+  - {size: S0, types: [3RT2023, 3RT2024, 3RT2025], coil: "AC", version: "AC operation, 50/60 Hz, standard version",
+     ac_close_va: "68/67", ac_close_pf: "0.72/0.74", ac_hold_va: "7.9/6.5", ac_hold_pf: "0.25/0.28", operating_range: "0.8 ... 1.1 x Uc (60 Hz: 0.85 ... 1.1 x Uc)", page: 158, printed: "3/30"}
+  - {size: S0, types: [3RT2026, 3RT2027, 3RT2028], coil: "AC", version: "AC operation, 50/60 Hz, standard version",
+     ac_close_va: "81/79", ac_close_pf: "0.72/0.74", ac_hold_va: "10.5/8.5", ac_hold_pf: "0.25/0.28", operating_range: "0.8 ... 1.1 x Uc (60 Hz: 0.85 ... 1.1 x Uc)", page: 158, printed: "3/30"}
+  - {size: S0, types: [3RT2023, 3RT2024, 3RT2025, 3RT2026, 3RT2027, 3RT2028], coil: "DC", version: "DC operation (closing power = holding power)",
+     dc_close_w: 5.9, dc_hold_w: 5.9, operating_range: "0.8 ... 1.1 x Uc", page: 158, printed: "3/30"}
+  - {size: S0, types: [3RT2023, 3RT2024, 3RT2025, 3RT2026, 3RT2027, 3RT2028], coil: "AC/DC", version: "3RT202.-.NB3. (AC/DC)",
+     acdc_ac_close_va: "6.6/6.7", acdc_ac_hold_va: "1.9/2.0", dc_close_w: 5.9, dc_hold_w: 1.4, operating_range: "0.7 ... 1.3 x Uc", page: 158, printed: "3/30"}
+  - {size: S0, types: [3RT2023, 3RT2024, 3RT2025, 3RT2026, 3RT2027, 3RT2028], coil: "DC coupling", version: "Coupling contactors 3RT202.-.KB4.",
+     dc_close_w: 4.5, dc_hold_w: 4.5, operating_range: "0.7 ... 1.25 x Uc", page: 158, printed: "3/30"}
+  # ---- S2, p.161 (3/33)
+  - {size: S2, types: [3RT2035, 3RT2036, 3RT2037, 3RT2038], coil: "AC", version: "AC operation, 50 Hz, standard version (3RT203.-.A..., 3RT203.-.C...)",
+     ac_close_va: "190", ac_close_pf: "0.72", ac_hold_va: "16", ac_hold_pf: "0.37", operating_range: "50 Hz 0.8 ... 1.1 x Uc; 60 Hz 0.85 ... 1.1 x Uc", page: 161, printed: "3/33"}
+  - {size: S2, types: [3RT2035, 3RT2036, 3RT2037, 3RT2038], coil: "AC", version: "AC operation, 50/60 Hz, standard version (3RT203.-.A..., 3RT203.-.C...)",
+     ac_close_va: "210/188", ac_close_pf: "0.69/0.65", ac_hold_va: "17.2/16.5", ac_hold_pf: "0.36/0.39", operating_range: "50 Hz 0.8 ... 1.1 x Uc; 60 Hz 0.85 ... 1.1 x Uc", page: 161, printed: "3/33"}
+  - {size: S2, types: [3RT2035, 3RT2036, 3RT2037, 3RT2038], coil: "AC/DC", version: "3RT203.-.N.3. (AC/DC)",
+     acdc_ac_close_va: "40", acdc_ac_close_pf: "0.95", acdc_ac_hold_va: "2", acdc_ac_hold_pf: "0.95", acdc_dc_close_va: "23", acdc_dc_hold_va: "1",
+     operating_range: "0.8 ... 1.1 x Uc",
+     pickup_note: "footnote 2: increased pickup currents (2.6 A on average) during the first 230 ms; for direct control by PLC Siemens recommends the 3RT203.-.KB4. coupling contactors, one per PLC output with 2 A",
+     page: 161, printed: "3/33"}
+  - {size: S2, types: [3RT2035, 3RT2036, 3RT2037, 3RT2038], coil: "AC/DC", version: "3RT203.-.S.3. (AC/DC, PLC control input)",
+     acdc_ac_close_va: "40", acdc_ac_close_pf: "0.95", acdc_ac_hold_va: "2", acdc_ac_hold_pf: "0.7", acdc_dc_close_va: "40", acdc_dc_hold_va: "1.6",
+     operating_range: "0.8 ... 1.1 x Uc", spans: "closing AC 40 VA, p.f. 0.95 and holding AC 2 VA are printed once for N.3 and S.3",
+     plc_input: "Type 1, 24 V DC, 17 ... 30 V DC, <= 30 mA", page: 161, printed: "3/33"}
+  - {size: S2, types: [3RT2035, 3RT2036, 3RT2037, 3RT2038], coil: "DC coupling", version: "Coupling contactors 3RT203.-.KB4.",
+     dc_close_w: 21.5, dc_hold_w: 1, operating_range: "0.8 ... 1.2 x Uc",
+     pickup_note: "footnote 3: increased pickup currents (2.1 A on average) during the first 230 ms", page: 161, printed: "3/33"}
+  # ---- S3, p.164 (3/36)
+  - {size: S3, types: [3RT2045, 3RT2046, 3RT2047], coil: "AC", version: "AC operation, 50 Hz, standard version (3RT204.-.A..., 3RT204.-.C...)",
+     ac_close_va: "296", ac_close_pf: "0.61", ac_hold_va: "19", ac_hold_pf: "0.38", operating_range: "50 Hz 0.8 ... 1.1 x Uc; 60 Hz 0.85 ... 1.1 x Uc", page: 164, printed: "3/36"}
+  - {size: S3, types: [3RT2045, 3RT2046, 3RT2047], coil: "AC", version: "AC operation, 50/60 Hz, standard version (3RT204.-.A..., 3RT204.-.C...)",
+     ac_close_va: "348/296", ac_close_pf: "0.62/0.55", ac_hold_va: "25/18", ac_hold_pf: "0.35/0.41", operating_range: "50 Hz 0.8 ... 1.1 x Uc; 60 Hz 0.85 ... 1.1 x Uc", page: 164, printed: "3/36"}
+  - {size: S3, types: [3RT2045, 3RT2046, 3RT2047], coil: "AC/DC", version: "3RT204.-.N.3. (AC/DC)",
+     acdc_ac_close_va: "163", acdc_ac_close_pf: "0.95", acdc_ac_hold_va: "3.1", acdc_ac_hold_pf: "0.95", acdc_dc_close_va: "76", acdc_dc_hold_va: "1.8",
+     operating_range: "0.8 ... 1.1 x Uc",
+     pickup_note: "footnote 2: increased pickup currents (6.5 A on average) during the first 150 ms; for direct control by PLC Siemens recommends the 3RT204.-.KB4. coupling contactors, one per PLC output with 2 A",
+     page: 164, printed: "3/36"}
+  - {size: S3, types: [3RT2045, 3RT2046, 3RT2047], coil: "AC/DC", version: "3RT204.-.S.3. (AC/DC, PLC control input)",
+     acdc_ac_close_va: "163", acdc_ac_close_pf: "0.95", acdc_ac_hold_va: "2.4", acdc_ac_hold_pf: "0.7", acdc_dc_close_va: "130", acdc_dc_hold_va: "1.8",
+     operating_range: "0.8 ... 1.1 x Uc", spans: "closing AC 163 VA, p.f. 0.95 and holding DC 1.8 VA are printed once for N.3 and S.3",
+     plc_input: "Type 1, 24 V DC, 17 ... 30 V DC, <= 30 mA", page: 164, printed: "3/36"}
+  - {size: S3, types: [3RT2045, 3RT2046], coil: "DC coupling", version: "Coupling contactors 3RT204.-.KB4. (ordered only for 3RT2045, 3RT2046: p.184)",
+     dc_close_w: 25, dc_hold_w: 0.9, operating_range: "0.8 ... 1.2 x Uc",
+     pickup_note: "footnote 3: increased pickup currents (2.1 A on average) during the first 150 ms", page: 164, printed: "3/36"}

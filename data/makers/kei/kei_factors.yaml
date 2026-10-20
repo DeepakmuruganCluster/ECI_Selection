@@ -1,0 +1,37 @@
+# KEI "Rating factors (XLPE)", PDF p.33 right half (printed 64), and short-circuit ratings, PDF p.49 left half (printed 95).
+#   ground / duct : Table 1 "Rating for variations in ground temperature for cables laid directly in ground and in ducts"
+#   air           : Table 2 "Rating Factors for Variation in Ambient Air Temperature" (25 … 55 °C; "Max Ambient Air temperature 55 °C")
+#   group_ground  : Table 3 "Rating Factors of groups of cables laid directly in Ground in Horizontal formation",
+#                   axial spacing touching / 15 / 30 / 45 cm, 2 … 6 cables
+#   isc1          : "Short Circuit Rating for 1 second duration", XLPE insulated, COPPER (kA); p.49 gives
+#                   Isc(t) = k·A/√t with k = 0.143 for Cu conductor & XLPE insulation.
+# The tray / rack grouping tables on PDF p.20 belong to KEI's HT-cable section (3.3 … 33 kV): NOT used (decision C-3).
+
+source:
+  ref: KEI-TH-2023
+  section: "Rating factors (XLPE) Tables 1–3 (PDF p.33); short-circuit ratings (PDF p.49)"
+
+rows:
+  - {kind: ground, factors: {15: 1.12, 20: 1.08, 25: 1.03, 30: 1.00, 35: 0.96, 40: 0.91, 45: 0.87, 50: 0.82}, page: 33}
+  - {kind: duct,   factors: {15: 1.12, 20: 1.08, 25: 1.03, 30: 1.00, 35: 0.96, 40: 0.91, 45: 0.87, 50: 0.82}, page: 33}
+  - {kind: air,    factors: {25: 1.14, 30: 1.10, 35: 1.04, 40: 1.00, 45: 0.95, 50: 0.90, 55: 0.84}, page: 33}
+  - {kind: group_ground, cables: 2, factors: {touching: 0.79, 150: 0.82, 300: 0.87, 450: 0.90}, page: 33}
+  - {kind: group_ground, cables: 3, factors: {touching: 0.69, 150: 0.75, 300: 0.79, 450: 0.83}, page: 33}
+  - {kind: group_ground, cables: 4, factors: {touching: 0.62, 150: 0.69, 300: 0.74, 450: 0.79}, page: 33}
+  - {kind: group_ground, cables: 5, factors: {touching: 0.58, 150: 0.65, 300: 0.72, 450: 0.76}, page: 33}
+  - {kind: group_ground, cables: 6, factors: {touching: 0.54, 150: 0.61, 300: 0.69, 450: 0.75}, page: 33}
+  - {kind: isc1, size: 4,   value: 0.572, page: 49}
+  - {kind: isc1, size: 6,   value: 0.86,  page: 49}
+  - {kind: isc1, size: 10,  value: 1.43,  page: 49}
+  - {kind: isc1, size: 16,  value: 2.29,  page: 49}
+  - {kind: isc1, size: 25,  value: 3.58,  page: 49}
+  - {kind: isc1, size: 35,  value: 5.01,  page: 49}
+  - {kind: isc1, size: 50,  value: 7.15,  page: 49}
+  - {kind: isc1, size: 70,  value: 10.0,  page: 49}
+  - {kind: isc1, size: 95,  value: 13.6,  page: 49}
+  - {kind: isc1, size: 120, value: 17.2,  page: 49}
+  - {kind: isc1, size: 150, value: 21.5,  page: 49}
+  - {kind: isc1, size: 185, value: 26.5,  page: 49}
+  - {kind: isc1, size: 240, value: 34.3,  page: 49}
+  - {kind: isc1, size: 300, value: 42.9,  page: 49}
+  - {kind: isc1, size: 400, value: 57.2,  page: 49}

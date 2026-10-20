@@ -1,0 +1,12 @@
+# SENTRON 7KM PAC3220: full order numbers by supply version (owner 2026-10-20, RFQ part 1: complete the meter number).
+# Catalog LV 10 · 2026, "7KM PAC measuring devices — Basic units", PDF page 834 (printed 10/32).
+# Transformer measurement, screw terminals, Modbus TCP, without MID, without PTB; the 7KM9300-0AE02-0AA0 PROFINET
+# module (SIE-PAC3220 p.10) is an accessory of every PAC3220.
+
+source:
+  ref: SIE-LV10-2026
+  section: "Measuring devices — 7KM PAC measuring devices, basic units (selection table and 'External auxiliary voltage' row)"
+
+rows:
+  - {item: article_ac_dc, value: 7KM3220-0BA01-1DA0, supply: "AC/DC wide-range power supply unit: AC 100 … 250 V ±10 %, DC 100 … 250 V ±10 % (column 7KM3220-0..)", page: 834}
+  - {item: article_dc_24_60, value: 7KM3220-1BA01-1EA0, supply: "DC power supply unit with extra-low voltage: DC 24 … 60 V ±20 % (column 7KM3220-1..)", page: 834}

@@ -1,0 +1,26 @@
+# Siemens LV HRC fuse links 3NA, operational class gG: the size each fuse link is (owner 2026-10-20, RFQ part 2: the
+# drive fuses need a holder of their size). Catalog LV 10 · 2026, PDF p.570 (printed 7/46), "LV HRC fuse links,
+# operational class gG, with front indicator", non-insulated grip lugs. Only the rows read on the page image.
+
+source:
+  ref: SIE-LV10-2026
+  section: "LV HRC fuse links gG (7/46): size 000 column (21 mm), 500 V / 250 V rows"
+
+rows:
+  - {article: 3NA3803, size: "000", in_a: 10, un: "500 V AC / 250 V DC", page: 570}
+  - {article: 3NA3805, size: "000", in_a: 16, un: "500 V AC / 250 V DC", page: 570}
+  - {article: 3NA3807, size: "000", in_a: 20, un: "500 V AC / 250 V DC", page: 570}
+  - {article: 3NA3810, size: "000", in_a: 25, un: "500 V AC / 250 V DC", page: 570}
+  - {article: 3NA3812, size: "000", in_a: 32, un: "500 V AC / 250 V DC", page: 570}
+  - {article: 3NA3814, size: "000", in_a: 35, un: "500 V AC / 250 V DC", page: 570}
+  - {article: 3NA3817, size: "000", in_a: 40, un: "500 V AC / 250 V DC", page: 570}
+  - {article: 3NA3820, size: "000", in_a: 50, un: "500 V AC / 250 V DC", page: 570}
+  - {article: 3NA3822, size: "000", in_a: 63, un: "500 V AC / 250 V DC", page: 570}
+  - {article: 3NA3824, size: "000", in_a: 80, un: "500 V AC / 250 V DC", page: 570}
+  - {article: 3NA3830, size: "000", in_a: 100, un: "500 V AC / 250 V DC", page: 570}
+  # PDF p.572 (printed 7/48), continued: 125 / 160 A in the size 00 column (500 V / 250 V); 200 / 224 A in the size 1
+  # 47.2 mm column (500 V / 440 V). Sizes 2 and up are not transcribed.
+  - {article: 3NA3832, size: "00", in_a: 125, un: "500 V AC / 250 V DC", page: 572}
+  - {article: 3NA3836, size: "00", in_a: 160, un: "500 V AC / 250 V DC", page: 572}
+  - {article: 3NA3140, size: "1", in_a: 200, un: "500 V AC / 440 V DC", page: 572}
+  - {article: 3NA3142, size: "1", in_a: 224, un: "500 V AC / 440 V DC", page: 572}

@@ -1,0 +1,42 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 3.5
+title: Incomer MCCB (Siemens 3VA1, TM240)
+what_it_does: >
+  Picks the Siemens SENTRON 3VA1 moulded-case circuit breaker with the TM240 trip unit (adjustable overload and
+  adjustable short-circuit setting) — the incomer a client asks as "3VA, adjustable thermal-magnetic". It takes the
+  smallest rated current that carries the load × the incomer factor, the smallest frame with that rating and the
+  lowest breaking-capacity class that breaks the fault level, and builds the order number from the Siemens catalogue
+  LV 10 · 2026. A number is "confirmed" only when its Siemens data sheet is held; otherwise it says so.
+
+how_to_check:
+  - "Ratings per frame: open PDF page 200 (printed 2/26). In the 630 A row there are marks under 41AV3 (3VA14) and 51AV3 (3VA15), code 63. The tool takes the smaller frame, 3VA14 (owner 2026-10-20)."
+  - "Breaking capacity: page 183 (printed 2/9), row '380 … 415 V' under Icu: the 3VA14 columns S M H C read 36, 55, 70, 110 kA. At 55 kA the letter is M, code 5 on page 201 (printed 2/27)."
+  - "Order number: page 201 — TM240 ATAM is letter F, 'without neutral conductor protection' E, 3-pole 3, nut keeper kit 2. Press 'Try it: BIO/UF incomer': it must give 3VA1463-5EF32-0AA0, marked 'confirm with its data sheet' until that sheet is held."
+  - "Data sheet: the held sheet 3VA1563-5EF32-0AA0 (page 1) shows Ir 440 … 630 A and Ii 3150 … 6300 A. Press 'Try it: frame 3VA15': the tool must give that number as confirmed, with these settings."
+  - "Page numbers: the pictures are PDF pages; Siemens prints chapter/page numbers (e.g. 2/26) at the bottom."
+
+spot_checks:
+  - {label: "BIO/UF incomer: 503 A required at 55 kA (pp.200, 183, 201: 3VA1463-5EF32-0AA0)", tab: mccb_3va, inputs: {ib_a: 335.35, margin: 1.5, fault_ka: 55, ambient_c: 40}}
+  - {label: "Frame 3VA15 (data sheet: 3VA1563-5EF32-0AA0, Ir 440 … 630 A)", tab: mccb_3va, inputs: {ib_a: 335.35, margin: 1.5, fault_ka: 55, ambient_c: 40, frame: 3VA15}}
+  - {label: "3VA14 at 55 °C (no derating held: refused)", tab: mccb_3va, inputs: {ib_a: 335.35, margin: 1.5, fault_ka: 55, ambient_c: 55}}
+
+decisions:
+  - id: V3A-1
+    question: "For a 630 A incomer two frames fit: 3VA14 (630 A frame, smaller, cheaper) or 3VA15 (1000 A frame, room to raise the rating). Which does the tool take?"
+    options: {smallest: "The smallest frame that fits (3VA14)", headroom: "The next frame up (3VA15)"}
+    recommended: smallest
+    answered: "owner 2026-10-20: the smallest frame that fits"
+  - id: V3A-2
+    question: "The catalogue builds 3VA order numbers from a structure and says to confirm the configuration. Use a built number with a warning until its data sheet is saved, or refuse it?"
+    options: {warn: "Use it, marked 'confirm with its data sheet'", refuse: "Refuse until the data sheet is held"}
+    recommended: warn
+
+fields:
+  ib_a: "Load current Ib (A)"
+  fault_ka: "Fault level at the breaker (kA)"
+  ambient_c: "Temperature inside the panel (°C)"
+  margin: "Incomer factor (In ≥ Ib × factor)"
+  frame: "Frame (3VA11 … 3VA15) — empty: the smallest that fits"
+
+data_files: [data/makers/siemens/3va1_line_structure.yaml, data/makers/siemens/3va1_ds_3VA1563-5EF32.yaml]

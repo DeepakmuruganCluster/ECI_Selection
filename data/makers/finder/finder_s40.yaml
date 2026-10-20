@@ -1,0 +1,17 @@
+# Finder Series 40 PCB/plug-in relays (catalogue S40EN, VIII-2026) — bistable versions 40.xx.6.
+# Transcribed 2026-10-11, checked against the page images. page = PDF page; printed = PDF page (offset 0).
+# Kept as a REJECTED latching candidate, with the evidence: in DC operation the relay is reset by
+# reversing the coil current through a limiting resistor RDC via a two-pole RESET switch (p.10). A single
+# 24 V DC PLC output (current-sourcing, common 0 V) cannot do that without extra relays, and the full
+# ordering code of a bistable version is not printed (it is assembled from the ordering scheme, p.5).
+
+source:
+  ref: FINDER-S40
+  section: "40.xx.6 bistable (p.4), ordering scheme (p.5), bistable coil data (p.9), bistable wiring (p.10)"
+  printed_page_offset: 0
+
+rows:
+  - {kind: rejected, article: "40.31.6 / 40.51.6 / 40.52.6 / 40.61.6", function: bistable_single_coil, text: "Bistable versions of the types 40.31, 40.51, 40.52 and 40.61 - Bistable (single coil)", reason: "single-coil bistable: reset needs the coil current reversed through RDC (two-pole reset switch, p.10)", page: 4}
+  - {kind: rejected_coil, coil_code: "6.024", un_v: 24, umin_v: 19.2, umax_v: 26.4, r_ohm: 520, i_ma: 40, r_dc_ohm: 910, page: 9}
+  - {kind: rejected_wiring, text: "On momentary closure of the RESET switch the relay is demagnetised through limiting resistor (RDC) and the contacts return to the reset position.", min_impulse_ms: 20, page: 10}
+  - {kind: rejected_code, text: "40.61 Bistable 1 (AgNi) - 4 (AgSnO2) 0 0 0", page: 5}

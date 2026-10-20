@@ -1,0 +1,87 @@
+# Rishabh RISH LTRP series (PU resin, busbar) metering CTs, data sheet REV 08 (version LTRP/0625/00).
+# One row per printed (VA, class) pair: each size table prints Primary Current (A) | VA | Class | VA | Class.
+# A '-' pair has no row. LTRP 1 prints 80 A twice (5 VA cl 3 / 2.5 VA cl 1, and - / 1 VA cl 0.5): all kept.
+# Window = primary aperture from the dimension drawing on the same page (LTRP 1 round Ø20, the others
+# rectangular width × height in mm). The window figures are drawn (vector graphics, not text): read from
+# the page images; scripts/verify_metering.py cannot re-extract them (see VERIFY.md).
+# Secondary current, Um and ambient: rishabh_ltrp_conditions.yaml (p.2). page = PDF page = printed 'Page No.'.
+# The PDF also carries hidden text placed outside the page (negative x): not part of the printed table.
+
+source:
+  ref: RISH-LTRP
+  section: "size tables and dimension drawings LTRP 1 … LTRP 9 (pp. 3–11)"
+  printed_page_offset: 0
+
+rows:
+  - {size: "LTRP 1", primary_a: 50, va: 5, class: "3", window: round, window_d_mm: 20, page: 3}
+  - {size: "LTRP 1", primary_a: 50, va: 1, class: "1", window: round, window_d_mm: 20, page: 3}
+  - {size: "LTRP 1", primary_a: 60, va: 5, class: "3", window: round, window_d_mm: 20, page: 3}
+  - {size: "LTRP 1", primary_a: 60, va: 1.5, class: "1", window: round, window_d_mm: 20, page: 3}
+  - {size: "LTRP 1", primary_a: 75, va: 5, class: "3", window: round, window_d_mm: 20, page: 3}
+  - {size: "LTRP 1", primary_a: 75, va: 2.5, class: "1", window: round, window_d_mm: 20, page: 3}
+  - {size: "LTRP 1", primary_a: 80, va: 5, class: "3", window: round, window_d_mm: 20, page: 3}
+  - {size: "LTRP 1", primary_a: 80, va: 2.5, class: "1", window: round, window_d_mm: 20, page: 3}
+  - {size: "LTRP 1", primary_a: 80, va: 1, class: "0.5", window: round, window_d_mm: 20, page: 3}
+  - {size: "LTRP 1", primary_a: 100, va: 5, class: "1", window: round, window_d_mm: 20, page: 3}
+  - {size: "LTRP 1", primary_a: 100, va: 2.5, class: "0.5", window: round, window_d_mm: 20, page: 3}
+  - {size: "LTRP 1", primary_a: 150, va: 5, class: "1", window: round, window_d_mm: 20, page: 3}
+  - {size: "LTRP 1", primary_a: 150, va: 3.75, class: "0.5", window: round, window_d_mm: 20, page: 3}
+  - {size: "LTRP 2", primary_a: 50, va: 2.5, class: "3", window: rect, window_w_mm: 35, window_h_mm: 20, page: 4}
+  - {size: "LTRP 2", primary_a: 60, va: 2.5, class: "3", window: rect, window_w_mm: 35, window_h_mm: 20, page: 4}
+  - {size: "LTRP 2", primary_a: 75, va: 1.5, class: "1", window: rect, window_w_mm: 35, window_h_mm: 20, page: 4}
+  - {size: "LTRP 2", primary_a: 80, va: 1.75, class: "1", window: rect, window_w_mm: 35, window_h_mm: 20, page: 4}
+  - {size: "LTRP 2", primary_a: 100, va: 2.5, class: "1", window: rect, window_w_mm: 35, window_h_mm: 20, page: 4}
+  - {size: "LTRP 2", primary_a: 150, va: 5, class: "1", window: rect, window_w_mm: 35, window_h_mm: 20, page: 4}
+  - {size: "LTRP 2", primary_a: 150, va: 1.75, class: "0.5", window: rect, window_w_mm: 35, window_h_mm: 20, page: 4}
+  - {size: "LTRP 2", primary_a: 200, va: 6.25, class: "1", window: rect, window_w_mm: 35, window_h_mm: 20, page: 4}
+  - {size: "LTRP 2", primary_a: 200, va: 3.75, class: "0.5", window: rect, window_w_mm: 35, window_h_mm: 20, page: 4}
+  - {size: "LTRP 2", primary_a: 250, va: 7.5, class: "1", window: rect, window_w_mm: 35, window_h_mm: 20, page: 4}
+  - {size: "LTRP 2", primary_a: 250, va: 5, class: "0.5", window: rect, window_w_mm: 35, window_h_mm: 20, page: 4}
+  - {size: "LTRP 3", primary_a: 250, va: 6.25, class: "1", window: rect, window_w_mm: 55, window_h_mm: 15, page: 5}
+  - {size: "LTRP 3", primary_a: 250, va: 3.75, class: "0.5", window: rect, window_w_mm: 55, window_h_mm: 15, page: 5}
+  - {size: "LTRP 3", primary_a: 300, va: 7.5, class: "1", window: rect, window_w_mm: 55, window_h_mm: 15, page: 5}
+  - {size: "LTRP 3", primary_a: 300, va: 5, class: "0.5", window: rect, window_w_mm: 55, window_h_mm: 15, page: 5}
+  - {size: "LTRP 3", primary_a: 400, va: 10, class: "1", window: rect, window_w_mm: 55, window_h_mm: 15, page: 5}
+  - {size: "LTRP 3", primary_a: 400, va: 7.5, class: "0.5", window: rect, window_w_mm: 55, window_h_mm: 15, page: 5}
+  - {size: "LTRP 4", primary_a: 400, va: 7.5, class: "1", window: rect, window_w_mm: 65, window_h_mm: 35, page: 6}
+  - {size: "LTRP 4", primary_a: 400, va: 5, class: "0.5", window: rect, window_w_mm: 65, window_h_mm: 35, page: 6}
+  - {size: "LTRP 4", primary_a: 500, va: 7.5, class: "1", window: rect, window_w_mm: 65, window_h_mm: 35, page: 6}
+  - {size: "LTRP 4", primary_a: 500, va: 5, class: "0.5", window: rect, window_w_mm: 65, window_h_mm: 35, page: 6}
+  - {size: "LTRP 4", primary_a: 630, va: 10, class: "1", window: rect, window_w_mm: 65, window_h_mm: 35, page: 6}
+  - {size: "LTRP 4", primary_a: 630, va: 7.5, class: "0.5", window: rect, window_w_mm: 65, window_h_mm: 35, page: 6}
+  - {size: "LTRP 4", primary_a: 800, va: 10, class: "1", window: rect, window_w_mm: 65, window_h_mm: 35, page: 6}
+  - {size: "LTRP 4", primary_a: 800, va: 7.5, class: "0.5", window: rect, window_w_mm: 65, window_h_mm: 35, page: 6}
+  - {size: "LTRP 4", primary_a: 1000, va: 10, class: "1", window: rect, window_w_mm: 65, window_h_mm: 35, page: 6}
+  - {size: "LTRP 4", primary_a: 1000, va: 7.5, class: "0.5", window: rect, window_w_mm: 65, window_h_mm: 35, page: 6}
+  - {size: "LTRP 5", primary_a: 1000, va: 10, class: "1", window: rect, window_w_mm: 85, window_h_mm: 55, page: 7}
+  - {size: "LTRP 5", primary_a: 1000, va: 7.5, class: "0.5", window: rect, window_w_mm: 85, window_h_mm: 55, page: 7}
+  - {size: "LTRP 5", primary_a: 1200, va: 12.5, class: "1", window: rect, window_w_mm: 85, window_h_mm: 55, page: 7}
+  - {size: "LTRP 5", primary_a: 1200, va: 10, class: "0.5", window: rect, window_w_mm: 85, window_h_mm: 55, page: 7}
+  - {size: "LTRP 5", primary_a: 1250, va: 12.5, class: "1", window: rect, window_w_mm: 85, window_h_mm: 55, page: 7}
+  - {size: "LTRP 5", primary_a: 1250, va: 10, class: "0.5", window: rect, window_w_mm: 85, window_h_mm: 55, page: 7}
+  - {size: "LTRP 6", primary_a: 1500, va: 10, class: "1", window: rect, window_w_mm: 105, window_h_mm: 35, page: 8}
+  - {size: "LTRP 6", primary_a: 1500, va: 10, class: "0.5", window: rect, window_w_mm: 105, window_h_mm: 35, page: 8}
+  - {size: "LTRP 6", primary_a: 1600, va: 12.5, class: "1", window: rect, window_w_mm: 105, window_h_mm: 35, page: 8}
+  - {size: "LTRP 6", primary_a: 1600, va: 12.5, class: "0.5", window: rect, window_w_mm: 105, window_h_mm: 35, page: 8}
+  - {size: "LTRP 6", primary_a: 2000, va: 20, class: "1", window: rect, window_w_mm: 105, window_h_mm: 35, page: 8}
+  - {size: "LTRP 6", primary_a: 2000, va: 15, class: "0.5", window: rect, window_w_mm: 105, window_h_mm: 35, page: 8}
+  - {size: "LTRP 6", primary_a: 2500, va: 20, class: "1", window: rect, window_w_mm: 105, window_h_mm: 35, page: 8}
+  - {size: "LTRP 6", primary_a: 2500, va: 15, class: "0.5", window: rect, window_w_mm: 105, window_h_mm: 35, page: 8}
+  - {size: "LTRP 7", primary_a: 2000, va: 15, class: "1", window: rect, window_w_mm: 125, window_h_mm: 95, page: 9}
+  - {size: "LTRP 7", primary_a: 2000, va: 10, class: "0.5", window: rect, window_w_mm: 125, window_h_mm: 95, page: 9}
+  - {size: "LTRP 7", primary_a: 3000, va: 25, class: "1", window: rect, window_w_mm: 125, window_h_mm: 95, page: 9}
+  - {size: "LTRP 7", primary_a: 3000, va: 20, class: "0.5", window: rect, window_w_mm: 125, window_h_mm: 95, page: 9}
+  - {size: "LTRP 7", primary_a: 3200, va: 25, class: "1", window: rect, window_w_mm: 125, window_h_mm: 95, page: 9}
+  - {size: "LTRP 7", primary_a: 3200, va: 20, class: "0.5", window: rect, window_w_mm: 125, window_h_mm: 95, page: 9}
+  - {size: "LTRP 8", primary_a: 3000, va: 20, class: "1", window: rect, window_w_mm: 155, window_h_mm: 95, page: 10}
+  - {size: "LTRP 8", primary_a: 3000, va: 15, class: "0.5", window: rect, window_w_mm: 155, window_h_mm: 95, page: 10}
+  - {size: "LTRP 8", primary_a: 3200, va: 20, class: "1", window: rect, window_w_mm: 155, window_h_mm: 95, page: 10}
+  - {size: "LTRP 8", primary_a: 3200, va: 15, class: "0.5", window: rect, window_w_mm: 155, window_h_mm: 95, page: 10}
+  - {size: "LTRP 8", primary_a: 4000, va: 30, class: "1", window: rect, window_w_mm: 155, window_h_mm: 95, page: 10}
+  - {size: "LTRP 8", primary_a: 4000, va: 25, class: "0.5", window: rect, window_w_mm: 155, window_h_mm: 95, page: 10}
+  - {size: "LTRP 9", primary_a: 5000, va: 30, class: "1", window: rect, window_w_mm: 225, window_h_mm: 95, page: 11}
+  - {size: "LTRP 9", primary_a: 5000, va: 30, class: "0.5", window: rect, window_w_mm: 225, window_h_mm: 95, page: 11}
+  - {size: "LTRP 9", primary_a: 6000, va: 30, class: "1", window: rect, window_w_mm: 225, window_h_mm: 95, page: 11}
+  - {size: "LTRP 9", primary_a: 6000, va: 30, class: "0.5", window: rect, window_w_mm: 225, window_h_mm: 95, page: 11}
+  - {size: "LTRP 9", primary_a: 7500, va: 30, class: "1", window: rect, window_w_mm: 225, window_h_mm: 95, page: 11}
+  - {size: "LTRP 9", primary_a: 7500, va: 30, class: "0.5", window: rect, window_w_mm: 225, window_h_mm: 95, page: 11}

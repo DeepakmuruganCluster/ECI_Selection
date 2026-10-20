@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+.pytest_cache/
+# 2026-10-20 git set-up: large documents stay out of git (each file's SHA-256 is in sources/register.yaml)
+sources/pdf/
+sources/inbox/
+sources/excerpts/
+# accounts and sessions (password hashes)
+auth/
+# the app's runtime data
+designs/
+rfq/
+standards/
+out/
+*.zip
+.DS_Store

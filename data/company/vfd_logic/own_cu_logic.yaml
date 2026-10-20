@@ -1,0 +1,31 @@
+# Control Unit selection logic — company flowchart (ECI-VFD-Selection "Power unit.pdf", which shows the
+# control-unit logic; the version in "Control_unit.pdf" lacks the SBC branch and SDI — owner decision V-5).
+# Every leaf of the flowchart, read from the rendered page (1 page).
+#   path: encoder (motor encoder for position/speed feedback) → advanced (SS1/SLS/SSM/SDI) → sbc → sto → fieldbus
+#   fieldbus: none | modbus | profibus | profinet (= "Profinet / Ethernet IP") ; anything else → "part not available"
+
+source:
+  ref: OWN-CU-LOGIC-ALT
+  section: "Control Unit selection logic (flowchart)"
+
+rows:
+  - {branch: encoder,  fieldbus: none,     series: "CU250S-2",      page: 1}
+  - {branch: encoder,  fieldbus: modbus,   series: "CU250S-2",      page: 1}
+  - {branch: encoder,  fieldbus: profibus, series: "CU250S-2 DP",   page: 1}
+  - {branch: encoder,  fieldbus: profinet, series: "CU250S-2 PN",   page: 1}
+  - {branch: sbc,      fieldbus: none,     series: "CU250S-2",      page: 1}
+  - {branch: sbc,      fieldbus: modbus,   series: "CU250S-2",      page: 1}
+  - {branch: sbc,      fieldbus: profibus, series: "CU250S-2 DP",   page: 1}
+  - {branch: sbc,      fieldbus: profinet, series: "CU250S-2 PN",   page: 1}
+  - {branch: advanced, fieldbus: none,     series: "CU240E-2 F",    page: 1}
+  - {branch: advanced, fieldbus: modbus,   series: "CU240E-2 F",    page: 1}
+  - {branch: advanced, fieldbus: profibus, series: "CU240E-2 DP-F", page: 1}
+  - {branch: advanced, fieldbus: profinet, series: "CU240E-2 PN-F", page: 1}
+  - {branch: sto,      fieldbus: none,     series: "CU240E-2",      page: 1}
+  - {branch: sto,      fieldbus: modbus,   series: "CU240E-2",      page: 1}
+  - {branch: sto,      fieldbus: profibus, series: "CU240E-2 DP",   page: 1}
+  - {branch: sto,      fieldbus: profinet, series: "CU240E-2 PN",   page: 1}
+  - {branch: none,     fieldbus: none,     series: "CU230P-2 HVAC", page: 1}
+  - {branch: none,     fieldbus: modbus,   series: "CU230P-2 HVAC", page: 1}
+  - {branch: none,     fieldbus: profibus, series: "CU230P-2 DP",   page: 1}
+  - {branch: none,     fieldbus: profinet, series: "CU230P-2 PN",   page: 1}

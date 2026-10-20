@@ -1,0 +1,64 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 12
+title: Panel assembly (whole load list)
+what_it_does: >
+  Takes a whole load list and runs every line through the components in order: motor
+  current, then the starter (DOL starter or drive with its Siemens-listed protection),
+  then the motor cable. It adds up the drive losses for the panel heat and asks the
+  enclosure component how to cool the panel. It has no data of its own. Everything
+  shown comes from a component, and anything a component refused or warned about
+  appears as an open point with its tag. Parts whose components are not built yet
+  (incomer, busbar, soft starters, control power, auxiliary switchgear) are listed as
+  not selected.
+
+how_to_check:
+  - "Press 'Try it: one DOL and one drive'. The DOL line must show the same MPCB and contactor as the DOL starter tab gives for 15.5 A IE3 (3RV2021-4BA10 + 3RT2027-1AP00)."
+  - "The drive line must show the same drive as the VFD tab gives for 37 kW at 45 °C (6SL3210-1PE27-5UL0) and the fuse 3NA3830."
+  - "The heat must be 1090 W (the drive, PM240-2 manual page 103) + 40 W (control unit, page 34) = 1130 W."
+  - "Press 'Try it: a 3.7 kW motor'. It must appear as an open point (refused by the motor current component, because 3.7 kW is not in Siemens' table) and must not get any starter."
+  - "Every open point names the component and rule that raised it. Look one up on that component's review page if it isn't clear."
+
+spot_checks:
+  - {label: "one DOL and one drive (P12)", tab: panel, inputs: {load_list: "M1 7.5 DOL flc=15.5 cable=50\nF1 37 VFD flc=66 cable=50", fault_ka: 50, panel_internal_c: 45, motor_pf: 0.85, cable_ambient_c: 40, site_ambient_c: 35, altitude_m: 0}}
+  - {label: "a 3.7 kW motor (refused)", tab: panel, inputs: {load_list: "M3 3.7 DOL cable=30", fault_ka: 50, panel_internal_c: 40, motor_pf: 0.85, cable_ambient_c: 40}}
+  - {label: "two drives, one standby, 250 m cable", tab: panel, inputs: {load_list: "P1 37 VFD flc=66 cable=250 qty=2 standby=1", fault_ka: 50, panel_internal_c: 45, motor_pf: 0.85, cable_ambient_c: 40, site_ambient_c: 35, altitude_m: 0}}
+
+decisions:
+  - id: P-1
+    question: "DOL starters (MPCB, contactor) have no loss figures in a source we hold, so the panel heat is a lower bound. What should the tool do until the Siemens catalogue IC 10 is in?"
+    options: {warn: "Show the heat as incomplete (warning) and list the starters without losses", block: "Refuse to size the cooling until every loss is sourced"}
+    recommended: warn
+  - id: P-2
+    question: "The drive Control Unit's loss is given by Siemens as 'less than 40 W'. Count 40 W per installed drive?"
+    options: {"yes": "Yes, 40 W per installed drive (upper bound)", running: "Only for running drives"}
+    recommended: "yes"
+  - id: P-3
+    question: "Single-phase loads in a load list: which voltage when v= is not written on the line?"
+    options: {"230": "230 V (line to neutral of a 400 V system)", require: "Always require v= on single-phase lines"}
+    recommended: "230"
+
+fields:
+  load_list: {label: "Load list (one load per line)", textarea: true, help: "TAG kW DOL|VFD|SS|HEATER cable=m [flc=A] [qty=n standby=n] [ph=1] [v=V] [duty=heavy]"}
+  fault_ka: "Fault level at the feeders (kA)"
+  panel_internal_c: "Temperature inside the panel (°C)"
+  motor_pf: "Motor power factor (running)"
+  cable_ambient_c: "Cable route temperature (°C)"
+  site_ambient_c: "Air outside the panel (°C)"
+  cable_installation: {label: "Cables installed", options: ["air", "ground", "duct"]}
+  cable_make: {label: "Cable make", options: ["polycab", "kei"]}
+  voltage_v: "Voltage (V)"
+  coil: {label: "Contactor coil", options: ["230VAC", "24VDC"]}
+  ie_class: {label: "Motor efficiency class", options: ["IE3", "IE4", "IE2", "IE1"]}
+  vfd_protection: {label: "Drive protection", options: ["fuse", "msp", "breaker"]}
+  line_reactor_up_to_kw: "Client: line reactor up to (kW)"
+  altitude_m: "Site altitude (m)"
+  enclosure_area_m2: "Enclosure cooling surface A (m²)"
+  doors: "Number of doors (for fans, door switches, lights)"
+  fans_per_door: "Fans per door (client)"
+  fan_size_in: {label: "Fan size (inch)", options: [8, 10]}
+  fan_supply_v: "Fan supply voltage (V)"
+  cu_encoder: {label: "Drives: motor encoder feedback", options: [false, true]}
+  cu_safety: {label: "Drives: safety functions", options: ["none", "sto", "advanced"]}
+  cu_fieldbus: {label: "Drives: fieldbus", options: ["profinet", "profibus", "modbus", "none"]}
+  mc_copy_parameters: {label: "Drives: copy parameters between drives (memory card)", options: [false, true]}

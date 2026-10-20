@@ -1,0 +1,14 @@
+# Finder Series 20 modular step relays 16 A (catalogue S20EN, IV-2026). Transcribed 2026-10-11.
+# page = PDF page; printed = PDF page (offset 0).
+# REJECTED latching candidate: a step (impulse) relay changes state on every impulse (switching
+# sequences, p.4); a PLC output cannot command a known ON/OFF state, and the coil may be energised for
+# at most 1 h (p.3), so it cannot follow a continuously held PLC output either.
+
+source:
+  ref: FINDER-S20
+  section: "20.21/20.22/20.23 (p.3), ordering and DC coil data (p.4)"
+  printed_page_offset: 0
+
+rows:
+  - {kind: rejected, article: "20.2x.9.024.4000", function: step_toggle, text: "Minimum/Maximum impulse duration 0.1 s/1 h (according to EN 60669)", reason: "step relay: toggles on each impulse; coil not for continuous energisation", page: 3}
+  - {kind: rejected_coil, coil_code: "9.024", un_v: 24, umin_v: 21.6, umax_v: 26.4, r_ohm: 105, i_ma: 230, page: 4}

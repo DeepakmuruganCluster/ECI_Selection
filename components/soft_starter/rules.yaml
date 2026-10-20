@@ -1,0 +1,29 @@
+# Soft starter rules. Authority: MFR = manufacturer document, RULE = our decision (SIGNOFF.md).
+# Source: Siemens Catalog IC 10 · 2026 (SIE-IC10-2026), chapter 6, 3RW52 General Performance soft starters.
+
+component: soft_starter
+
+rules:
+  R-SS-01: {authority: MFR,  text: "Scope: 3-phase motor, standard (inline) circuit, operational voltage 200 … 480 V (version ..4) or 481 … 600 V (version ..5) (p. 6/58). Inside-delta, other voltages, 1-phase or resistive loads: cannot select."}
+  R-SS-02: {authority: MFR,  text: "The soft starter is selected on the motor's rated operational current, never on kW: the kW in the ordering data are rough guide values for Class 10 (p. 6/8). The guide kW at 400 V is shown for information only."}
+  R-SS-03: {authority: MFR,  text: "Rated motor current IM for the starting class (10A, 10E, 20E) at the ambient temperature, individual mounting (pp. 6/59–6/62) must be ≥ the FLC. Ambient between the 40 / 50 / 60 °C columns: the next higher column (more conservative); at or below 40 °C: the 40 °C column; above 60 °C: cannot select (approved −25 … +60 °C, p. 6/13)."}
+  R-SS-04: {authority: MFR,  text: "The FLC must lie within the soft starter's adjustable rated motor current IM (minimum / maximum, inline). The soft starter's motor protection is set to the FLC (p. 6/12: activate it and set it to the motor's rated current)."}
+  R-SS-05: {authority: RULE, text: "Choice: the smallest 3RW52 type that passes R-SS-03 and R-SS-04 (and R-SS-07 when a starting frequency is given). None: cannot select; nothing is substituted."}
+  R-SS-06: {authority: RULE, text: "Starting class: the input starting_class (10A, 10E, 20E) wins; otherwise duty normal → Class 10A, heavy → Class 20E (decision SS-1); neither given → Class 10A with a note (p. 6/8: the ordering data are for Class 10)."}
+  R-SS-07: {authority: MFR,  text: "Starting frequency (optional, all three of starts per hour, starting current ≥ 100 % IM — read in the 300 % column up to 300 %, the 350 % column up to 350 % —, startup time): permissible starts/h of the class at ON period 70 % (pp. 6/59–6/62) must be ≥ the starts per hour; a startup time between two tabulated times uses the longer one; longer than the longest or a starting current above 350 %: cannot select. Not given: not checked (info, with the table's value at 300 % and the class's shorter time)."}
+  R-SS-08: {authority: MFR,  text: "Short-circuit protection is required (the soft starter has none, p. 6/13), as Siemens tested it (pp. 6/63–6/65): mpcb = type of coordination 1 with the 3RV2 / 3VA printed for the system voltage (decision SS-5: the '400 V systems' column up to 415 V, the '500 V systems' column up to 500 V, above 500 V no tested fuseless combination → cannot select), Iq as printed; fuse_gg = type 1 with 3NA3 gG fuses, Iq 65 kA; fuse_semi = type 2 with 3NE1 gR/gS fuses, Iq 65 kA (one footnoted fuse only up to 500 V). Iq must be ≥ the fault current, otherwise cannot select with that protection. One fuse per phase (× 2 in parallel where printed '2 x')."}
+  R-SS-09: {authority: MFR,  text: "Fuseless feeders (mpcb) are tested for Class 10 only; Class 20E needs fuses (p. 6/12): protection mpcb with Class 20E → cannot select."}
+  R-SS-10: {authority: RULE, text: "Protection not given (decision SS-2): Class 10A / 10E → mpcb (Siemens: fuseless mounting is normally sufficient, p. 6/12); Class 20E → fuse_gg; above 500 V → fuse_gg (no tested fuseless combination, R-SS-08 / SS-5)."}
+  R-SS-11: {authority: MFR,  text: "Line contactor (optional, p. 6/12): recommended with fuses for heavy starting (Class 20) or high starting frequency. Not given (decision SS-3): added for Class 20E with fuses, not added otherwise. Its type is printed in the fuse tables (column for systems up to 480 V, or up to 600 V above 480 V); its coil version is not in these tables → open point (warning). With mpcb there is no tested line contactor in the table: line_contactor true → cannot select."}
+  R-SS-12: {authority: MFR,  text: "Article from the ordering data (pp. 6/67–6/70): the type, control terminals (screw / spring), function (analog output or thermistor motor protection), control supply (24 V AC/DC or 110 … 250 V AC) and operational voltage (200 … 480 V or 200 … 600 V). Not printed: cannot select."}
+  R-SS-13: {authority: RULE, text: "FLC basis is a guide value or not stated → warning: Siemens designs the soft starter on the motor's rated operational current (p. 6/8)."}
+  R-SS-14: {authority: RULE, text: "Power loss of the 3RW52 is not printed in IC 10: reported (info) and the panel heat balance lists it as missing (R-PNL-15). Altitude above 1 000 m: the derating curve (p. 6/8) is not transcribed → cannot select; altitude not given → ≤ 1 000 m, noted."}
+
+  R-SS-15: {authority: MFR, text: "Owner 2026-10-20 (RFQ part 4): accessories as asked — communication module (PROFINET Standard 3RW5980-0CS00 …), HMI module (Standard 3RW5980-0HS00 / High-Feature 3RW5980-0HF00) and its mounting: in the device = hinged cover with cutout + 0.1 m flat cable; on the door = IP65 door kit 3RW5980-0HD00 + a round cable of the given length (0.5 / 1 / 2.5 / 5 m). IC 10 · 2026 pp.6/75-6/76. Mounting or cable length not given → warning, not selected."}
+
+params:
+  control_supply_default: 230VAC
+  terminals_default: screw
+  class_by_duty: {normal: 10A, heavy: 20E}
+  protection_by_class: {10A: mpcb, 10E: mpcb, 20E: fuse_gg}
+  columns_c: [40, 50, 60]

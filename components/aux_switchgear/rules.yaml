@@ -1,0 +1,19 @@
+# Auxiliary switchgear rules — MCB, RCCB, surge arrester, phase monitoring relay, isolator from the own database.
+# Authority: OWN = company database / template (owner decisions AX-1 … AX-5); RULE = our decision.
+
+component: aux_switchgear
+
+rules:
+  R-AUX-01: {authority: OWN,  text: "Devices come only from the own switchgear database (OWN-SWG-*), in the make asked; a make with no row for the device cannot be selected. Article numbers are copied as written and must be confirmed before ordering."}
+  R-AUX-02: {authority: RULE, text: "MCB per circuit: poles and curve as given; without a curve the load kind decides it (transformer → D; smps, socket, lamp, fan, general → C; AX-2). Smallest rated current In ≥ Ib × margin (margin 1.0 unless given, AX-1)."}
+  R-AUX-03: {authority: MFR,  text: "Breaking capacity. Siemens MCB: the base article (India suffix RC / CC dropped, owner 2026-10-13) in Catalog LV 10 · 2026 gives the series kA; ≥ fault level → pass, below → warning (back-up protection or a higher series needed), fault level not given → warning. Other makes, RCCBs and isolators: not in the held data → warning."}
+  R-AUX-04: {authority: RULE, text: "RCCB when a circuit asks for residual-current protection: sensitivity as asked (mA), poles 2 for a 1- or 2-pole MCB and 4 otherwise, smallest In ≥ the MCB's In. Siemens: the RCCB type (A / AC …) from LV 10 is reported."}
+  R-AUX-05: {authority: OWN,  text: "Surge arrester by supply configuration (3Ph+N+PE or 1Ph+N+PE) and make; its class and protection level are not in the database (warning)."}
+  R-AUX-06: {authority: OWN,  text: "Phase monitoring relay: the database row of the make asked."}
+  R-AUX-07: {authority: OWN,  text: "Isolator: smallest In ≥ design current × 1.5 (template OWN-SWG-CALC 'U1_Main_Switchgear' row 27, AX-3)."}
+  R-AUX-08: {authority: MFR,  text: "Siemens surge arrester: type 2, 5SD74 standard design (LV 10 p.6/16–6/17). 3Ph+N+PE (TN-S / TT, 3+1): 5SD7464, with remote signalling (-1) unless asked without (AX-6). Short-circuit strength 25 kA with the max. back-up fuse 125 A gL/gG: fault level above 25 kA → warning; fault level not given → warning. Other configurations: not in the held table → cannot select."}
+
+params:
+  default_margin: 1.0
+  spd_remote_signalling: true
+  curve_by_kind: {transformer: D, smps: C, socket: C, lamp: C, fan: C, general: C}

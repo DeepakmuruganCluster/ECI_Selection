@@ -1,0 +1,8 @@
+[project]
+name = "panel-selector-v2"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["pyyaml"]
+
+[project.optional-dependencies]
+dev = ["pytest", "pdfplumber"]

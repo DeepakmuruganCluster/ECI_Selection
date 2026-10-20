@@ -1,0 +1,44 @@
+# Connectwell Terminal Blocks Catalogue 25-26 — CP series push-in (screwless) feed-through terminal
+# blocks and their accessories. Transcribed 2026-10-11, checked against the page images.
+# page = PDF page; printed page = PDF page − 3 (PDF p.12 = printed 9, PDF p.283 = printed 280,
+# PDF p.289 = printed 286, PDF p.297 = printed 294).
+#
+#   kind: terminal  — 2-wire feed-through block; connection ranges in mm² as printed (IEC column):
+#                     flex = stranded/flexible, solid, ferrule = with ferrule/lug (1 conductor per clamp);
+#                     IEC 60947-7-1 rated voltage / current; end plate, marking tag card, end clamps.
+#         jumper    — pluggable jumper of that terminal size: poles and Imax
+#         marker    — MC marker card: tags per card (p.289; one packet = 10 cards)
+#         statement — printed assembly rules the quantities use (quoted)
+# Only the grey (standard) article is transcribed; the colour variants (BU, R, …) are listed on the same page.
+
+source:
+  ref: CW-TB-2526
+  section: "CP series push-in feed-through (pp. 10, 12–14), end clamps (p.283), marker cards (p.289), step-down note (p.296), end plates (pp. 297–298)"
+  printed_page_offset: -3
+
+rows:
+  - {kind: terminal, article: "CP1.5", size_mm2: 1.5, width_mm: 3.5, flex_min: 0.2, flex_max: 1.5, solid_min: 0.2, solid_max: 2.5, ferrule_min: 0.2, ferrule_max: 1.0, iec_v: 800, iec_a: 15, end_plate: "EPCP1.5", marker: "MC3.5", end_clamp: "CA103 / CA104", jumper_series: "JX1.5", page: 12}
+  - {kind: terminal, article: "CP2.5", size_mm2: 2.5, width_mm: 5, flex_min: 0.2, flex_max: 2.5, solid_min: 0.2, solid_max: 4.0, ferrule_min: 0.2, ferrule_max: 2.5, iec_v: 1000, iec_a: 24, end_plate: "EPCX2.5", marker: "MC5", end_clamp: "CA103 / CA104", jumper_series: "JX2.5", page: 13}
+  - {kind: terminal, article: "CP4", size_mm2: 4, width_mm: 6, flex_min: 0.2, flex_max: 4.0, solid_min: 0.2, solid_max: 6.0, ferrule_min: 0.2, ferrule_max: 4.0, iec_v: 1000, iec_a: 32, end_plate: "EPCX4", marker: "MC6", end_clamp: "CA103 / CA104", jumper_series: "JX4", page: 13}
+  - {kind: terminal, article: "CP6/10", size_mm2: 10, width_mm: 8, flex_min: 0.5, flex_max: 10.0, solid_min: 0.5, solid_max: 10.0, ferrule_min: 0.5, ferrule_max: 10.0, iec_v: 1000, iec_a: 57, end_plate: "EPCX6", marker: "MC8", end_clamp: "CA103 / CA104", jumper_series: "JX6", page: 13}
+  - {kind: terminal, article: "CP16", size_mm2: 16, width_mm: 12, flex_min: 1.5, flex_max: 16.0, solid_min: null, solid_max: null, ferrule_min: 1.5, ferrule_max: 16.0, iec_v: 1000, iec_a: 76, end_plate: "EPCP16", marker: "MC12", end_clamp: "CA103 / CA104", jumper_series: "JY16", page: 14}
+  # pluggable jumpers (2-pole … n-pole) printed for each terminal
+  - {kind: jumper, series: "JX1.5", poles: [2, 3, 4, 10], imax_a: 16, page: 12}
+  - {kind: jumper, series: "JX2.5", poles: [2, 3, 4, 5, 6, 7, 8, 10, 20], imax_a: 24, page: 13}
+  - {kind: jumper, series: "JX4", poles: [2, 3, 4, 5, 6, 8, 10, 16], imax_a: 32, page: 13}
+  - {kind: jumper, series: "JX6", poles: [2, 3, 4, 5, 10], imax_a: 41, page: 13}
+  - {kind: jumper, series: "JY16", poles: [2], imax_a: 76, page: 14}
+  # marker cards: tags per card (one packet = 10 cards)
+  - {kind: marker, article: "MC3.5", tags: 120, tag_w_mm: 3.5, page: 289}
+  - {kind: marker, article: "MC5", tags: 84, tag_w_mm: 5, page: 289}
+  - {kind: marker, article: "MC6", tags: 72, tag_w_mm: 6, page: 289}
+  - {kind: marker, article: "MC8", tags: 48, tag_w_mm: 8, page: 289}
+  - {kind: marker, article: "MC12", tags: 36, tag_w_mm: 12, page: 289}
+  # end clamps
+  - {kind: end_clamp, article: "CA103", width_mm: 6, note: "screwless end clamp, snapped on to the DIN rail; DIN 35 / DIN 35-15", page: 283}
+  - {kind: end_clamp, article: "CA104", width_mm: 10, note: "DIN 35 / DIN 35-15", page: 283}
+  # printed assembly rules
+  - {kind: statement, topic: end_clamps, text: "End Clamps should be fixed on both sides of the Terminal Block assemblies.", page: 283}
+  - {kind: statement, topic: end_plates, text: "They should be used at the end of an assembly of identical Terminal Blocks and whenever is changed in physical size of the Terminal Block.", page: 297}
+  - {kind: statement, topic: jumper_rows, text: "The possibility of using 2 independent rows for jumpering enables the creation of various circuit combinations.", page: 10}
+  - {kind: statement, topic: step_down, text: "Note: End plate has to be added before using step-down jumpers.", page: 296}

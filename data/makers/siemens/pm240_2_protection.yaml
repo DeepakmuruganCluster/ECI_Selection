@@ -1,0 +1,140 @@
+# Protective devices permitted by Siemens for PM240-2, 380 … 480 V (IEC).
+# Product Information "Protective Devices for SINAMICS G120 Power Module PM240-2", 07/2021:
+#   1.2.2 IEC LV HRC fuses (p. 5), 1.4.2 IEC Motor Starter Protectors (p. 11), 1.5.2 IEC Circuit Breakers (p. 14).
+# PDF page = printed page. Checked against the rendered page images (merged cells per module).
+#   max_a: "Max. rated current" of the protective device (devices of the same type with a lower rating may be used, footnote 2)
+#   icc_ka: "ICC @ 400 V" — maximum prospective short-circuit current for the drive + device combination
+#   phased_out: footnote 1) "not recommended for future use, because already phased-out or will be soon"
+#   article: as printed; ".." / "..." = suffix (e.g. terminal version) to be completed
+# Power modules 4 … 15 kW (FSB, FSC) have no row in the circuit-breaker table (p. 14).
+
+source:
+  ref: SIE-G120-PROT
+  section: "1.2.2 / 1.4.2 / 1.5.2 IEC fuses, motor starter protectors, circuit breakers, 380 … 480 V"
+
+conditions:
+  min_enclosure_m3: {FSA: 0.03, FSB: 0.06, FSC: 0.144, FSE: 0.2, FSF: 0.6}   # FSD: "-" (none); same on pp. 5, 11, 14
+  fuse_no_enclosure_limit_up_to_ka: 65        # p. 5 footnote 1: no enclosure size restrictions apply to 65 kA ICC rating
+  msp_grounded_star_point_only: true          # p. 11 note: ICC values only valid for TN or TT systems
+pages: {fuse: 5, msp: 11, breaker: 14}
+
+rows:
+  # --- LV HRC fuses (p. 5) ---
+  - {module: 6SL3210-1PE11-8, type: fuse, article: 3NA3803, max_a: 10,  icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE12-3, type: fuse, article: 3NA3803, max_a: 10,  icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE13-2, type: fuse, article: 3NA3805, max_a: 16,  icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE14-3, type: fuse, article: 3NA3805, max_a: 16,  icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE16-1, type: fuse, article: 3NA3805, max_a: 16,  icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE18-0, type: fuse, article: 3NA3805, max_a: 16,  icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE21-1, type: fuse, article: 3NA3812, max_a: 32,  icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE21-4, type: fuse, article: 3NA3812, max_a: 32,  icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE21-8, type: fuse, article: 3NA3812, max_a: 32,  icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE22-7, type: fuse, article: 3NA3820, max_a: 50,  icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE23-3, type: fuse, article: 3NA3820, max_a: 50,  icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE23-8, type: fuse, article: 3NA3822, max_a: 63,  icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE24-5, type: fuse, article: 3NA3824, max_a: 80,  icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE26-0, type: fuse, article: 3NA3830, max_a: 100, icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE27-5, type: fuse, article: 3NA3830, max_a: 100, icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE28-8, type: fuse, article: 3NA3832, max_a: 125, icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE31-1, type: fuse, article: 3NA3836, max_a: 160, icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE31-5, type: fuse, article: 3NA3140, max_a: 200, icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE31-8, type: fuse, article: 3NA3142, max_a: 224, icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE32-1, type: fuse, article: 3NA3250, max_a: 300, icc_ka: 100, phased_out: false, page: 5}
+  - {module: 6SL3210-1PE32-5, type: fuse, article: 3NA3252, max_a: 315, icc_ka: 100, phased_out: false, page: 5}
+
+  # --- Motor starter protectors (p. 11) ---
+  - {module: 6SL3210-1PE11-8, type: msp, article: 3RV2011-1JA.., max_a: 10, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE11-8, type: msp, article: 3RV2021-1JA.., max_a: 10, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE12-3, type: msp, article: 3RV2011-1JA.., max_a: 10, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE12-3, type: msp, article: 3RV2021-1JA.., max_a: 10, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE13-2, type: msp, article: 3RV1031-4AA.., max_a: 16, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE13-2, type: msp, article: 3RV2011-4AA.., max_a: 16, icc_ka: 55, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE13-2, type: msp, article: 3RV2021-4AA.., max_a: 16, icc_ka: 55, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE13-2, type: msp, article: 3RV2031-4SA.., max_a: 14, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE14-3, type: msp, article: 3RV1031-4AA.., max_a: 16, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE14-3, type: msp, article: 3RV2011-4AA.., max_a: 16, icc_ka: 55, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE14-3, type: msp, article: 3RV2021-4AA.., max_a: 16, icc_ka: 55, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE14-3, type: msp, article: 3RV2031-4SA.., max_a: 14, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE16-1, type: msp, article: 3RV1031-4AA.., max_a: 16, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE16-1, type: msp, article: 3RV2011-4AA.., max_a: 16, icc_ka: 55, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE16-1, type: msp, article: 3RV2021-4AA.., max_a: 16, icc_ka: 55, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE16-1, type: msp, article: 3RV2031-4SA.., max_a: 14, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE18-0, type: msp, article: 3RV1031-4AA.., max_a: 16, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE18-0, type: msp, article: 3RV2011-4AA.., max_a: 16, icc_ka: 55, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE18-0, type: msp, article: 3RV2021-4AA.., max_a: 16, icc_ka: 55, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE18-0, type: msp, article: 3RV2031-4SA.., max_a: 14, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE21-1, type: msp, article: 3RV1031-4EA.., max_a: 32, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE21-1, type: msp, article: 3RV2021-4EA.., max_a: 32, icc_ka: 55, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE21-1, type: msp, article: 3RV2031-4EA.., max_a: 32, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE21-4, type: msp, article: 3RV1031-4EA.., max_a: 32, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE21-4, type: msp, article: 3RV2021-4EA.., max_a: 32, icc_ka: 55, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE21-4, type: msp, article: 3RV2031-4EA.., max_a: 32, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE21-8, type: msp, article: 3RV1031-4EA.., max_a: 32, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE21-8, type: msp, article: 3RV2021-4EA.., max_a: 32, icc_ka: 55, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE21-8, type: msp, article: 3RV2031-4EA.., max_a: 32, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE22-7, type: msp, article: 3RV1031-4HA.., max_a: 50, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE22-7, type: msp, article: 3RV2031-4VA.., max_a: 45, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE22-7, type: msp, article: 3RV1041-4HA.., max_a: 50, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE23-3, type: msp, article: 3RV1031-4HA.., max_a: 50, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE23-3, type: msp, article: 3RV2031-4VA.., max_a: 45, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE23-3, type: msp, article: 3RV1041-4HA.., max_a: 50, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE23-8, type: msp, article: 3RV1041-4JA.., max_a: 63, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE23-8, type: msp, article: 3RV1042-4JA.., max_a: 63, icc_ka: 65, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE23-8, type: msp, article: 3RV2031-4JA.., max_a: 65, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE23-8, type: msp, article: 3RV2032-4JA.., max_a: 65, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE23-8, type: msp, article: 3RV2041-4JA.., max_a: 63, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE23-8, type: msp, article: 3RV2042-4JA.., max_a: 63, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE24-5, type: msp, article: 3RV1041-4KA.., max_a: 75, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE24-5, type: msp, article: 3RV1042-4KA.., max_a: 75, icc_ka: 65, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE24-5, type: msp, article: 3RV2031-4KA.., max_a: 73, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE24-5, type: msp, article: 3RV2032-4KA.., max_a: 73, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE24-5, type: msp, article: 3RV2041-4KA.., max_a: 75, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE24-5, type: msp, article: 3RV2042-4KA.., max_a: 75, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE26-0, type: msp, article: 3RV1041-4LA.., max_a: 90, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE26-0, type: msp, article: 3RV1042-4LA.., max_a: 90, icc_ka: 65, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE26-0, type: msp, article: 3RV2041-4YA.., max_a: 93, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE26-0, type: msp, article: 3RV2042-4YA.., max_a: 93, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE27-5, type: msp, article: 3RV1041-4MA.., max_a: 100, icc_ka: 50, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE27-5, type: msp, article: 3RV1042-4MA.., max_a: 100, icc_ka: 65, phased_out: true,  page: 11}
+  - {module: 6SL3210-1PE27-5, type: msp, article: 3RV2041-4MA.., max_a: 100, icc_ka: 65, phased_out: false, page: 11}
+  - {module: 6SL3210-1PE27-5, type: msp, article: 3RV2042-4MA.., max_a: 100, icc_ka: 65, phased_out: false, page: 11}
+
+  # --- Circuit breakers (p. 14); none listed for 6SL3210-1PE21-1 … 1PE23-3 (4 … 15 kW) ---
+  - {module: 6SL3210-1PE11-8, type: breaker, article: 3RV2711-4AD.., max_a: 15, icc_ka: 55, phased_out: false, page: 14}
+  - {module: 6SL3210-1PE12-3, type: breaker, article: 3RV2711-4AD.., max_a: 15, icc_ka: 55, phased_out: false, page: 14}
+  - {module: 6SL3210-1PE13-2, type: breaker, article: 3RV2711-4AD.., max_a: 15, icc_ka: 55, phased_out: false, page: 14}
+  - {module: 6SL3210-1PE14-3, type: breaker, article: 3RV2711-4AD.., max_a: 15, icc_ka: 55, phased_out: false, page: 14}
+  - {module: 6SL3210-1PE16-1, type: breaker, article: 3RV2711-4AD.., max_a: 15, icc_ka: 55, phased_out: false, page: 14}
+  - {module: 6SL3210-1PE18-0, type: breaker, article: 3RV2711-4AD.., max_a: 15, icc_ka: 55, phased_out: false, page: 14}
+  - {module: 6SL3210-1PE23-8, type: breaker, article: 3VL1706-2D...,  max_a: 63,  icc_ka: 65,  phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE23-8, type: breaker, article: 3VL2706-3DC..., max_a: 63,  icc_ka: 100, phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE23-8, type: breaker, article: 3VA1063-4ED...,  max_a: 63,  icc_ka: 36,  phased_out: false, page: 14}
+  - {module: 6SL3210-1PE23-8, type: breaker, article: 3VA1163-6E...,   max_a: 63,  icc_ka: 70,  phased_out: false, page: 14}
+  - {module: 6SL3210-1PE24-5, type: breaker, article: 3VL1708-2D...,  max_a: 80,  icc_ka: 70,  phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE24-5, type: breaker, article: 3VL2708-3DC..., max_a: 80,  icc_ka: 100, phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE24-5, type: breaker, article: 3VA1080-4ED...,  max_a: 80,  icc_ka: 36,  phased_out: false, page: 14}
+  - {module: 6SL3210-1PE24-5, type: breaker, article: 3VA1180-6E...,   max_a: 80,  icc_ka: 70,  phased_out: false, page: 14}
+  - {module: 6SL3210-1PE26-0, type: breaker, article: 3VL1710-2D...,  max_a: 100, icc_ka: 70,  phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE26-0, type: breaker, article: 3VL2710-3DC..., max_a: 100, icc_ka: 100, phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE26-0, type: breaker, article: 3VA1010-4ED...,  max_a: 100, icc_ka: 36,  phased_out: false, page: 14}
+  - {module: 6SL3210-1PE26-0, type: breaker, article: 3VA1110-6E...,   max_a: 100, icc_ka: 70,  phased_out: false, page: 14}
+  - {module: 6SL3210-1PE27-5, type: breaker, article: 3VL1710-2D...,  max_a: 100, icc_ka: 70,  phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE27-5, type: breaker, article: 3VL2710-3DC..., max_a: 100, icc_ka: 100, phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE27-5, type: breaker, article: 3VA1010-4ED...,  max_a: 100, icc_ka: 36,  phased_out: false, page: 14}
+  - {module: 6SL3210-1PE27-5, type: breaker, article: 3VA1110-6E...,   max_a: 100, icc_ka: 70,  phased_out: false, page: 14}
+  - {module: 6SL3210-1PE28-8, type: breaker, article: 3VL1712-2D...,  max_a: 125, icc_ka: 70,  phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE28-8, type: breaker, article: 3VL2712-3DC..., max_a: 125, icc_ka: 100, phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE28-8, type: breaker, article: 3VA1112-6E...,   max_a: 125, icc_ka: 70,  phased_out: false, page: 14}
+  - {module: 6SL3210-1PE31-1, type: breaker, article: 3VL1716-2D...,  max_a: 160, icc_ka: 70,  phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE31-1, type: breaker, article: 3VL2716-3DC..., max_a: 160, icc_ka: 100, phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE31-1, type: breaker, article: 3VA1116-6E...,   max_a: 160, icc_ka: 70,  phased_out: false, page: 14}
+  - {module: 6SL3210-1PE31-5, type: breaker, article: 3VL3720-3DC..., max_a: 200, icc_ka: 100, phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE31-5, type: breaker, article: 3VA1220-6EF...,  max_a: 200, icc_ka: 70,  phased_out: false, page: 14}
+  - {module: 6SL3210-1PE31-8, type: breaker, article: 3VL3725-3DC..., max_a: 250, icc_ka: 100, phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE31-8, type: breaker, article: 3VA1225-6EF...,  max_a: 250, icc_ka: 70,  phased_out: false, page: 14}
+  - {module: 6SL3210-1PE32-1, type: breaker, article: 3VL4731-3DC…,   max_a: 315, icc_ka: 100, phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE32-1, type: breaker, article: 3VA1340-7...,    max_a: 400, icc_ka: 100, phased_out: false, page: 14}
+  - {module: 6SL3210-1PE32-1, type: breaker, article: 3VA2340-7...,    max_a: 400, icc_ka: 100, phased_out: false, page: 14}
+  - {module: 6SL3210-1PE32-5, type: breaker, article: 3VL4740-3DC…,   max_a: 400, icc_ka: 100, phased_out: true,  page: 14}
+  - {module: 6SL3210-1PE32-5, type: breaker, article: 3VA1340-7...,    max_a: 400, icc_ka: 100, phased_out: false, page: 14}
+  - {module: 6SL3210-1PE32-5, type: breaker, article: 3VA2340-7...,    max_a: 400, icc_ka: 100, phased_out: false, page: 14}

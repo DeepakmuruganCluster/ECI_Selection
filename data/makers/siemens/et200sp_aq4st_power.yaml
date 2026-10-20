@@ -1,0 +1,7 @@
+# ET 200SP AQ 4xU/I ST (6ES7135-6HD00-0BA1): supply data, Equipment Manual 03/2016 (A5E03573365-AD), technical
+# specifications p.25, transcribed 2026-10-13 (page = PDF page).
+source:
+  ref: SIE-ET200SP-AQ4ST
+  section: "Technical specifications: Supply voltage, Input current"
+rows:
+  - {article: 6ES7135-6HD00-0BA1, item: current_max_ma, value: 150, text: "Current consumption, max. 150 mA", page: 25}

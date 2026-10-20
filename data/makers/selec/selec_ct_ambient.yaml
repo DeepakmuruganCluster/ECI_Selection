@@ -1,0 +1,13 @@
+# Selec current transformers: operating ambient temperature. Not printed in the 2026 measurement
+# catalogue (SELEC-MEAS); taken from the 2024 CT catalogue (image-only PDF: read from the page images,
+# no text layer — scripts/verify_metering.py cannot re-extract it).
+# page = PDF page; printed page = PDF page − 1 (PDF p.7 prints "6"; p.10 is the back page, no number).
+
+source:
+  ref: SELEC-CT
+  section: "SPCT technical specification (p.7), TWCT technical specification (p.10): Ambient Temperature"
+  printed_page_offset: -1
+
+rows:
+  - {family: SPCT, ambient_min_c: 0, ambient_max_c: 50, page: 7}
+  - {family: TWCT, ambient_min_c: 0, ambient_max_c: 50, page: 10}

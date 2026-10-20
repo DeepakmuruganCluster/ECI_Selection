@@ -1,0 +1,62 @@
+# Siemens SIMATIC S7-200 SMART: CPUs, expansion modules (EM) and signal boards (SB) with their power budget data.
+#
+# Transcribed 2026-10-13 from the S7-200 SMART System Manual V2.7 (08/2022, A5E03822230-AK), Appendix A "General
+# specifications" tables (page = PDF page = printed page), article numbers checked against Appendix F (p.953-954).
+# The text layer was read and the cells checked on the rendered pages; values are as printed.
+#   CPU rows: budget_5v_ma = "Current available (EM bus)", budget_24v_ma = "Current available (24 V DC) (sensor power)",
+#             i24_per_input_ma = "Digital input current consumption (24 V DC)", max_em / max_sb = expansion limits,
+#             PROFINET controller with max. 8 devices ("PROFINET features" table, profinet_page).
+#   do_type: sourcing = "Solid state - MOSFET (sourcing)", relay = "Relay, dry contact" (output tables).
+#   EM / SB rows: bus_5v_ma = "Current consumption (SM Bus)" / "(5 V DC)"; 24 V DC consumption split into
+#             i24_per_input_ma ("4 mA / input used"), i24_per_relay_ma ("11 mA / relay coil used"),
+#             i24_fixed_ma (a fixed figure; analog: "no load") and i24_loaded_ma ("20 mA load per channel"); i24_note verbatim.
+#   in_24v_*_ma: ST (24 V DC) CPU "Input current" from the Power supply table (power_page): CPU only (without sensor
+#             power) / with driving 300 mA sensor power / "CPU with all expansion accessories at max. load"; SR CPUs are
+#             AC-fed (0 A from a 24 V supply).
+# Compact CPUs CR..s / CR.. are not included: they take no expansion modules or signal boards (p.53).
+# Printed oddities kept as printed (owner question PLC-S1): EM DT16 (transistor outputs) lists "11 mA / Relay coil used";
+# EM DR32 (relay outputs) lists only "4 mA / Input used"; EM DT08 prints "--". Appendix F p.954 misprints EM AR02 as "6ES 288-3AR02-0AA0"
+# (Table A-128 p.873 prints 6ES7288-3AR02-0AA0, used here).
+
+source:
+  ref: SIE-S7-200SMART-SYS
+  section: "Appendix A Technical specifications (general specifications tables) and Appendix F Ordering information"
+
+rows:
+  # ---- CPUs (A.2)
+  - {article: 6ES7288-1ST20-0AA1, model: CPU ST20, kind: cpu, supply: "24 V DC", di: 12, do: 8, do_type: sourcing, budget_5v_ma: 1400, budget_24v_ma: 300, i24_per_input_ma: 4, max_em: 6, max_sb: 1, profinet_controller: true, profinet_max_devices: 8, profinet_page: 801, in_24v_cpu_ma: 160, in_24v_sensor_ma: 430, in_24v_all_ma: 720, power_page: 804, page: 800}
+  - {article: 6ES7288-1SR20-0AA1, model: CPU SR20, kind: cpu, supply: "120/240 V AC", di: 12, do: 8, do_type: relay, budget_5v_ma: 1400, budget_24v_ma: 300, i24_per_input_ma: 4, max_em: 6, max_sb: 1, profinet_controller: true, profinet_max_devices: 8, profinet_page: 801, in_24v_all_ma: 0, page: 800}
+  - {article: 6ES7288-1ST30-0AA1, model: CPU ST30, kind: cpu, supply: "24 V DC", di: 18, do: 12, do_type: sourcing, budget_5v_ma: 1400, budget_24v_ma: 300, i24_per_input_ma: 4, max_em: 6, max_sb: 1, profinet_controller: true, profinet_max_devices: 8, profinet_page: 812, in_24v_cpu_ma: 64, in_24v_sensor_ma: 365, in_24v_all_ma: 624, power_page: 815, page: 811}
+  - {article: 6ES7288-1SR30-0AA1, model: CPU SR30, kind: cpu, supply: "120/240 V AC", di: 18, do: 12, do_type: relay, budget_5v_ma: 1400, budget_24v_ma: 300, i24_per_input_ma: 4, max_em: 6, max_sb: 1, profinet_controller: true, profinet_max_devices: 8, profinet_page: 812, in_24v_all_ma: 0, page: 811}
+  - {article: 6ES7288-1ST40-0AA1, model: CPU ST40, kind: cpu, supply: "24 V DC", di: 24, do: 16, do_type: sourcing, budget_5v_ma: 1400, budget_24v_ma: 300, i24_per_input_ma: 4, max_em: 6, max_sb: 1, profinet_controller: true, profinet_max_devices: 8, profinet_page: 823, in_24v_cpu_ma: 190, in_24v_sensor_ma: 470, in_24v_all_ma: 680, power_page: 827, page: 822}
+  - {article: 6ES7288-1SR40-0AA1, model: CPU SR40, kind: cpu, supply: "120/240 V AC", di: 24, do: 16, do_type: relay, budget_5v_ma: 1400, budget_24v_ma: 300, i24_per_input_ma: 4, max_em: 6, max_sb: 1, profinet_controller: true, profinet_max_devices: 8, profinet_page: 823, in_24v_all_ma: 0, page: 822}
+  - {article: 6ES7288-1ST60-0AA1, model: CPU ST60, kind: cpu, supply: "24 V DC", di: 36, do: 24, do_type: sourcing, budget_5v_ma: 1400, budget_24v_ma: 300, i24_per_input_ma: 4, max_em: 6, max_sb: 1, profinet_controller: true, profinet_max_devices: 8, profinet_page: 834, in_24v_cpu_ma: 220, in_24v_sensor_ma: 500, in_24v_all_ma: 710, power_page: 838, page: 833}
+  - {article: 6ES7288-1SR60-0AA1, model: CPU SR60, kind: cpu, supply: "120/240 V AC", di: 36, do: 24, do_type: relay, budget_5v_ma: 1400, budget_24v_ma: 300, i24_per_input_ma: 4, max_em: 6, max_sb: 1, profinet_controller: true, profinet_max_devices: 8, profinet_page: 834, in_24v_all_ma: 0, page: 833}
+  # ---- digital expansion modules (A.3)
+  - {article: 6ES7288-2DE08-0AA0, model: EM DE08, kind: em, di: 8, bus_5v_ma: 105, i24_per_input_ma: 4, i24_note: "4 mA / input used", page: 845}
+  - {article: 6ES7288-2DE16-0AA0, model: EM DE16, kind: em, di: 16, bus_5v_ma: 105, i24_per_input_ma: 4, i24_note: "4 mA / input used", page: 845}
+  - {article: 6ES7288-2DT08-0AA0, model: EM DT08, kind: em, do: 8, do_type: sourcing, bus_5v_ma: 120, i24_note: "--", page: 847}
+  - {article: 6ES7288-2DR08-0AA0, model: EM DR08, kind: em, do: 8, do_type: relay, bus_5v_ma: 120, i24_per_relay_ma: 11, i24_note: "11 mA / relay coil used", page: 847}
+  - {article: 6ES7288-2QR16-0AA0, model: EM QR16, kind: em, do: 16, do_type: relay, bus_5v_ma: 110, i24_fixed_ma: 150, i24_note: "150 mA, all relay are on", page: 847}
+  - {article: 6ES7288-2QT16-0AA0, model: EM QT16, kind: em, do: 16, do_type: sourcing, bus_5v_ma: 120, i24_fixed_ma: 50, i24_note: "50 mA", page: 847}
+  - {article: 6ES7288-2DT16-0AA0, model: EM DT16, kind: em, di: 8, do: 8, do_type: sourcing, bus_5v_ma: 145, i24_per_input_ma: 4, i24_per_relay_ma: 11, i24_note: "4 mA / Input used; 11 mA / Relay coil used", page: 851}
+  - {article: 6ES7288-2DR16-0AA0, model: EM DR16, kind: em, di: 8, do: 8, do_type: relay, bus_5v_ma: 145, i24_per_input_ma: 4, i24_per_relay_ma: 11, i24_note: "4 mA / Input used; 11 mA / Relay coil used", page: 851}
+  - {article: 6ES7288-2DT32-0AA0, model: EM DT32, kind: em, di: 16, do: 16, do_type: sourcing, bus_5v_ma: 185, i24_per_input_ma: 4, i24_note: "4 mA / Input used", page: 851}
+  - {article: 6ES7288-2DR32-0AA0, model: EM DR32, kind: em, di: 16, do: 16, do_type: relay, bus_5v_ma: 180, i24_per_input_ma: 4, i24_note: "4 mA / Input used", page: 851}
+  # ---- analog expansion modules (A.4)
+  - {article: 6ES7288-3AE04-0AA0, model: EM AE04, kind: em, ai: 4, bus_5v_ma: 80, i24_fixed_ma: 40, i24_note: "40 mA (no load)", page: 857}
+  - {article: 6ES7288-3AE08-0AA0, model: EM AE08, kind: em, ai: 8, bus_5v_ma: 80, i24_fixed_ma: 70, i24_note: "70 mA (no load)", page: 857}
+  - {article: 6ES7288-3AQ02-0AA0, model: EM AQ02, kind: em, aq: 2, bus_5v_ma: 60, i24_fixed_ma: 50, i24_loaded_ma: 90, i24_note: "50 mA (no load); 90 mA (20 mA load per channel)", page: 860}
+  - {article: 6ES7288-3AQ04-0AA0, model: EM AQ04, kind: em, aq: 4, bus_5v_ma: 60, i24_fixed_ma: 75, i24_loaded_ma: 155, i24_note: "75 mA (no load); 155 mA (20 mA load per channel)", page: 860}
+  - {article: 6ES7288-3AM03-0AA0, model: EM AM03, kind: em, ai: 2, aq: 1, bus_5v_ma: 60, i24_fixed_ma: 30, i24_loaded_ma: 50, i24_note: "30 mA (no load); 50 mA (20 mA load per channel)", page: 862}
+  - {article: 6ES7288-3AM06-0AA0, model: EM AM06, kind: em, ai: 4, aq: 2, bus_5v_ma: 80, i24_fixed_ma: 60, i24_loaded_ma: 100, i24_note: "60 mA (no load); 100 mA (20 mA load per channel)", page: 862}
+  # ---- thermocouple and RTD modules (A.5)
+  - {article: 6ES7288-3AT04-0AA0, model: EM AT04, kind: em, tc: 4, bus_5v_ma: 80, i24_fixed_ma: 40, i24_note: "40 mA (footnote 1: 20.4 to 28.8 V DC, Class 2, Limited Power, or sensor power from PLC)", page: 869}
+  - {article: 6ES7288-3AR02-0AA0, model: EM AR02, kind: em, rtd: 2, bus_5v_ma: 80, i24_fixed_ma: 40, i24_note: "40 mA (currents on p.874)", page: 873}
+  - {article: 6ES7288-3AR04-0AA0, model: EM AR04, kind: em, rtd: 4, bus_5v_ma: 80, i24_fixed_ma: 40, i24_note: "40 mA (currents on p.874)", page: 873}
+  # ---- signal boards (A.6 – A.9)
+  - {article: 6ES7288-5DT04-0AA0, model: SB DT04, kind: sb, di: 2, do: 2, do_type: sourcing, bus_5v_ma: 50, i24_per_input_ma: 4, i24_note: "4 mA / Input used", page: 879}
+  - {article: 6ES7288-5AE01-0AA0, model: SB AE01, kind: sb, ai: 1, bus_5v_ma: 50, i24_fixed_ma: 0, i24_note: "None (5 V and 3.3 V combined 50 mA)", page: 881}
+  - {article: 6ES7288-5AQ01-0AA0, model: SB AQ01, kind: sb, aq: 1, bus_5v_ma: 15, i24_fixed_ma: 40, i24_note: "40 mA (no load)", page: 884}
+  - {article: 6ES7288-5CM01-0AA0, model: SB CM01, kind: sb, bus_5v_ma: 50, i24_fixed_ma: 0, i24_note: "N/A (RS485/RS232)", page: 885}
+  - {article: 6ES7288-5BA01-0AA0, model: SB BA01, kind: sb, bus_5v_ma: 18, i24_fixed_ma: 0, i24_note: "None (battery board)", page: 888}

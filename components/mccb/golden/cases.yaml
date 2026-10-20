@@ -1,0 +1,174 @@
+# Golden cases for mccb — written BEFORE the code (G4).
+# Oracle: Siemens LV 31 · 2018 (PDF pages): Icu/Ics at 380 - 415 V (pp. 10–11), ordering tables
+# (3-pole TM210 pp. 28–29, TM220 pp. 30–31; 4-pole TM210 pp. 32–33, TM220 pp. 34–35), ambient /
+# altitude (pp. 9, 19); hand calculation where shown in `calc`.
+# Choice rule (R-MCCB-07): smallest In ≥ required, then smallest frame, then lowest class B<N<S<M
+# whose Icu ≥ fault.  Icu at 415 V: 3VM10 B16 N25 S36; 3VM11 N25 S36 M55; 3VM12–14 S36 M55.
+# Unless stated: 3-pole, TM210 FTFM, 400 V, ambient 40 °C, margin 1.0, Icu basis.
+
+cases:
+  # --- normal selections, 3-pole TM210 ------------------------------------------------------
+  - id: M01
+    in: {ib_a: 90, fault_ka: 20, ambient_c: 40}
+    expect: {status: ok, article_no: 3VM1010-3ED32-0AA0, frame: 3VM10, in_a: 100, breaking_class: N, icu_ka: 25, ics_ka: 12, ii_a: 1000, let_through_i2t: null}
+    oracle: "p.29 In 100 A, 3VM10 N column; p.10 3VM10 N 380-415 V: Icu 25, Ics 12; p.28 Ii 1000 A"
+    calc: "In 100 ≥ 90; 3VM10 B 16 kA < 20 → N 25 kA ≥ 20"
+  - id: M02
+    in: {ib_a: 90, fault_ka: 50, ambient_c: 40}
+    expect: {status: ok, article_no: 3VM1110-5ED32-0AA0, frame: 3VM11, in_a: 100, breaking_class: M, icu_ka: 55, ics_ka: 41}
+    oracle: "p.10: 3VM10 max 36 kA (S) < 50 → 3VM11 M Icu 55, Ics 41; p.29 3VM1110-5ED32-0AA0"
+  - id: M03
+    in: {ib_a: 100, fault_ka: 50, ambient_c: 40}
+    expect: {status: ok, article_no: 3VM1110-5ED32-0AA0, in_a: 100}
+    oracle: "rating boundary: In 100 = Ib 100 satisfies In ≥ Ib (p.29)"
+  - id: M04
+    in: {ib_a: 100.5, fault_ka: 50, ambient_c: 40}
+    expect: {status: ok, article_no: 3VM1112-5ED32-0AA0, frame: 3VM11, in_a: 125, ii_a: 1250}
+    oracle: "100 < 100.5 → next rating 125 A; p.29 3VM1112-5ED32-0AA0; p.28 Ii 1250 A"
+  - id: M05
+    in: {ib_a: 12, fault_ka: 10, ambient_c: 40}
+    expect: {status: ok, article_no: 3VM1096-2ED32-0AA0, frame: 3VM10, in_a: 16, breaking_class: B, icu_ka: 16, ics_ka: 8, ii_a: 320}
+    oracle: "p.28 smallest rating 16 A, 3VM10 class B 3VM1096-2ED32-0AA0, Ii 320 A; p.10 B Icu 16, Ics 8"
+  - id: M06
+    in: {ib_a: 30, fault_ka: 16, ambient_c: 40}
+    expect: {status: ok, article_no: 3VM1032-2ED32-0AA0, breaking_class: B, icu_ka: 16}
+    oracle: "Icu boundary: B 16 kA = 16 kA fault (p.10); p.28 32 A B 3VM1032-2ED32-0AA0"
+  - id: M07
+    in: {ib_a: 30, fault_ka: 16.1, ambient_c: 40}
+    expect: {status: ok, article_no: 3VM1032-3ED32-0AA0, breaking_class: N, icu_ka: 25}
+    oracle: "16 < 16.1 → N 25 kA; p.29 3VM1032-3ED32-0AA0"
+  - id: M08
+    in: {ib_a: 30, fault_ka: 36, ambient_c: 40}
+    expect: {status: ok, article_no: 3VM1032-4ED32-0AA0, frame: 3VM10, breaking_class: S, icu_ka: 36, ics_ka: 12}
+    oracle: "3VM10 S 36 kA = 36 (p.10; Ics 12); p.29 3VM1032-4ED32-0AA0"
+  - id: M09
+    in: {ib_a: 30, fault_ka: 36.5, ambient_c: 40}
+    expect: {status: ok, article_no: 3VM1132-5ED32-0AA0, frame: 3VM11, breaking_class: M, icu_ka: 55}
+    oracle: "36.5 > 36 → only class M (3VM11 at 32 A); p.29 3VM1132-5ED32-0AA0"
+  - id: M10
+    in: {ib_a: 180, fault_ka: 50, ambient_c: 40}
+    expect: {status: ok, article_no: 3VM1220-5ED32-0AA0, frame: 3VM12, in_a: 200, breaking_class: M, ii_a: 2000}
+    oracle: "160 < 180 → 200 A (3VM12); p.29 M 3VM1220-5ED32-0AA0; p.28 Ii 2000 A"
+  - id: M11
+    in: {ib_a: 180, fault_ka: 20, ambient_c: 40}
+    expect: {status: ok, article_no: 3VM1220-4ED32-0AA0, breaking_class: S, icu_ka: 36, ics_ka: 27}
+    oracle: "p.29: 3VM12 has no class N (--) → S; p.11 3VM12 S Icu 36, Ics 27"
+  - id: M12
+    in: {ib_a: 600, fault_ka: 50, ambient_c: 40}
+    expect: {status: ok, article_no: 3VM1463-5ED32-0AA0, frame: 3VM14, in_a: 630, icu_ka: 55, ics_ka: 41, ii_a: 6300}
+    oracle: "p.29 630 A M 3VM1463-5ED32-0AA0; p.11 3VM14 M Icu 55 Ics 41; p.28 Ii 6300 A"
+  - id: M13
+    in: {ib_a: 630, fault_ka: 50, ambient_c: 40, voltage_v: 415}
+    expect: {status: ok, article_no: 3VM1463-5ED32-0AA0, in_a: 630}
+    oracle: "largest rating boundary 630 A; 415 V is in the 380 - 415 V row (p.10)"
+  - id: M14
+    in: {ib_a: 631, fault_ka: 50, ambient_c: 40}
+    expect: {status: cannot_select, rule: R-MCCB-03}
+    oracle: "largest 3VM rating 630 A (p.29)"
+
+  # --- margin (R-MCCB-02) -------------------------------------------------------------------
+  - id: M15
+    in: {ib_a: 90, fault_ka: 50, ambient_c: 40, margin: 1.25}
+    expect: {status: ok, article_no: 3VM1112-5ED32-0AA0, in_a: 125, required_a: 112.5}
+    oracle: "p.29 125 A M"
+    calc: "90 × 1.25 = 112.5 A > 100 → 125 A"
+  - id: M16
+    in: {ib_a: 510, fault_ka: 50, ambient_c: 40, margin: 1.25}
+    expect: {status: cannot_select, rule: R-MCCB-03}
+    oracle: "largest rating 630 A"
+    calc: "510 × 1.25 = 637.5 A > 630 A"
+
+  # --- 4-pole (R-MCCB-08) ------------------------------------------------------------------
+  - id: M17
+    in: {ib_a: 90, fault_ka: 50, ambient_c: 40, poles: 4, neutral_protection: none}
+    expect: {status: ok, article_no: 3VM1110-5ED42-0AA0, frame: 3VM11, in_a: 100, breaking_class: M}
+    oracle: "p.33 4-pole TM210 without N protection, 100 A M 3VM1110-5ED42-0AA0"
+  - id: M18
+    in: {ib_a: 90, fault_ka: 20, ambient_c: 40, poles: 4, neutral_protection: "100"}
+    expect: {status: ok, article_no: 3VM1110-3GD42-0AA0, frame: 3VM11, breaking_class: N}
+    oracle: "p.32: 100 % N protection starts at 3VM11 (no 3VM10; p.21 footnote 1); p.33 100 A N 3VM1110-3GD42-0AA0"
+  - id: M19
+    in: {ib_a: 90, fault_ka: 20, ambient_c: 40, poles: 4}
+    expect: {status: warning, article_no: 3VM1010-3ED42-0AA0, frame: 3VM10, breaking_class: N, warnings: [R-MCCB-08]}
+    oracle: "neutral protection not stated → without N protection + warning; p.33 3VM10 100 A N 3VM1010-3ED42-0AA0"
+
+  # --- TM220 ATFM, adjustable Ir (R-MCCB-09) -----------------------------------------------
+  - id: M20
+    in: {ib_a: 90, fault_ka: 20, ambient_c: 40, release: TM220}
+    expect: {status: ok, article_no: 3VM1110-3EE32-0AA0, frame: 3VM11, in_a: 100, ir_range: "70 … 100 A", ir_set_a: 90, ii_a: 1000}
+    oracle: "p.30: TM220 starts at 3VM11 (no 3VM10), 100 A Ir 70 … 100, Ii 1000; p.31 N 3VM1110-3EE32-0AA0"
+  - id: M21
+    in: {ib_a: 5, fault_ka: 50, ambient_c: 40, release: TM220}
+    expect: {status: ok, article_no: 3VM1196-5EE32-0AA0, in_a: 16, ir_range: "11 … 16 A", ir_set_a: 11, ii_a: 320}
+    oracle: "p.30 16 A Ir 11 … 16, Ii 320; p.31 M 3VM1196-5EE32-0AA0"
+    calc: "Ir set = max(5, 11) = 11 A (bottom of the range)"
+  - id: M22
+    in: {ib_a: 180, fault_ka: 20, ambient_c: 40, release: TM220, poles: 4, neutral_protection: "100"}
+    expect: {status: ok, article_no: 3VM1220-4GE42-0AA0, frame: 3VM12, in_a: 200, breaking_class: S, ir_range: "140 … 200 A", ir_set_a: 180}
+    oracle: "p.34: 4-pole TM220 100 % N, 3VM12 has no class N (--); p.35 S 3VM1220-4GE42-0AA0; Ir 140 … 200"
+
+  # --- breaking capacity limits (R-MCCB-05, R-MCCB-06) --------------------------------------
+  - id: M23
+    in: {ib_a: 90, fault_ka: 56, ambient_c: 40}
+    expect: {status: cannot_select, rule: R-MCCB-05}
+    oracle: "highest Icu at 415 V is 55 kA (pp. 10–11)"
+  - id: M24
+    in: {ib_a: 90, fault_ka: 40, ambient_c: 40, breaking_basis: ics}
+    expect: {status: ok, article_no: 3VM1110-5ED32-0AA0, breaking_class: M, ics_ka: 41}
+    oracle: "Ics basis: 3VM10 S Ics 12, 3VM11 S Ics 27 < 40 → M Ics 41 ≥ 40 (p.10)"
+  - id: M25
+    in: {ib_a: 90, fault_ka: 50, ambient_c: 40, breaking_basis: ics}
+    expect: {status: cannot_select, rule: R-MCCB-06}
+    oracle: "highest Ics at 415 V is 41 kA (pp. 10–11) < 50 kA"
+
+  # --- ambient, altitude, scope (R-MCCB-04, R-MCCB-01) --------------------------------------
+  - id: M26
+    in: {ib_a: 90, fault_ka: 50, ambient_c: 50}
+    expect: {status: ok, article_no: 3VM1110-5ED32-0AA0}
+    oracle: "p.9 'No derating up to +50 °C'; In rated at 50 °C (p.10): boundary accepted"
+  - id: M27
+    in: {ib_a: 90, fault_ka: 50, ambient_c: 55}
+    expect: {status: cannot_select, rule: R-MCCB-04}
+    oracle: "p.19: above +50 °C reductions apply, no values printed → refuse"
+  - id: M28
+    in: {ib_a: 90, fault_ka: 50, ambient_c: -30}
+    expect: {status: cannot_select, rule: R-MCCB-04}
+    oracle: "p.19: operating range -25 … +70 °C"
+  - id: M29
+    in: {ib_a: 90, fault_ka: 50, ambient_c: 40, altitude_m: 2500}
+    expect: {status: cannot_select, rule: R-MCCB-01}
+    oracle: "p.19: rated data unchanged up to 2000 m; above: out of scope"
+  - id: M30
+    in: {ib_a: 90, fault_ka: 20, ambient_c: 40, voltage_v: 440}
+    expect: {status: cannot_select, rule: R-MCCB-01}
+    oracle: "scope 380 - 415 V row (p.10); 440 V row not transcribed"
+  - id: M31
+    in: {ib_a: 90, fault_ka: 20, ambient_c: 40, poles: 2}
+    expect: {status: cannot_select, rule: R-MCCB-01}
+    oracle: "1- and 2-pole 3VM11 out of scope (p.10 columns 1 and 2 not transcribed)"
+  - id: M32
+    in: {ib_a: 90, fault_ka: 20, ambient_c: 40, voltage_v: 380, altitude_m: 2000}
+    expect: {status: ok, article_no: 3VM1010-3ED32-0AA0}
+    oracle: "boundaries: 380 V (p.10 row) and 2000 m (p.19) accepted; as M01"
+
+  # --- invalid input -----------------------------------------------------------------------
+  - id: M33
+    in: {ib_a: 0, fault_ka: 50, ambient_c: 40}
+    expect: {status: invalid}
+    oracle: "load current must be > 0"
+  - id: M34
+    in: {ib_a: 90, fault_ka: 50}
+    expect: {status: invalid}
+    oracle: "ambient around the breaker is required"
+  - id: M35
+    in: {ib_a: 90, fault_ka: 50, ambient_c: 40, neutral_protection: "100"}
+    expect: {status: invalid}
+    oracle: "neutral protection only exists on 4-pole breakers"
+  - id: M36
+    in: {ib_a: 90, fault_ka: 50, ambient_c: 40, margin: 0.9}
+    expect: {status: invalid}
+    oracle: "margin below 1 would undersize the breaker"
+  - id: M37
+    in: {ib_a: 90, ambient_c: 40}
+    expect: {status: invalid}
+    oracle: "prospective fault current at the breaker is required"

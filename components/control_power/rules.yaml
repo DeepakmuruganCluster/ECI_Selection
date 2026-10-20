@@ -1,0 +1,16 @@
+# Control power (24 V DC supply) rules. PLC, network and UPS selection wait for the Siemens manuals (component 10 remainder).
+# Authority: MFR = manufacturer document; OWN = company template / database (owner decisions CP-1 … CP-3).
+
+component: control_power
+
+rules:
+  R-CP-01: {authority: MFR, text: "Interface relay coil: Finder 38.61 24 V DC sensitive coil (7.024) draws 10.4 mA (FINDER-S38 p.13)."}
+  R-CP-02: {authority: OWN, text: "Per-signal currents from the template (OWN-SWG-CALC 'U1_SMPS Selection'): 0.03 A per digital input (row 9), 0.05 A per output without an interface relay (row 10) (CP-1)."}
+  R-CP-03: {authority: RULE, text: "The PLC, I/O modules and HMI current must be given (their data sheets are not held); without it the supply cannot be sized."}
+  R-CP-04: {authority: OWN, text: "Required output = total 24 V DC load × 1.25 (template row 21, CP-2)."}
+  R-CP-05: {authority: OWN, text: "Supply from the AutoBOM database (OWN-AB-SMPS; Omron, Phoenix Contact, Mean Well, Weidmueller) in the make asked (Omron unless given, CP-3): input network as asked (1P+N or 3P), 24 V within its output range, smallest rated output current ≥ required; on a tie the first row (sheet order db1, Phoenix, Omron, Meanwell, Weidmueller). The input current is not in the database, so the supply's input MCB cannot be sized (warning)."}
+  R-CP-07: {authority: RULE, text: "Supplies with a network port (Omron S8VK-X …-EIP, EtherNet/IP) are taken exactly when communication is asked: only those when asked, none otherwise (CP-4)."}
+  R-CP-06: {authority: OWN, text: "The series of the chosen supply must be marked verified in the AutoBOM Logsheet; otherwise warning (check the data sheet before ordering)."}
+
+params:
+  relay_coil_ref: {file: data/makers/finder/finder_s38.yaml, coil_code: "7.024"}

@@ -1,0 +1,15 @@
+# Feeder kit rules — the company (Propel) standard BOM structures, checked against the motor.
+# Authority: OWN = company kit / costing sheet (owner decisions KIT-1 … KIT-4); PHYS = physics; MFR = manufacturer data.
+
+component: feeder_kit
+
+rules:
+  R-KIT-01: {authority: OWN,  text: "The kit is the company's standard for that starter (DOL, DOL forward/reverse, star-delta), motor power (exact kW, a '160/187 kW' kit covers both) and number of motors; the application narrows it (e.g. belt conveyor, screen feeder, lube with PLC). Several kits fit → the first in the workbook, the others listed. No kit → cannot select (nothing substituted). Owner 2026-10-16: a kit's kW, motors, starter and PLC are read from its name by the company convention ('55KW SD' = 55 kW star-delta, '… X 2' / 'DUAL MOTOR' = two motors, 'SDL' = star-delta, 'F/R' = forward / reverse; the word STARTER says nothing), with the sheet's own STAR DELTA TIMER line as the evidence when the name gives no starter (scripts/import_propel.py)."}
+  R-KIT-02: {authority: OWN,  text: "Prices are the company sheets' prices (INR, indicative: DOL kits 'Propel Working 01.09.23', unit price; panel kits R0 new price). Lines without a price (cables, wiring accessories) are listed: the kit total is then partial."}
+  R-KIT-03: {authority: RULE, text: "DOL: the motor current (nameplate if given, else the Siemens guide table, component 1) must lie inside the kit's MPCB setting range; outside → warning; motor current unknown → warning (not checked)."}
+  R-KIT-04: {authority: RULE, text: "DOL: the kit contactor's rating (the 'A' in its rating) must be at least the motor current; otherwise warning."}
+  R-KIT-06: {authority: RULE, text: "Owner 2026-10-17 (audit: 'ask each one'): one kit is taken only when exactly one fits the starter, power, motors and application, or the designer chose it (kit=). Several fit → refused with the choices; none is named after the application → the kits of that size are offered as choices, never taken silently."}
+  R-KIT-05: {authority: PHYS, text: "Star-delta: line and delta contactors (the pair) carry FLC/√3 and must be rated ≥ FLC/√3; the star contactor carries FLC/3 and must be rated ≥ FLC/3; a single overload relay sits in the phase current and its range must contain FLC/√3. Otherwise warning; several overload relays (auxiliary motors) → not checked."}
+
+params:
+  sqrt3: 1.7320508

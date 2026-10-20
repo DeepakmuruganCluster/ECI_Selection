@@ -1,0 +1,12 @@
+# Values from the company's switchgear selection template (OWN-SWG-CALC, TITAN 2012), as typed in it.
+# 'row' = Excel row on the named sheet. Checked against the .xls by scripts/verify_control_power.py (G6).
+# Authority OWN: these are the template's own figures, not manufacturer data; each needs the owner's sign-off.
+source:
+  ref: OWN-SWG-CALC
+  note: "Switchgear_Selection_Calculation.xls — sheets 'U1_SMPS Selection', 'U1_Main_Switchgear', 'U1_Transformer'"
+rows:
+  - {item: smps_fos, value: 1.25, unit: "", sheet: "U1_SMPS Selection", cell: "J21", text: "Grand Total (A) with FOS … FOS 1.25", row: 21}
+  - {item: di_a, value: 0.03, unit: A, sheet: "U1_SMPS Selection", cell: "F9", text: "Inputs: 0.03 A each", row: 9}
+  - {item: do_a, value: 0.05, unit: A, sheet: "U1_SMPS Selection", cell: "F10", text: "Outputs: 0.05 A each", row: 10}
+  - {item: main_fos, value: 1.5, unit: "", sheet: "U1_Main_Switchgear", cell: "L27", text: "Stn-1 Load Current … FOS 1.5", row: 27}
+  - {item: transformer_fos, value: 1.5, unit: "", sheet: "U1_Transformer", cell: "G13", text: "Total … FOS 1.5 (transformer VA = load × 1.5)", row: 13}

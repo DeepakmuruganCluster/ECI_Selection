@@ -1,0 +1,52 @@
+# ECI WNS2503 (MBR / RO / CRO water treatment) — everything specific to this client project, in one place.
+# The generic engine (components/) holds no ECI data; it reads the tables below.
+
+project: ECI-WNS2503
+client: ECI
+panels: [BIO_UF, RO]
+
+aliases: [WNS2503]           # older short name used by the load-list component
+
+documents:                   # client documents by role, registered in sources/register.yaml (sources/pdf/client/ECI-WNS2503)
+  automation: ECI-WNS2503-AUTO   # Automation / Rittal panel specification (client items, I/O table)
+  equipment: ECI-WNS2503-EQUIP   # Complete equipment panel specification (motors + field devices)
+  load_list: ECI-WNS2503-LOADS   # VFD / SS / DOL panel specification, Word (load list)
+
+equipment_panel_headings:    # how the equipment PDF names its panels ('… PANEL REQUIREMENTS' rows): regex → panel
+  - [BIO, BIO_UF]
+  - ["^RO", RO]
+
+requirements:                # the client's own statements that generic checks cite (text as written, with its source)
+  relay_terminal_scheme: {text: "DOL outputs → latching relay, other outputs → slim relay (Phoenix / Finder); screwless terminals and distribution short links (Phoenix / Connectwell); Rittal door limit switch and light", source: "ECI-WNS2503-AUTO p.1"}
+  cooling_fans_per_door: {text: "cooling fan 8 inch each door", source: "ECI-WNS2503-AUTO p.1"}
+  door_switch_light: {text: "Rittal door limit switch and light", source: "ECI-WNS2503-AUTO p.1"}
+  meter_communication: {value: profinet, text: "energy meter with PROFINET", source: "ECI-WNS2503-AUTO p.1"}
+  internal_wiring: {text: "LAP Cable Internal Wiring", source: "ECI-WNS2503-AUTO p.1"}
+  io_table: {text: "I/O table: required, spare and final channels per panel", source: "ECI-WNS2503-AUTO p.1"}
+  supplies_24v: {text: "24 V DC power supplies (SITOP ratings in the client items)", source: "ECI-WNS2503-AUTO p.1"}
+
+data:                        # project tables (each row cites its page)
+  client_items: data/eci_wns2503_items.yaml              # read by components/client_items (and project, metering)
+  field_devices: data/eci_wns2503_field_devices.yaml     # read by components/instruments; made by projects/ECI-WNS2503/scripts/import_eci_instruments.py
+
+design_inputs:               # stated on every export's Summary sheet (scripts/export_project_bom.py)
+  voltage_v: 400             # ECI-WNS2503-EQUIP operating-voltage column '3PH 400V 50HZ' (audit 2026-10-17: was a silent 400)
+  # fault_ka 50, panel_internal_c 35, motor_pf 0.85, cable_ambient_c 40, default_cable_m 50 removed 2026-10-17
+  # (interdependency audit, owner: "ask each one"): no source was cited (ECI gives the incomer's 55 kA breaking
+  # capacity, not the fault level; the 50 m is not from ECI) — asked per panel on the project page, saved in overrides.yaml
+
+plant_items_panel: BIO_UF     # the client's shared 'plant' items (UPS, SCADA, network, tower lamps …) go in this panel's BOM only
+
+plc:                         # PLC selection (component plc) — owner 2026-10-13: S7-1500 CPU + ET 200SP remote I/O
+  make: siemens
+  family: s7-1500-et200sp
+  panels:
+    BIO_UF: {cpu: CPU 1513-1 PN, memory_card_mb: 12}   # ECI-WNS2503-AUTO p.1: CPU-1513 = 1 (BIO_UF), 12 MB card
+    RO: {cpu: none}                                     # ECI lists one CPU: RO's ET 200SP stations are remote I/O of BIO_UF
+
+scope:                       # owner decisions
+  out: [enclosure, enclosure accessories / cooling, heater feeders, SCADA PC, WinCC licence, display, UPS]
+  in: [field devices panel-side items]
+
+outputs: out/                # <export_prefix>_<panel>_BOM.xlsx (main BOM + options + I/O + power + design logic + sources)
+export_prefix: WNS2503

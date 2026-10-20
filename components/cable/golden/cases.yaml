@@ -1,0 +1,213 @@
+# Golden cases for cable — written BEFORE the code (G4).
+# Oracle: maker tables (PDF pages) and hand calculation.
+#   Iz = runs × tabulated rating × temperature factor × group factor
+#   ΔU% (3-ph) = √3·I·L·(R·cosφ + X·sinφ) / runs / U × 100   (R = AC 90 °C, X = 50 Hz, Ω/km; L in km)
+# Polycab (default make): ratings 3-core p.43, 2-core p.27, 3.5-core p.55, 4-core p.67; factors p.87;
+#   R_ac90 p.11, X p.10, 1-s short-circuit rating p.9.   KEI: 3-core p.38, factors p.33, SC p.49.
+# Unless stated: Polycab, 3-phase 400 V, 3-core, cos φ 0.85 (sin 0.5268), overload device In given, no SC / start check.
+
+cases:
+  # --- current rating and temperature ---------------------------------------------------------------
+  - id: C01
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40}
+    expect: {status: ok, size_mm2: 4, runs: 1, cores: "3", iz_a: 41, vd_pct: 2.19, bound_by: smallest size offered}
+    oracle: "p.43: 3C×4 in air 41 A ≥ 20; p.87 40 °C = 1.00"
+    calc: "ΔU = √3·20·0.05·(5.88·0.85 + 0.0933·0.5268) = 8.74 V = 2.19 %"
+  - id: C02
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 47}
+    expect: {status: ok, size_mm2: 4, iz_a: 36.49}
+    oracle: "47 °C taken at the 50 °C column (R-CAB-05), p.87 factor 0.89"
+    calc: "41 × 0.89 = 36.49 A ≥ 20"
+  - id: C03
+    in: {ib_a: 38, in_a: 40, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 50}
+    expect: {status: ok, size_mm2: 6, iz_a: 46.28, vd_pct: 2.79, bound_by: ampacity}
+    oracle: "p.43/p.87: 4 mm² 41 × 0.89 = 36.49 < In 40 → 6 mm² 52 × 0.89 = 46.28"
+    calc: "ΔU = √3·38·0.05·(3.93·0.85 + 0.0888·0.5268) = 11.15 V = 2.79 %"
+  - id: C04
+    in: {ib_a: 40, in_a: 40, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: ground, ambient_c: 30}
+    expect: {status: ok, size_mm2: 4, iz_a: 45, vd_pct: 4.37}
+    oracle: "p.43: 3C×4 buried direct 45 A; p.87 ground 30 °C = 1.00"
+    calc: "ΔU = √3·40·0.05·5.047 = 17.48 V = 4.37 %"
+  - id: C05
+    in: {ib_a: 40, in_a: 40, length_m: 30, voltage_v: 400, pf_run: 0.85, installation: duct, ambient_c: 40}
+    expect: {status: ok, size_mm2: 6, iz_a: 42.77, bound_by: ampacity}
+    oracle: "p.43 duct: 4 → 38, 6 → 47; p.87 duct 40 °C = 0.91"
+    calc: "4 mm² 38 × 0.91 = 34.58 < 40; 6 mm² 47 × 0.91 = 42.77 ≥ 40"
+  - id: C06
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 20}
+    expect: {status: ok, size_mm2: 4, iz_a: 46.74}
+    oracle: "20 °C is below the lowest air column (25 °C) → 25 °C factor 1.14 (R-CAB-05)"
+    calc: "41 × 1.14 = 46.74"
+  - id: C07
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 62}
+    expect: {status: cannot_select, rule: R-CAB-05}
+    oracle: "p.87 air table ends at 60 °C"
+  - id: C08
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 60}
+    expect: {status: ok, size_mm2: 4, iz_a: 31.57}
+    oracle: "p.87 air 60 °C = 0.77"
+    calc: "41 × 0.77 = 31.57"
+  - id: C09
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 60, make: kei}
+    expect: {status: cannot_select, rule: R-CAB-05}
+    oracle: "KEI p.33 Table 2 air factors end at 55 °C ('Max ambient air temperature 55 °C')"
+  - id: C10
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: ground, ambient_c: 52}
+    expect: {status: cannot_select, rule: R-CAB-05}
+    oracle: "p.87 ground table ends at 50 °C"
+
+  # --- overload coordination (R-CAB-07) ---------------------------------------------------------------
+  - id: C11
+    in: {ib_a: 38, in_a: 50, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40}
+    expect: {status: ok, size_mm2: 6, iz_a: 52, vd_pct: 2.79, bound_by: ampacity}
+    oracle: "In 50 A > 4 mm² 41 A → 6 mm² 52 A ≥ 50 (p.43)"
+  - id: C12
+    in: {ib_a: 40, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40, overload_device: false}
+    expect: {status: ok, size_mm2: 4, iz_a: 41, vd_pct: 4.37}
+    oracle: "drive protects the cable: Iz ≥ Ib only, 41 ≥ 40"
+    calc: "ΔU = √3·40·0.05·5.047 = 17.48 V = 4.37 %"
+  - id: C13
+    in: {ib_a: 40, in_a: 32, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40}
+    expect: {status: cannot_select, rule: R-CAB-07}
+    oracle: "In 32 < Ib 40 breaks Ib ≤ In"
+  - id: C14
+    in: {ib_a: 40, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40}
+    expect: {status: invalid}
+    oracle: "overload device stated (default) but no In"
+
+  # --- voltage drop (R-CAB-09, R-CAB-10) ----------------------------------------------------------------
+  - id: C15
+    in: {ib_a: 20, in_a: 20, length_m: 200, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40}
+    expect: {status: ok, size_mm2: 10, iz_a: 70, vd_pct: 3.51, bound_by: voltage drop}
+    oracle: "R p.11, X p.10; 5 % limit (RULE)"
+    calc: "4 mm² 8.74 %, 6 mm² √3·20·0.2·(3.93·0.85+0.0888·0.5268) = 5.87 % > 5; 10 mm² √3·20·0.2·(2.33·0.85+0.0842·0.5268) = 14.03 V = 3.51 %"
+  - id: C16
+    in: {ib_a: 20, in_a: 20, length_m: 200, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40, vd_limit_pct: 3}
+    expect: {status: ok, size_mm2: 16, vd_pct: 2.24, bound_by: voltage drop}
+    oracle: "project limit 3 %: 10 mm² 3.51 % > 3"
+    calc: "16 mm² √3·20·0.2·(1.47·0.85 + 0.0802·0.5268) = 8.95 V = 2.24 %"
+  - id: C17
+    in: {ib_a: 10, in_a: 10, length_m: 40, voltage_v: 230, phases: 1, pf_run: 0.9, installation: air, ambient_c: 40}
+    expect: {status: ok, size_mm2: 4, cores: "2", iz_a: 48, vd_pct: 1.85}
+    oracle: "p.27: 2C×4 in air 48 A"
+    calc: "ΔU = 2·10·0.04·(5.88·0.9 + 0.0933·0.4359) = 4.27 V = 1.85 % of 230 V"
+  - id: C18
+    in: {ib_a: 10, in_a: 10, length_m: 40, voltage_v: 230, phases: 1, cores: "3", pf_run: 0.9, installation: air, ambient_c: 40}
+    expect: {status: invalid}
+    oracle: "single-phase feeder uses the 2-core table"
+  - id: C19
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0, installation: air, ambient_c: 40}
+    expect: {status: invalid}
+    oracle: "running power factor must be 0 < cos φ ≤ 1"
+
+  # --- DOL starting (R-CAB-11) ---------------------------------------------------------------------------
+  - id: C20
+    in: {ib_a: 15, in_a: 15, length_m: 250, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40, vd_limit_pct: 10, start_multiple: 8, pf_start: 0.3}
+    expect: {status: ok, size_mm2: 10, vd_pct: 3.29, vd_start_pct: 10.12, bound_by: starting voltage drop}
+    oracle: "start limit 15 % (RULE); starting current 8 × 15 = 120 A at cos φ 0.3 (sin 0.9539)"
+    calc: "4 mm² start √3·120·0.25·(5.88·0.3+0.0933·0.9539) = 24.07 %; 6 mm² 16.42 % > 15; 10 mm² 10.12 %; running 10 mm² 3.29 %"
+  - id: C21
+    in: {ib_a: 15, in_a: 15, length_m: 250, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40, start_multiple: 8}
+    expect: {status: invalid}
+    oracle: "starting multiple without starting power factor — no default is invented"
+
+  # --- short circuit (R-CAB-12) ---------------------------------------------------------------------------
+  - id: C22
+    in: {ib_a: 10, in_a: 10, length_m: 30, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40, fault_ka: 10, clearing_s: 0.01}
+    expect: {status: ok, size_mm2: 10, isc1_ka: 1.43, vd_pct: 0.26, bound_by: short circuit}
+    oracle: "p.9 Cu XLPE 1 s: 4 → 0.57 kA, 6 → 0.86, 10 → 1.43"
+    calc: "Ik²t = 10 000² × 0.01 = 1.0e6 A²s; 570² = 3.2e5, 860² = 7.4e5 < 1.0e6; 1430² = 2.04e6 ≥"
+  - id: C23
+    in: {ib_a: 10, in_a: 10, length_m: 30, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40, i2t_a2s: 500000}
+    expect: {status: ok, size_mm2: 6, isc1_ka: 0.86, bound_by: short circuit}
+    oracle: "p.9: 4 mm² 570² = 3.25e5 < 5e5; 6 mm² 860² = 7.40e5 ≥ 5e5"
+  - id: C24
+    in: {ib_a: 10, in_a: 10, length_m: 30, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40, fault_ka: 5, clearing_s: 6}
+    expect: {status: cannot_select, rule: R-CAB-12}
+    oracle: "clearing time 6 s > 5 s (RULE)"
+  - id: C25
+    in: {ib_a: 10, in_a: 10, length_m: 30, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40, fault_ka: 5}
+    expect: {status: invalid}
+    oracle: "fault current without clearing time"
+
+  # --- grouping and parallel runs (R-CAB-06, R-CAB-08) -----------------------------------------------------
+  - id: C26
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40, other_cables: 2}
+    expect: {status: cannot_select, rule: R-CAB-06}
+    oracle: "Polycab prints no grouping factors (p.11 note 1, p.87)"
+  - id: C27
+    in: {ib_a: 60, in_a: 63, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: ground, ambient_c: 30, make: kei, other_cables: 2, group_spacing: touching}
+    expect: {status: ok, size_mm2: 16, iz_a: 65.55, vd_pct: 1.68, bound_by: ampacity}
+    oracle: "KEI p.33 Table 3: 3 cables touching 0.69; KEI p.38 ground: 10 → 74, 16 → 95"
+    calc: "10 mm² 74 × 0.69 = 51.06 < 63; 16 mm² 95 × 0.69 = 65.55; ΔU √3·60·0.05·(1.47·0.85+0.0808·0.5268) = 1.68 %"
+  - id: C28
+    in: {ib_a: 60, in_a: 63, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: ground, ambient_c: 30, make: kei, other_cables: 2}
+    expect: {status: invalid}
+    oracle: "a group needs the spacing (touching / 150 / 300 / 450 mm)"
+  - id: C29
+    in: {ib_a: 600, in_a: 630, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40}
+    expect: {status: ok, size_mm2: 400, runs: 1, iz_a: 662, vd_pct: 1.18}
+    oracle: "p.43: 3C×400 in air 662 A ≥ 630"
+    calc: "ΔU = √3·600·0.05·(0.0637·0.85 + 0.0702·0.5268) = 4.74 V = 1.18 %"
+  - id: C30
+    in: {ib_a: 700, in_a: 700, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40}
+    expect: {status: cannot_select, rule: R-CAB-06}
+    oracle: "largest single 3C cable 662 A < 700; parallel runs need a group factor Polycab does not give"
+  - id: C31
+    in: {ib_a: 600, in_a: 600, length_m: 120, voltage_v: 400, pf_run: 0.85, installation: ground, ambient_c: 30, make: kei, group_spacing: "300"}
+    expect: {status: ok, size_mm2: 185, runs: 2, iz_a: 629.88, vd_pct: 2.27, bound_by: ampacity}
+    oracle: "KEI p.38: largest ground rating 528 < 600 → 2 runs; p.33 Table 3: 2 cables at 30 cm 0.87"
+    calc: "150: 2·321·0.87 = 558.54 < 600; 185: 2·362·0.87 = 629.88; ΔU √3·600·0.12·(0.127·0.85+0.072·0.5268)/2 = 2.27 %"
+  - id: C32
+    in: {ib_a: 40, in_a: 40, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: duct, ambient_c: 30, make: kei, other_cables: 1, group_spacing: touching}
+    expect: {status: cannot_select, rule: R-CAB-06}
+    oracle: "KEI Table 3 covers cables laid direct in ground only, not ducts"
+
+  # --- scope (R-CAB-01, R-CAB-03, R-CAB-13) -------------------------------------------------------------------
+  - id: C33
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40, conductor: Al}
+    expect: {status: cannot_select, rule: R-CAB-01}
+    oracle: "aluminium not in scope"
+  - id: C34
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40, frequency_hz: 60}
+    expect: {status: cannot_select, rule: R-CAB-01}
+    oracle: "reactance tabulated at 50 Hz only (p.10)"
+  - id: C35
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 3300, pf_run: 0.85, installation: air, ambient_c: 40}
+    expect: {status: cannot_select, rule: R-CAB-01}
+    oracle: "650/1100 V cable (p.42)"
+  - id: C36
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: tray, ambient_c: 40}
+    expect: {status: cannot_select, rule: R-CAB-03}
+    oracle: "makers tabulate in air, buried direct and single-way duct only"
+  - id: C37
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: ground, ambient_c: 30, depth_mm: 1000}
+    expect: {status: cannot_select, rule: R-CAB-03}
+    oracle: "Polycab basis depth 750 mm, no depth factors"
+  - id: C38
+    in: {ib_a: 15, in_a: 15, length_m: 20, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40, cores: "3.5"}
+    expect: {status: ok, size_mm2: 25, cores: "3.5", iz_a: 119, bound_by: smallest size offered}
+    oracle: "p.55: 3.5-core rating table starts at 16 mm² but the product list starts at 3.5×25 (R-CAB-13)"
+  - id: C39
+    in: {ib_a: 50, in_a: 50, length_m: 30, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 35}
+    expect: {status: ok, size_mm2: 6, iz_a: 54.6}
+    oracle: "Polycab p.87 35 °C = 1.05: 4 mm² 43.05 < 50; 6 mm² 52 × 1.05 = 54.6"
+  - id: C40
+    in: {ib_a: 50, in_a: 50, length_m: 30, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 35, make: kei}
+    expect: {status: ok, size_mm2: 6, iz_a: 54.08}
+    oracle: "KEI p.33 Table 2 35 °C = 1.04 (Polycab 1.05): 6 mm² 52 × 1.04 = 54.08 (KEI p.38)"
+  - id: C41
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40, make: havells}
+    expect: {status: invalid}
+    oracle: "only makes with a held source"
+  # --- cos φ not given (owner 2026-10-14: remove inputs the tool can work out) ---------------------------
+  - id: C42
+    in: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, installation: air, ambient_c: 40}
+    expect: {status: ok, size_mm2: 4, runs: 1, iz_a: 41, vd_pct: 2.55}
+    oracle: "as C01 (p.43, p.11 R 5.88, p.10 X 0.0933) with cos φ not given: R·cosφ + X·sinφ ≤ √(R² + X²) for every φ (R-CAB-09)"
+    calc: "ΔU = √3·20·0.05·√(5.88² + 0.0933²) = √3·1·5.8807 = 10.19 V = 2.55 % (C01 at cos φ 0.85: 2.19 %)"
+  - id: C43
+    in: {ib_a: 38, in_a: 40, length_m: 120, voltage_v: 400, installation: air, ambient_c: 50}
+    expect: {status: ok, size_mm2: 10, bound_by: voltage drop, vd_pct: 4.6}
+    oracle: "cos φ not given → bound √(R² + X²) (R-CAB-09). 6 mm² carries the current (C03: 46.28 A ≥ 40) but fails the drop; 10 mm² Polycab p.11 R 2.33, p.10 X 0.0842"
+    calc: "6 mm²: √3·38·0.12·√(3.93² + 0.0888²)/400 = 7.76 % > 5 %; 10 mm²: √3·38·0.12·2.3315/400 = 4.60 % ≤ 5 %"

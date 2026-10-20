@@ -1,0 +1,29 @@
+# The calculation formulas exactly as Rittal prints them (TSC 3124300 EN). select.py implements these;
+# scripts/verify_enclosure.py re-reads each one from the PDF text. In the PDF text the dotted Q̇ and V̇ are
+# private-use glyphs (U+E051, U+E056); the dots were read on the rendered page images (pp. 12, 13, 26, 30, 52).
+#
+# Symbols (p. 13): Q̇v = heat loss installed in the enclosure [W]; Q̇s = heat emitted by the enclosure surface [W]
+# (Q̇s > 0: radiation, Ti > Tu; Q̇s < 0: irradiation, Ti < Tu); Q̇E = required cooling output of an enclosure
+# cooling unit [W]; Q̇H = required thermal output of a heater [W]; qw = specific thermal output of a heat
+# exchanger [W/K]; V̇ = required volumetric air flow of a fan-and-filter unit [m³/h];
+# ΔT = Ti – Tu = max. permissible temperature difference [K]; A = effective, heat loss-dissipating enclosure
+# surface area to IEC 890 [m²]; k = heat transfer coefficient [W/m²K].
+#
+# IEC 890 (now IEC TR 60890) is only named: this catalogue does NOT print the surface-area formulas per
+# installation type. A is therefore an input (R-ENC-02 / R-ENC-03).
+
+source:
+  ref: RITTAL-TSC-3124300
+  section: "Project-planning formulas: fan-and-filter units (p. 12), calculation basis (p. 13), air/air heat exchangers (p. 26), cooling units (p. 30), heaters (p. 52); prerequisites (pp. 7, 8, 24)"
+
+rows:
+  - {id: delta_t_def,   printed: "ΔT = Ti – Tu = Max. permissible temperature difference [K]", page: 13}
+  - {id: area_def,      printed: "A = Effective, heat loss-dissipating enclosure surface area to IEC 890 [m²]", page: 13}
+  - {id: delta_t_max,   printed: "(ΔT)max. = Q̇v / (k · A)", page: 13}
+  - {id: q_surface,     printed: "Q̇S = A · k · ΔT (watts)", page: 13}
+  - {id: fan_airflow,   printed: "V̇ = f · Q̇v / ΔT", page: 12}
+  - {id: heat_exchanger, printed: "qw = (Q̇v – (A · ΔT · k)) / ΔT", page: 26}
+  - {id: cooling_unit,  printed: "Q̇E = Q̇v – k · A · ΔT", page: 30}
+  - {id: heater,        printed: "Q̇H = A · ΔT · k  (indoor siting, static air; outdoor: double)", page: 52, used: false}
+  - {id: fan_prerequisite, printed: "the ambient air must be clean and at a temperature below the required enclosure internal temperature", page: 7}
+  - {id: hx_prerequisite,  printed: "the ambient temperature must be below the required enclosure internal temperature", page: 24}

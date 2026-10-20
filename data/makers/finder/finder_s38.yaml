@@ -1,0 +1,30 @@
+# Finder Series 38 relay interface modules, 6.2 mm wide, 1 pole 6 A EMR (catalogue S38EN, I-2026).
+# Transcribed 2026-10-11 from the PDF and checked against the rendered page images.
+# page = PDF page. The catalogue prints its own page numbers starting at the first product page:
+# printed page = PDF page − 4 (PDF p.5 = printed 1, PDF p.18 = printed 14, PDF p.20 = printed 16).
+#
+#   kind: module     — interface module code (relay + socket) as printed in the combination table
+#         contact    — contact specification of the 1 pole 6 A relay (38.51/61)
+#         coil       — coil data at the 24 V nominal voltage
+#         accessory  — jumper link / separator / marker tags
+#         statement  — a printed rule the selection uses (quoted)
+# Only the 24 V versions are transcribed (component scope: PLC outputs are 24 V DC).
+
+source:
+  ref: FINDER-S38
+  section: "38.51/38.61 1 pole 6 A EMR (p.5), coil data (p.13), relay/socket combinations (p.18), accessories (p.20)"
+  printed_page_offset: -4
+
+rows:
+  - {kind: module, article: "38.61.7.024.0050", series: "38", connection: screwless, coil: "24 V DC", coil_code: "7.024", relay: "34.51.7.024.0010", socket: "93.51.7.024", width_mm: 6.2, page: 18}
+  - {kind: module, article: "38.51.7.024.0050", series: "38", connection: screw, coil: "24 V DC", coil_code: "7.024", relay: "34.51.7.024.0010", socket: "93.01.7.024", width_mm: 6.2, page: 18}
+  - {kind: module, article: "38.61.0.024.0060", series: "38", connection: screwless, coil: "24 V AC/DC", coil_code: "0.024", relay: "34.51.7.024.0010", socket: "93.51.0.024", width_mm: 6.2, page: 18}
+  - {kind: module, article: "38.51.0.024.0060", series: "38", connection: screw, coil: "24 V AC/DC", coil_code: "0.024", relay: "34.51.7.024.0010", socket: "93.01.0.024", width_mm: 6.2, page: 18}
+  - {kind: contact, type: "38.51/61", contacts: "1 CO (SPDT)", rated_a: 6, peak_a: 10, rated_v_ac: 250, max_v_ac: 400, ac1_va: 1500, ac15_va: 300, dc1_24v_a: 6, dc1_110v_a: 0.2, dc1_220v_a: 0.12, ambient_min_c: -40, ambient_max_c: 70, ambient_note: "+70 °C for UN ≤ 60 V, +55 °C above", page: 5}
+  - {kind: coil, coil_code: "7.024", coil: "24 V DC (sensitive)", un_v: 24, umin_v: 19.2, umax_v: 28.8, i_ma: 10.4, p_w: 0.3, page: 13}
+  - {kind: coil, coil_code: "0.024", coil: "24 V AC/DC", un_v: 24, umin_v: 19.2, umax_v: 26.4, i_ma: 12, p_w: 0.2, page: 13}
+  - {kind: accessory, use: jumper, article: "093.20", ways: 20, rated_a: 36, rated_v: 250, for_types: "38.21/51/61/81/91", note: "blue; 093.20.0 black, 093.20.1 red. Each pole must not exceed the 6 A limit of the interface", page: 20}
+  - {kind: accessory, use: separator, article: "093.01", per_group: 2, note: "Thickness 2 mm, required at the start and the end of a group of interfaces", page: 20}
+  - {kind: accessory, use: marker, article: "093.48", tags: 48, note: "Sheet of marker tags for 38.21/51/61/81/91, plastic, 48 tags, 6 x 10 mm", page: 20}
+  - {kind: statement, topic: dc13, text: "In the case of DC13 loads, the connection of a diode in parallel with the load will permit a similar electrical life as for a DC1 load.", page: 12}
+  - {kind: statement, topic: cut_jumpers, text: "must be used for: ... protection of cut jumper links", page: 20}

@@ -1,0 +1,67 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 5
+title: Soft starter (Siemens SIRIUS 3RW52)
+what_it_does: >
+  For a motor started with a soft starter, it picks the Siemens 3RW52 General Performance soft starter on the
+  motor's current (never on kW), for the starting class (normal Class 10A, heavy Class 20E) at the temperature
+  inside the panel, sets its motor protection to the motor current, and adds the short-circuit protection Siemens
+  tested with it: a motor starter protector / circuit breaker (type of coordination 1), gG fuses (type 1) or
+  SITOR semiconductor fuses (type 2). Everything comes from the Siemens IC 10 · 2026 catalogue, pages 6/58–6/70.
+  Inside-delta wiring, other families and altitudes above 1 000 m are refused.
+
+how_to_check:
+  - "Open page 6/59 (PDF 491). Pick a type, e.g. 3RW5215 with 25 A at 40 °C, 22.3 A at 50 °C, 19.6 A at 60 °C."
+  - "Try 22 A at 40 °C and 50 °C: 3RW5215. Try 22 A at 55 °C: the tool uses the 60 °C column (19.6 A < 22 A) and picks 3RW5216."
+  - "For heavy starting (Class 20E) compare the third block on the page; on page 6/60 the 3RW5226 drops to 65 A, so 70 A heavy gives 3RW5227."
+  - "Check the protection on page 6/63 (motor starter protector / 3VA with its Iq) or 6/64 (gG fuses) or 6/65 (semiconductor fuses)."
+  - "Check the article on page 6/67: 230 V control → the '..14' version (110 … 250 V AC), screw terminals."
+
+spot_checks:
+  - {label: "11 kW pump, 22 A, normal starting, 40 °C (p. 6/59, 6/63, 6/67: 3RW5215-1AC14 + 3RV2032-4EA10)", tab: soft_starter, inputs: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal}}
+  - {label: "22 A at 55 °C → 60 °C column → 3RW5216 (p. 6/59)", tab: soft_starter, inputs: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 55, duty: normal}}
+  - {label: "70 A heavy starting → 3RW5227 with gG fuses and a line contactor (p. 6/60, 6/64)", tab: soft_starter, inputs: {flc_a: 70, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: heavy}}
+  - {label: "75 kW conveyor 132 A → 3RW5235-6AC14 + 3VA2220 (p. 6/61, 6/63, 6/67)", tab: soft_starter, inputs: {flc_a: 132, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal}}
+  - {label: "90 A at 50 kA: the 3VA is tested to 15 kA only → refused (p. 6/63)", tab: soft_starter, inputs: {flc_a: 90, flc_basis: nameplate, fault_ka: 50, ambient_c: 40, duty: normal}}
+
+decisions:
+  - id: SS-1
+    question: "Which Siemens starting class should the drive duty mean? Normal starting → Class 10A, heavy starting (conveyor, crusher, mixer …) → Class 20E. (The designer can still choose 10A / 10E / 20E directly.)"
+    options: {"10A-20E": "normal → Class 10A, heavy → Class 20E", "10E-20E": "normal → Class 10E, heavy → Class 20E", ask: "Always ask the class"}
+    recommended: "10A-20E"
+  - id: SS-2
+    question: "When the short-circuit protection is not chosen: Siemens says fuseless mounting (motor starter protector / circuit breaker, type 1) is normally sufficient, but fuseless feeders are only tested for Class 10. Use a motor starter protector / circuit breaker for Class 10 and gG fuses for Class 20E?"
+    options: {"yes": "Yes: Class 10 → MPCB / 3VA (type 1); Class 20E → gG fuses (type 1)", type2: "Always semiconductor fuses (type 2: the soft starter survives a short circuit)", ask: "Always ask"}
+    recommended: "yes"
+  - id: SS-3
+    question: "Siemens recommends a line contactor with fuses for heavy starting (Class 20) or many starts per hour. Add it automatically for Class 20E with fuses? (Its coil version is not in the soft starter tables: it is listed as an open point.)"
+    options: {"yes": "Yes, add it for Class 20E with fuses", "no": "No, only when the designer asks for it"}
+    recommended: "yes"
+  - id: SS-4
+    question: "Control supply of the soft starter: the panel's 230 V AC control circuit (the 110 … 250 V AC version, article ending ..1.) by default?"
+    options: {"230VAC": "230 V AC (110 … 250 V AC version)", "24V": "24 V AC/DC version"}
+    recommended: "230VAC"
+  - id: SS-5
+    question: "Siemens prints the fuseless (motor starter protector / 3VA) combinations for '400 V systems' and '500 V systems' only. The tool uses the 400 V column up to 415 V, the 500 V column up to 500 V, and refuses fuseless feeders above 500 V (fuses are tested up to 600 V). Accept? (Test agent finding 2026-10-14: it had used the 400 V column up to 480 V.)"
+    options: {"yes": "Yes: 400 V column ≤ 415 V, 500 V column ≤ 500 V, above → fuses only", wider: "Use the 400 V column up to 440 V (400 V + 10 %)"}
+    recommended: "yes"
+
+fields:
+  flc_a: Motor FLC (A)
+  flc_basis: {label: "FLC basis", options: [nameplate, datasheet, guide, calculated]}
+  fault_ka: Fault level at the starter (kA)
+  ambient_c: Temperature inside the panel (°C)
+  duty: {label: "Duty", options: [normal, heavy]}
+  starting_class: {label: "Starting class (overrides duty)", options: ["10A", "10E", "20E"]}
+  protection: {label: "Short-circuit protection", options: [mpcb, fuse_gg, fuse_semi], help: "empty = decision SS-2"}
+  line_contactor: {label: "Line contactor", options: ["true", "false"], help: "empty = decision SS-3"}
+  voltage_v: Operational voltage (V)
+  control_supply: {label: "Control supply", options: [230VAC, 24V]}
+  thermistor: {label: "Thermistor motor protection version", options: ["false", "true"]}
+  terminals: {label: "Control terminals", options: [screw, spring]}
+  starts_per_hour: Starts per hour (optional)
+  start_current_pct: Starting current, % of IM (optional, 300 or 350)
+  start_time_s: Startup time (s, optional)
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/makers/siemens/ic10_3rw52_ratings.yaml, data/makers/siemens/ic10_3rw52_coordination.yaml, data/makers/siemens/ic10_3rw52_ordering.yaml, data/makers/siemens/3rw52_accessories.yaml]

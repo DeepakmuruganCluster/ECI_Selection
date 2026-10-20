@@ -1,0 +1,162 @@
+# Golden cases for metering — written BEFORE the code (G4).
+# Oracles: CT tables read on the PDF page images (RISH-LTRP pp. 3–11, RISH-TW pp. 3–4, SELEC-MEAS pp. 9–10),
+# SIE-PAC3220 (p.98 burden 0.3 VA at 5 A, p.106 ambient −25 … +55 °C, p.75 / p.98 1 A or 5 A),
+# SIE-7KM-PN p.21, SELEC-CT pp. 7, 10 (Selec ambient 0 … +50 °C), and hand calculation in `calc`.
+# Unless stated: 400 V 3P4W, class 0.5, 5 A secondary, PROFINET, leads 5 m of 2.5 mm² Cu at 70 °C, ambient 35 °C.
+# Lead burden (R-MTR-08): ρ70 = (1/58)·(1 + 0.00393·50) = 0.0206293 Ω·mm²/m.
+#   5 m / 2.5 mm²:  2·5·25·0.0206293/2.5 = 2.0629 VA  + meter 0.3 = 2.3629 VA
+#   10 m / 2.5 mm²: 4.1259 + 0.3 = 4.4259 VA;  20 m / 2.5 mm²: 8.2517 + 0.3 = 8.5517 VA
+#   50 m / 1.5 mm²: 2·50·25·0.0206293/1.5 = 34.3822 + 0.3 = 34.6822 VA
+# Choice (R-MTR-12): smallest primary ≥ circuit → class closest to required → smallest VA → family → size.
+
+cases:
+  # --- normal selections, Rishabh ------------------------------------------------------------
+  - id: MT01
+    in: {circuit_a: 630, ct_make: rishabh, busbar_w_mm: 60, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 40}
+    expect: {status: ok, ct_designation: "RISH LTRP 4, 630/5 A, 7.5 VA, class 0.5", ct_ratio: "630/5 A", ct_class: "0.5", ct_va: 7.5, burden_va: 2.36, ct_qty: 3, comm_module: 7KM9300-0AE02-0AA0, meter: "SENTRON PAC3220"}
+    oracle: "RISH-LTRP p.6: LTRP 4 630 A → 10 VA cl 1 / 7.5 VA cl 0.5, window 65 × 35; ambient 40 °C = Rishabh max (p.2); SIE-7KM-PN p.21"
+    calc: "60 ≤ 65 and 10 ≤ 35 fits; 7.5 VA ≥ 2.36 VA"
+  - id: MT02
+    in: {circuit_a: 630, ct_make: rishabh, busbar_w_mm: 75, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: warning, ct_designation: "RISH CT TW-6, 800/5 A, 10 VA, class 0.5", ct_ratio: "800/5 A", ct_va: 10, warnings: [R-MTR-05]}
+    oracle: "ECI busbar 75 × 10 (ECI-WNS2503-AUTO p.1). LTRP 4 window 65 × 35 (p.6): 75 > 65 and 75 > 35. 800 A: LTRP 4 no; TW-5 Ø72 (RISH-TW p.4) < diagonal; TW-6 Ø113 fits: 0.5 → 10 VA"
+    calc: "diagonal √(75² + 10²) = 75.66 mm; 72 < 75.66 ≤ 113"
+  - id: MT03
+    in: {circuit_a: 630, ct_make: rishabh, accuracy_class: "1", busbar_w_mm: 60, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: ok, ct_designation: "RISH LTRP 4, 630/5 A, 10 VA, class 1", ct_class: "1", ct_va: 10}
+    oracle: "RISH-LTRP p.6: 630 A, class 1 = 10 VA; class closest to required (R-MTR-06)"
+  - id: MT04
+    in: {circuit_a: 630, ct_make: rishabh, accuracy_class: "0.2", busbar_w_mm: 60, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: warning, ct_designation: "RISH CT TW-6, 800/5 A, 2.5 VA, class 0.2", ct_class: "0.2", ct_va: 2.5, warnings: [R-MTR-05]}
+    oracle: "LTRP has no class 0.2 (p.6); RISH-TW p.4 800 A class 0.2: TW-5 10 VA, TW-6 2.5 VA → smallest VA ≥ 2.36"
+    calc: "busbar diagonal 60.83 ≤ 72 and ≤ 113 (both fit); 2.5 ≥ 2.36"
+  - id: MT05
+    in: {circuit_a: 100, ct_make: rishabh, accuracy_class: "1", cable_od_mm: 15, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: ok, ct_designation: "RISH LTRP 2, 100/5 A, 2.5 VA, class 1", ct_va: 2.5}
+    oracle: "100 A class 1: LTRP 1 5 VA (p.3), LTRP 2 2.5 VA (p.4), TW-1 2.5, TW-2 5, TW-3 2.5 (RISH-TW p.3); 2.5 VA ties → LTRP before TW"
+    calc: "Ø15 ≤ min(35, 20); 2.5 ≥ 2.36"
+  - id: MT06
+    in: {circuit_a: 100, ct_make: rishabh, cable_od_mm: 15, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: ok, ct_designation: "RISH LTRP 1, 100/5 A, 2.5 VA, class 0.5", ct_va: 2.5}
+    oracle: "100 A class 0.5: LTRP 1 2.5 VA (p.3, Ø20), TW-1 1.5, TW-2 2.5, TW-3 1 (RISH-TW p.3); 1.5 and 1 < 2.36 VA"
+  - id: MT07
+    in: {circuit_a: 100, ct_make: rishabh, cable_od_mm: 15, lead_length_m: 10, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: warning, ct_designation: "RISH CT TW-2, 150/5 A, 5 VA, class 0.5", ct_ratio: "150/5 A", burden_va: 4.43, warnings: [R-MTR-05]}
+    oracle: "4.43 VA: no class ≤ 0.5 CT at 100, 120 or 125 A has ≥ 4.43 VA (RISH-LTRP p.3–4, RISH-TW p.3); 150 A: TW-2 class 0.5 5 VA (p.3)"
+    calc: "150 A class 0.5: LTRP 1 3.75, LTRP 2 1.75, TW-1 2.5, TW-2 5, TW-3 1.5, TW-4 1 → only TW-2 ≥ 4.43"
+  - id: MT08
+    in: {circuit_a: 630, ct_make: rishabh, busbar_w_mm: 60, busbar_t_mm: 10, lead_length_m: 20, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: warning, ct_designation: "RISH CT TW-6, 800/5 A, 10 VA, class 0.5", burden_va: 8.55, warnings: [R-MTR-05]}
+    oracle: "LTRP 4 630 A cl 0.5 7.5 VA < 8.55 VA (p.6); 800 A cl 0.5: LTRP 4 7.5, TW-5 15, TW-6 10 (RISH-TW p.4) → 10 VA"
+  - id: MT09
+    in: {circuit_a: 200, ct_make: rishabh, accuracy_class: "0.5S", cable_od_mm: 20, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: ok, ct_designation: "RISH CT TW-2, 200/5 A, 5 VA, class 0.5S", ct_class: "0.5S", ct_va: 5}
+    oracle: "RISH-TW p.3–4, 200 A class 0.5S: TW-2 5 VA, TW-3 5 VA, TW-4 1.5 VA (< 2.36); tie → smaller size TW-2 (Ø30 ≥ 20)"
+  # --- normal selections, Selec ---------------------------------------------------------------
+  - id: MT10
+    in: {circuit_a: 630, ct_make: selec, busbar_w_mm: 75, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: ok, ct_designation: "TWCT-T-D110-800/5A-VA10-CL0.5", ct_ratio: "800/5 A", ct_va: 10, ct_qty: 3}
+    oracle: "SELEC-MEAS p.9: no 630 A primary; 800 A: SPCT-100/60 (60 × 12) too small, SPCT-140/100 (100 × 30) 15 VA; p.10 TWCT-T-D110 (Ø110) 800 A 0.5 10 VA"
+    calc: "diagonal 75.66 ≤ 110; 10 < 15 VA. First Selec primary ≥ 630 is 800: no escalation"
+  - id: MT11
+    in: {circuit_a: 630, ct_make: selec, busbar_w_mm: 60, busbar_t_mm: 12, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: ok, ct_designation: "SPCT-100/60-800/5A-VA10-CL0.5-CE", ct_va: 10}
+    oracle: "SELEC-MEAS p.9 SPCT-100/60 (60 × 12 mm) 800 A 0.5 10 VA; window boundary; TWCT D110 also 10 VA → SPCT first"
+  - id: MT12
+    in: {circuit_a: 500, ct_make: selec, accuracy_class: "1", busbar_w_mm: 40, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: ok, ct_designation: "SPCT-100/60-500/5A-VA5-CL1-CE", ct_ratio: "500/5 A", ct_va: 5}
+    oracle: "SELEC-MEAS p.9 SPCT-100/60 500 A class 1 5 VA; p.10 TWCT-T-D65 500 A class 1 5 VA; tie → SPCT"
+  - id: MT13
+    in: {circuit_a: 500, ct_make: selec, busbar_w_mm: 40, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: warning, ct_designation: "SPCT-100/60-600/5A-VA5-CL0.5-CE", ct_ratio: "600/5 A", warnings: [R-MTR-05]}
+    oracle: "SELEC-MEAS p.9: 500 A only class 1 (SPCT-100/60), p.10 TWCT-D65 500 A class 1 → no class 0.5 at 500; 600 A SPCT-100/60 class 0.5 5 VA"
+  - id: MT14
+    in: {circuit_a: 4000, ct_make: selec, busbar_w_mm: 75, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: ok, ct_designation: "SPCT-140/100-4000/5A-VA15-CL0.5-CE", ct_va: 15}
+    oracle: "largest Selec primary: SPCT-140/100 4000 A 0.5 15 VA (SELEC-MEAS p.9)"
+  - id: MT15
+    in: {circuit_a: 1000, ct_make: selec, cable_od_mm: 110, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: ok, ct_designation: "TWCT-T-D110-1000/5A-VA10-CL0.5", ct_va: 10}
+    oracle: "SELEC-MEAS p.10: D110 and D120 both 1000 A 0.5 10 VA; Ø110 = cable 110 (boundary); smaller size D110"
+  - id: MT16
+    in: {circuit_a: 630, ct_make: selec, busbar_w_mm: 75, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 50}
+    expect: {status: ok, ct_designation: "TWCT-T-D110-800/5A-VA10-CL0.5"}
+    oracle: "ambient boundary: Selec TWCT 0 … +50 °C (SELEC-CT p.10), PAC3220 ≤ +55 °C (SIE-PAC3220 p.106)"
+  # --- client WNS2503 incomer, minimal inputs (warnings) ----------------------------------------
+  - id: MT17
+    in: {circuit_a: 630, ct_make: rishabh}
+    expect: {status: warning, ct_designation: "RISH LTRP 4, 630/5 A, 7.5 VA, class 0.5", comm_module: 7KM9300-0AE02-0AA0, burden_va: 0.3, ct_qty: 3, warnings: [R-MTR-08, R-MTR-10, R-MTR-11]}
+    oracle: "WNS2503 incomer 3VA 630 A (ECI-WNS2503-AUTO p.1); LTRP 4 630 A cl 0.5 7.5 VA (RISH-LTRP p.6); meter burden only 0.3 VA (SIE-PAC3220 p.98)"
+  - id: MT18
+    in: {circuit_a: 630, ct_make: selec}
+    expect: {status: warning, ct_designation: "SPCT-100/60-800/5A-VA10-CL0.5-CE", warnings: [R-MTR-08, R-MTR-10, R-MTR-11]}
+    oracle: "SELEC-MEAS p.9: first Selec primary ≥ 630 = 800; SPCT-100/60 0.5 10 VA ties TWCT-D110 10 VA (p.10) → SPCT"
+  - id: MT19
+    in: {circuit_a: 630, ct_make: rishabh, communication: modbus_tcp, busbar_w_mm: 60, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35,
+         client_requirements: {meter_communication: {value: profinet, text: "energy meter with PROFINET", source: "ECI-WNS2503-AUTO p.1"}}}
+    expect: {status: warning, comm_module: null, meter: "SENTRON PAC3220", warnings: [R-MTR-02]}
+    oracle: "PAC3220 has its own Ethernet / Modbus TCP (SIE-PAC3220 p.101); client asks PROFINET (ECI-WNS2503-AUTO p.1) → warning"
+  - id: MT20
+    in: {circuit_a: 630, ct_make: rishabh, communication: none, busbar_w_mm: 60, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}
+    expect: {status: ok, comm_module: null, meter: "SENTRON PAC3220"}
+    oracle: "audit 2026-10-17 (owner: ask): communication 'none' is an answer — no module, no warning when no client asks for one"
+  # --- refusals (cannot select) -----------------------------------------------------------------
+  - id: MT20
+    in: {circuit_a: 630, ct_make: rishabh, ct_secondary_a: 1}
+    expect: {status: cannot_select, rule: R-MTR-04}
+    oracle: "PAC3220 accepts x/1 A (p.98) but Rishabh prints only 5 A tables ('1A on request', RISH-LTRP p.2)"
+  - id: MT21
+    in: {circuit_a: 630, ct_make: rishabh, voltage_v: 720}
+    expect: {status: cannot_select, rule: R-MTR-01}
+    oracle: "PAC3220 rated up to 400/690 V (p.98): 720 V line voltage > 690 V"
+  - id: MT22
+    in: {circuit_a: 630, ct_make: rishabh, system: 3P3W}
+    expect: {status: cannot_select, rule: R-MTR-01}
+    oracle: "scope: 3P4W only (SIE-PAC3220 p.48 Figure 4-3)"
+  - id: MT23
+    in: {circuit_a: 8000, ct_make: rishabh}
+    expect: {status: cannot_select, rule: R-MTR-05}
+    oracle: "largest Rishabh primary 7500 A (RISH-LTRP p.11)"
+  - id: MT24
+    in: {circuit_a: 100, ct_make: selec, accuracy_class: "0.2"}
+    expect: {status: cannot_select, rule: R-MTR-06}
+    oracle: "Selec SPCT / TWCT print no class 0.2 (SELEC-MEAS pp. 9–10)"
+  - id: MT25
+    in: {circuit_a: 630, ct_make: selec, busbar_w_mm: 120, busbar_t_mm: 10}
+    expect: {status: cannot_select, rule: R-MTR-10}
+    oracle: "SPCT-140/100 window 100 × 30 (p.9) < 120; TWCT D120 Ø120 (p.10) < diagonal"
+    calc: "√(120² + 10²) = 120.42 > 120"
+  - id: MT26
+    in: {circuit_a: 30, ct_make: selec, accuracy_class: "5", cable_od_mm: 10, lead_length_m: 50, lead_mm2: 1.5}
+    expect: {status: cannot_select, rule: R-MTR-09}
+    oracle: "34.68 VA > largest Selec rated burden 15 VA (SELEC-MEAS p.9)"
+  - id: MT27
+    in: {circuit_a: 630, ct_make: rishabh, ambient_c: 45}
+    expect: {status: cannot_select, rule: R-MTR-11}
+    oracle: "Rishabh LTRP / TW ambient −25 … +40 °C (RISH-LTRP p.2, RISH-TW p.2)"
+  - id: MT28
+    in: {circuit_a: 630, ct_make: selec, ambient_c: 52}
+    expect: {status: cannot_select, rule: R-MTR-11}
+    oracle: "PAC3220 ≤ +55 °C passes (p.106) but Selec CTs 0 … +50 °C (SELEC-CT pp. 7, 10)"
+  # --- invalid input ----------------------------------------------------------------------------
+  - id: MT29
+    in: {circuit_a: 630, ct_make: rishabh, busbar_w_mm: 60, busbar_t_mm: 10, cable_od_mm: 30}
+    expect: {status: invalid}
+    oracle: "give a busbar or a cable, not both"
+  - id: MT30
+    in: {circuit_a: 630, ct_make: rishabh, lead_length_m: 5}
+    expect: {status: invalid}
+    oracle: "lead length without cross-section"
+  # --- 2026-10-20 (owner, RFQ part 1): the meter's full order number from its supply version, R-MTR-15
+  - id: MT31
+    in: {circuit_a: 630, ct_make: rishabh, busbar_w_mm: 60, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 40, meter_supply: ac_dc}
+    expect: {status: ok, meter_article: 7KM3220-0BA01-1DA0}
+    oracle: "SIE-LV10-2026 p.10/32 (PDF 834): PAC3220, AC/DC wide-range supply (AC 100 … 250 V), Modbus TCP, without MID → 7KM3220-0BA01-1DA0"
+  - id: MT32
+    in: {circuit_a: 630, ct_make: rishabh, busbar_w_mm: 60, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 40, meter_supply: dc_24_60}
+    expect: {status: ok, meter_article: 7KM3220-1BA01-1EA0}
+    oracle: "SIE-LV10-2026 p.10/32: DC power supply unit with extra-low voltage (DC 24 … 60 V) → 7KM3220-1BA01-1EA0"
+  - id: MT33
+    in: {circuit_a: 630, ct_make: rishabh, meter_supply: "230V"}
+    expect: {status: invalid}
+    oracle: "meter_supply is ac_dc or dc_24_60"

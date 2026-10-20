@@ -1,0 +1,37 @@
+# SENTRON 3VM, 3- and 4-pole line-protection breakers: breaking capacity per frame and class.
+# "General data — 3VM up to 630 A", PDF p.10 (3VM10, 3VM11) and p.11 (3VM12, 3VM13, 3VM14).
+#   icu_ka = "Rated ultimate short-circuit breaking capacity Icu", row "380 - 415 V AC / 50/60 Hz"
+#   ics_ka = "Rated service short-circuit breaking capacity Ics", same voltage row
+#   ue_max_v = "Rated operational voltage Ue 50/60 Hz AC"
+#   in_min_a / in_max_a = "Rated operational current In at 50 °C ambient temperature" (range printed
+#   for the frame; the ratings actually orderable are in 3vm_line_protection_articles.yaml)
+# The 3VM11 1-pole and 2-pole columns of p.10 are not transcribed (out of scope: 3/4-pole only).
+# Class letters cross-check with p.18 ("Breaking capacity of the 3VM series, 2 to 4-pole at 415 V AC":
+# B 16 kA, N 25 kA, S 36 kA, M 55 kA).
+
+source:
+  ref: SIE-3VM-LV31
+  section: "General data, 3VM up to 630 A: Icu / Ics at 380 - 415 V AC (pp. 10–11); scope conditions (pp. 9, 19)"
+
+conditions:
+  voltage_min_v: 380            # row "380 - 415 V AC / 50/60 Hz", p.10
+  voltage_max_v: 415
+  ambient_no_derating_max_c: 50 # p.9 "No derating up to +50 °C"; p.10 In "at 50 °C ambient temperature"
+  ambient_min_c: -25            # p.19 "ambient temperatures from -25 °C to +70 °C"
+  ambient_max_c: 70             # p.19; above +50 °C "there are reductions in the rated operational current" — no values given
+  altitude_max_m: 2000          # p.19 "up to 2000 m above sea level, the rated data will not change"
+condition_pages: {voltage: 10, ambient: 19, no_derating: 9, altitude: 19}
+
+rows:
+  - {frame: 3VM10, size_a: 100, class: B, icu_ka: 16, ics_ka: 8,  ue_max_v: 500, in_min_a: 16,  in_max_a: 100, page: 10}
+  - {frame: 3VM10, size_a: 100, class: N, icu_ka: 25, ics_ka: 12, ue_max_v: 500, in_min_a: 16,  in_max_a: 100, page: 10}
+  - {frame: 3VM10, size_a: 100, class: S, icu_ka: 36, ics_ka: 12, ue_max_v: 500, in_min_a: 16,  in_max_a: 100, page: 10}
+  - {frame: 3VM11, size_a: 160, class: N, icu_ka: 25, ics_ka: 18, ue_max_v: 500, in_min_a: 16,  in_max_a: 160, page: 10}
+  - {frame: 3VM11, size_a: 160, class: S, icu_ka: 36, ics_ka: 27, ue_max_v: 500, in_min_a: 16,  in_max_a: 160, page: 10}
+  - {frame: 3VM11, size_a: 160, class: M, icu_ka: 55, ics_ka: 41, ue_max_v: 500, in_min_a: 16,  in_max_a: 160, page: 10}
+  - {frame: 3VM12, size_a: 250, class: S, icu_ka: 36, ics_ka: 27, ue_max_v: 500, in_min_a: 160, in_max_a: 250, page: 11}
+  - {frame: 3VM12, size_a: 250, class: M, icu_ka: 55, ics_ka: 41, ue_max_v: 500, in_min_a: 160, in_max_a: 250, page: 11}
+  - {frame: 3VM13, size_a: 400, class: S, icu_ka: 36, ics_ka: 27, ue_max_v: 500, in_min_a: 320, in_max_a: 400, page: 11}
+  - {frame: 3VM13, size_a: 400, class: M, icu_ka: 55, ics_ka: 41, ue_max_v: 500, in_min_a: 320, in_max_a: 400, page: 11}
+  - {frame: 3VM14, size_a: 630, class: S, icu_ka: 36, ics_ka: 27, ue_max_v: 500, in_min_a: 500, in_max_a: 630, page: 11}
+  - {frame: 3VM14, size_a: 630, class: M, icu_ka: 55, ics_ka: 41, ue_max_v: 500, in_min_a: 500, in_max_a: 630, page: 11}

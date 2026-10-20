@@ -1,0 +1,20 @@
+# Products with a rating printed in the catalogue (TSC 3124300 EN).
+# - Air/air heat exchangers, wall-mounted with controller, 50/60 Hz, p. 26: the specific thermal output of each
+#   model is printed as the label of its line in the Q̇v–ΔT diagram ("3126.100 (17.5 W/K)" …). Read from the
+#   page text and checked on the rendered image of p. 26 (labels are rotated). Range 17.5 – 90 W/K also on p. 24.
+# - Blue e+ fan-and-filter units, p. 8: "Air throughput from 20 m³/h to 1160 m³/h" — a range only, no
+#   per-model rating table in this catalogue → no fan model is selected (R-ENC-12 uses the upper end).
+# - Cooling units: only output ranges (e.g. p. 36 "0.3 kW – 5.8 kW"), no per-model ratings → no model selected.
+
+source:
+  ref: RITTAL-TSC-3124300
+  section: "Air/air heat exchangers, specific thermal output 17.5 – 90 W/K (p. 26); fan-and-filter air throughput (p. 8)"
+
+rows:
+  - {kind: heat_exchanger, article: "SK 3126.100", q_w_per_k: 17.5, page: 26}
+  - {kind: heat_exchanger, article: "SK 3127.100", q_w_per_k: 30,   page: 26}
+  - {kind: heat_exchanger, article: "SK 3128.100", q_w_per_k: 45,   page: 26}
+  - {kind: heat_exchanger, article: "SK 3129.100", q_w_per_k: 60,   page: 26}
+  - {kind: heat_exchanger, article: "SK 3248.000", q_w_per_k: 66,   page: 26}
+  - {kind: heat_exchanger, article: "SK 3130.100", q_w_per_k: 90,   page: 26}
+  - {kind: fan_and_filter_range, article: "Blue e+ fan-and-filter units", airflow_min_m3h: 20, airflow_max_m3h: 1160, page: 8}

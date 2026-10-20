@@ -1,0 +1,9 @@
+# ET 200SP DI 16x24VDC ST (6ES7131-6BH01-0BA0): supply data, Equipment Manual 02/2019 (A5E03573442-AG), technical
+# specifications p.26, transcribed 2026-10-13 (page = PDF page).
+source:
+  ref: SIE-ET200SP-DI16ST
+  section: "7.1 Technical specifications: Supply voltage, Input current, 24 V encoder supply, Selection of BaseUnit"
+rows:
+  - {article: 6ES7131-6BH01-0BA0, item: current_max_ma, value: 90, text: "Current consumption, max. 90 mA", page: 26}
+  - {article: 6ES7131-6BH01-0BA0, item: encoder_supply, value: false, text: "24 V encoder supply • 24 V No", page: 26}
+  - {article: 6ES7131-6BH01-0BA0, item: bu_for_2_3_4_wire, value: "BU type A0 + Potential isolation module", text: "2-wire connection BU type A0 + Potential isolation module", page: 26}

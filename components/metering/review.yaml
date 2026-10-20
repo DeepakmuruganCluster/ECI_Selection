@@ -1,0 +1,72 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 15
+title: Metering (Siemens 7KM energy meter, Rishabh / Selec CTs)
+what_it_does: >
+  Picks the energy meter and its three current transformers (CTs) for a panel. ECI asks for a
+  Siemens 7KM energy meter with PROFINET and Rishabh or Selec CTs. The PROFINET module fits the
+  PAC3200, PAC3220 and PAC4200; we hold the PAC3220 manual, so the tool gives a PAC3220 with the
+  PROFINET module. For the CTs it takes the smallest CT current (primary) that is at least the
+  circuit current, checks the accuracy class, that the CT can drive the meter plus the wires
+  (burden in VA) and that the busbar or cable fits through the CT hole. It refuses when the data
+  sheets do not cover the case, for example a 1 A CT, a busbar too wide for every CT, or a panel
+  hotter than the CT allows (Rishabh: 40 °C).
+
+how_to_check:
+  - "Meter burden: open SIE-PAC3220 PDF page 98 (printed 96). Under 'Measuring inputs for current' it says 'Max. power consumption per phase 300 mVA at 5 A' = 0.3 VA. Every answer shows this as the meter's share of the burden."
+  - "PROFINET: open SIE-7KM-PN page 21 (printed 19). It says the module goes into PAC3200 (slot MOD1) and PAC3220 / PAC4200 (MOD1 or MOD2). The PAC3120 is not named. The module number 7KM9300-0AE02-0AA0 is on SIE-PAC3220 page 10."
+  - "Rishabh 630 A: open RISH-LTRP page 6. The 'Rish LTRP 4' table row 630 shows 10 VA class 1 and 7.5 VA class 0.5, and the drawing shows a 65 × 35 mm hole. Press 'Try it: WNS2503 630 A, Rishabh': it must give RISH LTRP 4, 630/5 A, 7.5 VA, class 0.5, with three cautions (wires, busbar and temperature not given)."
+  - "ECI busbar 75 × 10 mm does not fit the 65 × 35 hole, so with that busbar the tool must move to 800/5 A and the round TW-6 (Ø113 mm, RISH-TW page 4, 800 A class 0.5 = 10 VA), with a caution that the ratio was raised. Press 'Try it: 630 A, busbar 75 × 10, Rishabh'."
+  - "Selec 630 A: SELEC-MEAS page 9 has no 630 A CT; the next is 800 A. With the 75 × 10 busbar only SPCT-140/100 (100 × 30 mm, 15 VA) and TWCT-T-D110 (Ø110, page 10, 10 VA) fit; the tool takes the 10 VA one: TWCT-T-D110-800/5A-VA10-CL0.5."
+  - "Page numbers: Siemens pictures are PDF pages; the printed number is 2 lower. Rishabh and Selec 2026: printed = PDF page. Selec CT catalogue 2024: printed = PDF page − 1."
+
+spot_checks:
+  - {label: "WNS2503 630 A, Rishabh (RISH-LTRP p.6: LTRP 4 630/5 A 7.5 VA cl 0.5)", tab: metering, inputs: {circuit_a: 630, ct_make: rishabh}}
+  - {label: "630 A, busbar 75 × 10, Rishabh (RISH-TW p.4: TW-6 800/5 A)", tab: metering, inputs: {circuit_a: 630, ct_make: rishabh, busbar_w_mm: 75, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}}
+  - {label: "630 A, busbar 75 × 10, Selec (SELEC-MEAS p.10: TWCT-T-D110 800/5 A)", tab: metering, inputs: {circuit_a: 630, ct_make: selec, busbar_w_mm: 75, busbar_t_mm: 10, lead_length_m: 5, lead_mm2: 2.5, ambient_c: 35}}
+
+decisions:
+  - id: MT-1
+    question: "Which accuracy class must the CTs have when the designer does not say? The Siemens PAC3220 measures energy to class 0.5; a class 1 CT would make the whole measurement less accurate than the meter."
+    options: {"0.5": "Class 0.5 (matches the meter)", "1": "Class 1 (cheaper, less accurate)"}
+    recommended: "0.5"
+  - id: MT-2
+    question: "The wires from the CTs to the meter also load the CT. Their resistance rises with temperature. At which wire temperature should the tool calculate?"
+    options: {"70": "70 °C (warm panel, safe side)", "20": "20 °C (cold wire, smaller figure)"}
+    recommended: "70"
+  - id: MT-3
+    question: "If no CT of the first suitable size (e.g. 630/5 A) fits the busbar or can drive the wires, the tool takes the next size (e.g. 800/5 A) and shows a caution. Is that acceptable, or should it refuse?"
+    options: {next: "Take the next size and show a caution", refuse: "Refuse and let the designer decide"}
+    recommended: next
+  - id: MT-4
+    question: "The busbar or cable must pass through the CT hole. The tool allows an exact fit (e.g. 65 × 35 mm bar in a 65 × 35 mm hole). Should it require some free space?"
+    options: {exact: "Exact fit allowed", clearance: "Require free space (state how much)"}
+    recommended: exact
+  - id: MT-5
+    question: "Order numbers: the Siemens manual gives the meter number only as 7KM3220-xBA01-1xA0 (one full number, 7KM3220-1BA01-1EA0, appears in a link), Rishabh prints no order codes and the Selec codes are put together from Selec's naming key. Check every number with Siemens / Rishabh / Selec before ordering?"
+    options: {"yes": "Yes, confirm all order numbers before ordering", "no": "No, use them as given"}
+    recommended: "yes"
+  - id: MT-6
+    question: "Rishabh CTs are rated for at most 40 °C around them, Selec CTs for 50 °C, the Siemens meter for 55 °C. ECI panels can be warmer than 40 °C inside. What should we do?"
+    options: {ask: "Ask Rishabh for a higher temperature rating; use Selec where the panel is above 40 °C", accept: "Accept Rishabh CTs above 40 °C"}
+    recommended: ask
+
+# labels for the web form (built automatically from select())
+fields:
+  circuit_a: "Circuit current to meter (A), e.g. the incomer rating"
+  ct_make: {label: "CT make", options: ["rishabh", "selec"]}
+  voltage_v: "Line voltage (V)"
+  system: {label: "System", options: ["3P4W"]}
+  accuracy_class: {label: "CT accuracy class", options: ["0.2", "0.5S", "0.5", "1", "3", "5"]}
+  ct_secondary_a: {label: "CT secondary (A)", options: [5, 1]}
+  busbar_w_mm: "Busbar width through the CT (mm)"
+  busbar_t_mm: "Busbar thickness (mm)"
+  cable_od_mm: "Or: cable outside diameter through the CT (mm)"
+  lead_length_m: "CT-to-meter wire length, one way (m)"
+  lead_mm2: "CT wire cross-section (mm²)"
+  lead_temp_c: "Wire temperature (°C)"
+  communication: {label: "Communication", options: ["profinet", "modbus_tcp"]}
+  ambient_c: "Air around meter and CTs (°C)"
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/makers/rishabh/rishabh_ltrp.yaml, data/makers/rishabh/rishabh_ltrp_conditions.yaml, data/makers/rishabh/rishabh_tw.yaml, data/makers/rishabh/rishabh_tw_conditions.yaml, data/makers/selec/selec_ct.yaml, data/makers/selec/selec_ct_ambient.yaml, data/makers/siemens/pac3220.yaml, data/makers/siemens/pac3220_lv10.yaml, data/makers/siemens/pac_profinet_module.yaml]

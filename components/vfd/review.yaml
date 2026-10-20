@@ -1,0 +1,69 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 4
+title: Variable-speed drive (SINAMICS G120 PM240-2)
+what_it_does: >
+  Also picks the Control Unit, the BOP-2 operator panel and the memory card using the company's own
+  selection logic and database (ECI-VFD-Selection project).
+  Picks the Siemens drive (power module) for a motor. Drives give less current when
+  the air around them is hot, so the tool reduces each drive's current using
+  Siemens' temperature table and takes the next size up if needed. It also adds
+  the Siemens fuse, a line reactor where needed, and output reactors for long
+  motor cables, all from the Siemens PM240-2 manual.
+
+how_to_check:
+  - "Drive size: open PDF page 100 (printed 98). In the column for 6SL3210-1PE21-8UL0 the 'LO base load power' is 7.5 kW and the 'LO base load output current' is 18.0 A. Press 'Try it: 7.5 kW at 40 °C': it must pick that drive with 18 A."
+  - "Heat: open PDF page 119 (Table 6-39, FSA-FSC, LO). At 50 °C the output is 85 %. 18 A × 0.85 = 15.3 A, which is less than 15.5 A, so at 50 °C the tool must pick the next size (11 kW). Press 'Try it: 7.5 kW at 50 °C'."
+  - "Long cable: open PDF page 62 (Table 4-2). For FSD/FSE drives, shielded cable may be 200 m without reactors and 350 m with two output reactors in series. Press 'Try it: 37 kW, 250 m cable': it must add 2 × 6SE6400-3TC07-5ED0 (PDF page 165, Table 8-15)."
+  - "Protection: open the 'Protective Devices' page 14 picture. For the 37 kW drive (6SL3210-1PE27-5) the breakers are 3VL1710 and 3VL2710 (marked 1 = phased out), 3VA1010-4ED (36 kA) and 3VA1110-6E (70 kA). At a 50 kA fault level the tool must pick 3VA1110-6E. Press 'Try it: 37 kW protected by a circuit breaker'."
+  - Note the page numbers. These pictures are PDF pages; the number printed at the bottom of the page is 2 lower.
+
+spot_checks:
+  - {label: "7.5 kW at 40 °C (page 100: 18 A)", tab: vfd, inputs: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 40, cable_m: 50, fault_ka: 50, network_uk_pct: 2}}
+  - {label: "7.5 kW at 50 °C (page 119: 85 % → next size)", tab: vfd, inputs: {kw: 7.5, flc_a: 15.5, flc_basis: nameplate, ambient_c: 50, cable_m: 50, fault_ka: 50, network_uk_pct: 2}}
+  - {label: "37 kW, 250 m cable (page 62: two reactors)", tab: vfd, inputs: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 250, fault_ka: 50}}
+  - {label: "37 kW protected by a circuit breaker at 50 kA (protective devices p.14: 3VA1110-6E)", tab: vfd, inputs: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 50, protection: breaker}}
+
+  - {label: "Control unit: STO + PROFINET (flowchart → CU240E-2 PN)", tab: vfd, inputs: {kw: 37, flc_a: 66, flc_basis: nameplate, ambient_c: 45, cable_m: 50, fault_ka: 50, cu_encoder: false, cu_safety: sto, cu_fieldbus: profinet, mc_copy_parameters: false}}
+
+decisions:
+  - id: V-1
+    question: "The temperature table has 5 °C steps. Between steps, the tool uses the next higher step (e.g. 47 °C is treated as 50 °C). This is safe but may pick a bigger drive."
+    options: {step: "Use the next higher step (safe)", interpolate: "Estimate between steps"}
+    recommended: step
+  - id: V-2
+    question: "Siemens lists which fuses, motor starter protectors and circuit breakers may protect each drive. 3VM breakers (ECI's branch MCCB family) are not listed for any PM240-2, and for 4–15 kW drives no circuit breaker is listed at all. What should drive feeders use?"
+    options: {listed: "Only Siemens-listed devices (fuse, 3RV or 3VA); ask ECI to accept them for drive feeders", vm: "Use 3VM anyway (not tested by Siemens with the drive)"}
+    recommended: listed
+  - id: V-3
+    question: "The PM240-2 manual we hold is a third-party copy of the 07/2022 edition. The newest copy found on Siemens' own site is the older 06/2021 edition. What should we do?"
+    options: {keep: "Keep the 07/2022 copy and compare it with Siemens' copy when one is found", official: "Switch to the official 06/2021 edition (data re-checked)"}
+    recommended: keep
+  - id: V-4
+    question: "Small drives (up to 15 kW) need a supply impedance of 1–4 %, or a line reactor. ECI asks for line reactors up to 15 kW. What should the tool do?"
+    options: {client: "Follow ECI's rule (line reactor up to 15 kW)", warn: "Only warn and let the designer decide"}
+    recommended: client
+  - id: V-5
+    question: "The ECI-VFD-Selection project has two versions of the Control Unit flowchart. 'Power unit.pdf' has an SBC branch and lists SDI as an advanced safety function; 'Control_unit.pdf' has neither. The company database says CU240E-2 F offers SDI and only CU250S-2 offers SBC. Which version is right?"
+    options: {with_sbc: "The version with SBC and SDI (matches the database)", without: "The version without SBC / SDI"}
+    recommended: with_sbc
+  - id: V-6
+    question: "For ECI's drives (pumps and blowers on PROFINET), is STO (safe torque off) needed? Without STO the logic picks CU230P-2 PN; with STO it picks CU240E-2 PN."
+    options: {sto: "Yes, STO → CU240E-2 PN", none: "No → CU230P-2 PN", ask: "Ask ECI"}
+    recommended: ask
+  - id: V-7
+    question: "The ECI-VFD-Selection tool picks the drive by kW and current only. This tool also derates for panel temperature and checks cable length and protection, so it can pick a bigger drive (e.g. at 55 °C). Which should the BOM use?"
+    options: {derated: "This tool's derated selection", plain: "kW and current only (as ECI-VFD-Selection)"}
+    recommended: derated
+
+fields:
+  cu_encoder: {label: "Control unit: motor encoder feedback", options: [false, true]}
+  cu_safety: {label: "Control unit: safety", options: ["none", "sto", "advanced"]}
+  cu_sbc: {label: "Control unit: safe brake control (SBC)", options: [false, true]}
+  cu_fieldbus: {label: "Control unit: fieldbus", options: ["profinet", "ethernet_ip", "profibus", "modbus", "none"]}
+  mc_basic_positioning: {label: "Memory card: basic positioning needed", options: [false, true]}
+  mc_copy_parameters: {label: "Memory card: copy parameters between drives", options: [false, true]}
+  mc_customer_article: "Memory card: customer's article (optional)"
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/company/vfd_logic/own_control_units.yaml, data/company/vfd_logic/own_cu_logic.yaml, data/company/vfd_logic/own_memory_card_logic.yaml, data/makers/siemens/pm240_2_400v.yaml, data/makers/siemens/pm240_2_cable_lengths.yaml, data/makers/siemens/pm240_2_derating.yaml, data/makers/siemens/pm240_2_protection.yaml, data/makers/siemens/pm240_2_reactors.yaml, data/makers/siemens/3na_fuse_sizes.yaml, data/makers/siemens/3np1_fuse_switch.yaml, data/makers/siemens/3rv2_class10.yaml]

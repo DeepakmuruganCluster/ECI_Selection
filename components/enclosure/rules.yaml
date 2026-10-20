@@ -1,0 +1,30 @@
+# Enclosure heat balance and cooling rules. Authority: MFR = manufacturer document,
+# PHYS = follows directly from the printed formulas, RULE = our decision (SIGNOFF.md, decisions H-1 … H-5).
+# Pages are PDF pages of Rittal TSC 3124300 EN (printed page = PDF page) unless stated.
+
+component: enclosure
+
+rules:
+  R-ENC-01: {authority: MFR,  text: "Scope: indoor siting (k = 5.5 W/m²K is 'based on indoor siting, static air', p.52) and site altitude 0 … 1000 m (the compensating factor f is printed for 0 … 1000 m only, p.12). Outdoor siting or altitude outside 0 … 1000 m: cannot select."}
+  R-ENC-02: {authority: MFR,  text: "A is the effective, heat-dissipating enclosure surface area 'to IEC 890' (p.13, 26, 30, 52). This catalogue names IEC 890 but does not print its surface-area formulas per installation type, and IEC TR 60890 is not held: enclosure sizes with an installation type cannot be turned into A → cannot select."}
+  R-ENC-03: {authority: RULE, text: "Until IEC TR 60890 is held, an effective surface area A entered by the designer (calculated to IEC TR 60890) is used, with a warning that it is not checked by the tool (decision H-1)."}
+  R-ENC-04: {authority: MFR,  text: "Heat transfer coefficient k = 5.5 W/m²K for sheet steel (p.13; basis indoor siting, static air, p.52). The catalogue gives no k for other materials: cannot select."}
+  R-ENC-05: {authority: MFR,  text: "Natural convection: maximum temperature rise (ΔT)max = Q̇v / (k · A); internal temperature without cooling = Tu + (ΔT)max (p.13)."}
+  R-ENC-06: {authority: MFR,  text: "Heat emitted by the enclosure surface Q̇s = A · k · ΔT with ΔT = Ti – Tu (p.13); Q̇s < 0 (heat taken in) when Ti < Tu."}
+  R-ENC-07: {authority: PHYS, text: "A closed enclosure without cooling is enough when Tu + (ΔT)max ≤ Ti (from R-ENC-05). Without A this is not assessed."}
+  R-ENC-08: {authority: MFR,  text: "Fan-and-filter units (p.7, 8) and air/air heat exchangers (p.24) need an ambient temperature below the required internal temperature (Tu < Ti). Otherwise only a cooling unit can hold Ti."}
+  R-ENC-09: {authority: MFR,  text: "Fan-and-filter airflow V̇ = f · Q̇v / ΔT [m³/h], ΔT = Ti – Tu, f by altitude 3.1 … 3.5 m³·K/Wh (p.12). As printed, heat leaving through the enclosure surface is not deducted (conservative)."}
+  R-ENC-10: {authority: RULE, text: "The altitude bands of f share their end points (0–100, 100–250 …, p.12): exactly on 100, 250, 500 or 750 m the higher f is used (more airflow; decision H-4)."}
+  R-ENC-11: {authority: RULE, text: "Fans are treated as practical only when Ti – Tu ≥ 5 K (the lowest ΔT line in Rittal's fan selection diagram, p.12). Below that a cooling unit is recommended, with a warning (decision H-2)."}
+  R-ENC-12: {authority: RULE, text: "Required airflow above 1160 m³/h (the top of the Blue e+ fan-and-filter range, p.8, free air throughput) → warning: several fan units, roof-mounted fans or a cooling unit are needed. No fan model is selected (no per-model table in the catalogue)."}
+  R-ENC-13: {authority: MFR,  text: "Cross-check (Siemens PM240-2 manual, PDF p.34, printed 32): airflow [l/s] = power loss [W] × 0.86 / ΔT [K]. Rittal's f = 3.1 m³·K/Wh at 0 … 100 m is 0.861 l·K/(W·s): they agree within rounding. Siemens has no altitude factor; Rittal's f governs."}
+  R-ENC-14: {authority: MFR,  text: "Air/air heat exchanger: specific thermal output qw = (Q̇v – A · ΔT · k) / ΔT (p.26); the smallest listed model (p.26: SK 3126.100 … 3130.100, 17.5 … 90 W/K) with output ≥ qw. Above 90 W/K: no model."}
+  R-ENC-15: {authority: MFR,  text: "Cooling unit: Q̇E = Q̇v – k · A · ΔT (p.30), ΔT = Ti – Tu. When Ti < Tu, heat flows in through the surface and A is needed: without A cannot select."}
+  R-ENC-16: {authority: RULE, text: "Without A and with Ti ≥ Tu, the surface is assumed to remove nothing (A = 0): Q̇E = Q̇v and qw = Q̇v / ΔT. This only over-sizes."}
+  R-ENC-17: {authority: RULE, text: "Margin added to the required cooling-unit output: cooling_margin_pct (0 %: Rittal's formula as printed; decision H-3)."}
+  R-ENC-18: {authority: RULE, text: "Recommended method, in order: no cooling (R-ENC-07) → fan-and-filter units (R-ENC-08, R-ENC-11) → cooling unit. The air/air heat exchanger is shown as the alternative for dusty or aggressive air."}
+
+params:
+  min_fan_dt_k: 5
+  boundary_altitude: higher
+  cooling_margin_pct: 0

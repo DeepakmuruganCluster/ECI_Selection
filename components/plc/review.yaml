@@ -1,0 +1,116 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 10
+title: PLC and I/O modules (Siemens S7-200 SMART, S7-1200 G2, S7-1500 + ET 200SP; Omron CP2E)
+what_it_does: >
+  Picks the PLC for the panel's I/O. Siemens, from the manuals and Catalog ST 70 · 2026: S7-200 SMART (system
+  manual V2.7) for machine panels, S7-1200 G2 (G1 is being phased out), or an S7-1500 CPU with ET 200SP remote I/O
+  stations for plants. Every family adds 40 % spare, takes the smallest CPU that fits with the fewest modules, checks
+  the 5 V module budget, the 24 V sensor supply, PROFINET device limits and temperature derating, and works out the
+  24 V the PLC draws from the panel's supply. Omron CP2E (AutoBOM database) is still available.
+
+how_to_check:
+  - "Press 'Try it: 4 inputs, 2 outputs'. 4 × 1.4 = 5.6 → 6 and 2 × 1.4 = 2.8 → 3. Open PLC db.xlsx, sheet db, row 10: CP2E-N14DT1-D has 8 inputs and 6 outputs, 0.02 A at 24 V and 0.22 A at 5 V, efficiency 0.7. 0.02 + 0.22 × 5 / (24 × 0.7) = 0.085 A."
+  - "Press 'Try it: 20 inputs, 10 outputs'. The two smallest CPUs (N14, N20) cannot take expansion modules, so it takes CP2E-S30DT1-D (row 2: 18 in / 12 out) and adds one CP1W-20EDT1 (PLC IO_db.xlsx, sheet db_DIO, row 11: 12 in / 8 out)."
+  - "Press 'Try it: drives on PROFINET'. It must refuse: no CPU in the database has a fieldbus filled in."
+
+spot_checks:
+  - {label: "Siemens S7-200 SMART: 20 DI / 10 DO (ST20 + EM DT32, 24 V 112 mA)", tab: plc, inputs: {make: siemens, di: 20, do: 10}}
+  - {label: "Siemens: 60 DI / 30 DO (5 modules, 24 V 336 mA > 300 mA: external 24 V)", tab: plc, inputs: {make: siemens, di: 60, do: 30}}
+  - {label: "S7-1200 G2: 20 DI / 10 DO relay (1212C DC/DC/RLY + SM 1221 + SM 1223 8DI/8RLY)", tab: plc, inputs: {make: siemens, family: s7-1200g2, di: 20, do: 10, do_type: relay}}
+  - {label: "S7-1500 + ET 200SP: 100 DI / 50 DO / 6 AI / 2 AO (CPU 1513, 1 station, 18 modules)", tab: plc, inputs: {make: siemens, family: s7-1500-et200sp, di: 100, do: 50, ai: 6, ao: 2}}
+  - {label: "4 inputs, 2 outputs", tab: plc, inputs: {di: 4, do: 2}}
+  - {label: "20 inputs, 10 outputs", tab: plc, inputs: {di: 20, do: 10}}
+  - {label: "40 inputs, 40 outputs", tab: plc, inputs: {di: 40, do: 40}}
+  - {label: "drives on PROFINET", tab: plc, inputs: {di: 4, do: 2, fieldbus: profinet}}
+
+decisions:
+  - id: PLC-1
+    question: "The AutoBOM logic adds 40 % spare inputs and outputs. Keep 40 %?"
+    options: {"40": "Yes, 40 %", "other": "Another spare figure"}
+    recommended: "40"
+  - id: PLC-2
+    question: "Outputs drive 24 V DC interface relays. Use sourcing (PNP) transistor outputs by default?"
+    options: {sourcing: "Sourcing (PNP)", sinking: "Sinking (NPN)", relay: "Relay outputs"}
+    recommended: sourcing
+  - id: PLC-3
+    question: "Transistor modules have no 24 V current in the database (Omron lists none for them). Take it as 0, with a caution?"
+    options: {"zero": "Yes, 0 with a caution", "ask": "No, refuse until filled in"}
+    recommended: zero
+  - id: PLC-4
+    question: "The AutoBOM sheet fills inputs with the largest module first. That can miss a fit (40 in + 40 out fails on every CPU, though one CPU with 3 modules works). The tool instead looks for the fewest modules. Accept?"
+    options: {fewest: "Fewest modules (tool)", sheet: "Keep the sheet's order"}
+    recommended: fewest
+  - id: PLC-5
+    question: "The NX1P rows (10 CPUs) and NX modules (42) have no current or I/O count filled in, so they are not used. Should the AutoBOM team complete them?"
+    options: {"yes": "Yes, ask the team", "no": "No, CP2E only"}
+    recommended: "yes"
+  - id: PLC-S1
+    question: "The S7-200 SMART manual prints '11 mA / relay coil used' for the transistor module EM DT16 but no relay-coil current for the relay module EM DR32 (p.851). What should the 24 V budget use for EM DR32?"
+    options: {warn: "Warn that the budget is partial until Siemens confirms (data sheet of 6ES7288-2DR32-0AA0)", assume: "Use 11 mA per relay as for EM DR08 / DR16"}
+    recommended: warn
+  - id: PLC-S2
+    question: "Siemens CPU choice: the tool takes the smallest CPU that fits with up to 6 modules (e.g. ST20 + 5 modules rather than ST60 alone). Keep, or prefer a bigger CPU with fewer modules?"
+    options: {smallest: "Smallest CPU first (as for Omron, PLC-4)", fewest_modules: "Fewest modules first, then the smaller CPU"}
+    recommended: smallest
+  - id: PLC-S3
+    question: "S7-1200 G2: the ST 70 catalogue gives each module's 5 V backplane current but not what the 1212C / 1214C can supply, nor whether the DC/DC/DC CPU outputs are sourcing. The tool warns. Fetch the S7-1200 G2 system manual (Siemens Industry Online Support) to close both?"
+    options: {"fetch": "Yes, fetch the S7-1200 G2 system manual", "warn": "Keep the warning"}
+    recommended: "fetch"
+    answered: "fetch — S7-1200 G2 System Manual V4.1 12/2025 registered 2026-10-13 (SIE-S71200G2-SYS): budgets 1000 / 1600 mA, outputs sourcing"
+  - id: PLC-S4
+    question: "S7-1500 CPU when the designer does not choose one: the CPU depends on program size and performance, which the tool cannot judge. Default?"
+    options: {"1513": "CPU 1513-1 PN (600 kB program / 2.5 MB data; the manual we hold)", "1511": "CPU 1511-1 PN (smaller)", "ask": "No default: the designer must choose"}
+    recommended: "1513"
+  - id: PLC-S5
+    question: "SIMATIC Memory Card (required for every S7-1500 CPU) when no size is given?"
+    options: {"24": "24 MB (6ES7954-8LF04-0AA0)", "12": "12 MB", "4": "4 MB"}
+    recommended: "24"
+  - id: PLC-S6
+    question: "ET 200SP potential groups (max. 10 A each): what load per digital output should the tool count when the designer gives none?"
+    options: {rated: "The rated 0.5 A per output (worst case: more light BaseUnits)", relay: "The interface relay coil from the company data (10.4 mA)"}
+    recommended: rated
+  - id: PLC-S7
+    question: "ET 200SP AI 4xU/I 2-wire ST prints 'Current consumption (rated value) 30 mA' and 'max. 117 mA'; it also feeds the 2-wire transmitters (20 mA per channel). The tool counts 117 mA per module as covering the module with its four loops. Agree?"
+    options: {"max": "Yes, count 117 mA per module", "add": "Count 117 mA plus 4 × 20 mA loops on top"}
+    recommended: "max"
+  - id: PLC-S8
+    question: "ET 200SP digital modules: when 8 or fewer channels remain, use an 8-channel module (manual not held) or another 16-channel module (more spare, every module sourced)?"
+    options: {"16": "Always 16-channel modules", "8": "8-channel module for small remainders"}
+    recommended: "16"
+    answered: "16 — owner 2026-10-13 ('more spare is fine'), rule R-PLC-19"
+  - id: PLC-S9
+    question: "Default PLC make when the designer does not choose one?"
+    options: {siemens: "Siemens (S7-200 SMART by default)", omron: "Omron CP2E (AutoBOM)"}
+    recommended: siemens
+    answered: "siemens — owner 2026-10-14 ('I want to see Siemens')"
+  - id: PLC-S10
+    question: "DQ 16 ST output module over its derated total current (e.g. 16 outputs × 0.4 A = 6.4 A at 45 °C, curve 6 A). Rule R-PLC-23 says the total must be within the curve; today the tool only warns (golden cases P36, P38, P40). Which should it do? (Test agent finding 2026-10-14.)"
+    options: {refuse: "Refuse (cannot select) when the output load is given and exceeds the curve; warn only when the load is not given (0.5 A assumed)", spread: "Spread the outputs over more DQ modules so each stays within the curve", warn: "Keep the warning"}
+    recommended: spread
+
+fields:
+  make: {label: "PLC make", options: ["siemens", "omron"], help: "empty = Siemens"}
+  family: {label: "Siemens family", options: ["s7-200smart", "s7-1200g2", "s7-1500-et200sp"], help: "S7-200 SMART for machine panels, S7-1200 G2, or S7-1500 CPU with ET 200SP remote I/O for plants"}
+  di: Digital inputs
+  do: Digital outputs
+  ai: Analog inputs
+  ao: Analog outputs
+  do_type:
+    label: Output type
+    options: [sourcing, relay, sinking]
+  fieldbus:
+    label: Drives on a fieldbus
+    options: [none, profinet, ethernet_ip, profibus, modbus]
+  fieldbus_devices: {label: "PROFINET devices (drives)", help: "S7-200 SMART up to 8, S7-1200 G2 up to 31, S7-1500 up to 128"}
+  cpu_supply: {label: "S7-1200 G2 relay CPU supply", options: ["24VDC", "AC"]}
+  cpu: {label: "S7-1500 CPU", options: ["CPU 1513-1 PN", "CPU 1511-1 PN", "CPU 1515-2 PN", "none"], help: "none = remote I/O panel run by a CPU in another panel"}
+  memory_card_mb: {label: "S7-1500 memory card (MB)", options: [24, 12, 4, 256]}
+  dq_load_a: {label: "Load per digital output (A)", help: "e.g. 0.0104 for an interface relay coil; empty = 0.5 A (S7-1500 + ET 200SP)"}
+  ambient_c: {label: "Panel internal temperature (°C)", help: "G2 budgets halve above 40 °C; ET 200SP DQ derating"}
+  mounting: {label: "Mounting (ET 200SP derating)", options: ["horizontal", "vertical"]}
+  series:
+    label: Omron CPU series
+    options: [CP2E-N, CP2E-S]
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/company/plc/ab_plc.yaml, data/company/plc/ab_plc_io.yaml, data/makers/siemens/s7200smart_modules.yaml, data/makers/siemens/st70_s71200g2.yaml, data/makers/siemens/st70_s71500_et200sp.yaml, data/makers/siemens/s71500_cpu1513_power.yaml, data/makers/siemens/et200sp_di16st_power.yaml, data/makers/siemens/et200sp_dq16st_power.yaml, data/makers/siemens/et200sp_aq4st_power.yaml, data/makers/siemens/et200sp_ai4st_power.yaml, data/makers/siemens/s71200g2_cpu_power.yaml]

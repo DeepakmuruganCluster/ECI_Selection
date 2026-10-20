@@ -1,0 +1,70 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 18
+title: Enclosure accessories (filter fans, plinth, door switch and light)
+what_it_does: >
+  Turns the airflow the panel needs (from the enclosure heat component) into a number of Rittal filter fans,
+  each with an outlet filter, and checks whether they fit on the doors (ECI asks for one 8-inch fan per door).
+  It uses the airflow Rittal prints for the fan WITH its outlet filter, which is lower than the fan alone.
+  It also gives the fans' electrical load, the plinth side panels for a 100 or 200 mm plinth, and one door
+  switch and one LED light per door. Rittal's plinth side panels come in 100 and 200 mm only, so ECI's
+  1-foot (about 300 mm) stand cannot be matched from the held data sheets.
+
+how_to_check:
+  - "Fan airflow: open RITTAL-3239100 page 2. The row 'Air throughput with outlet filter including chopped-fibre filter mat' says '1 x 3239200: 74/87 m³/h' — 74 m³/h at 50 Hz. For 300 m³/h you need 300 ÷ 74 = 4.05, so 5 fans. Press 'Try it: 300 m³/h, 5 doors': it must say 5 × SK 3239.100 and 5 × SK 3239.200, 370 m³/h."
+  - "8 inch: page 3 of the same sheet says Width 204 mm. 8 inches is 203 mm, so SK 3239.100 is the 8-inch fan. SK 3240.100 (page 3: 255 mm) is the 10-inch fan."
+  - "Power: page 2 says 16.5 W at 50 Hz, but the tender text on page 5 says 19 W. The tool uses the higher, 19 W per fan (decision A-3)."
+  - "WNS2503: the BIO/UF panel needs 3515 m³/h (panel check). 3515 ÷ 74 = 47.5, so 48 fans; with one fan on each of 7 doors you get only 7 × 74 = 518 m³/h. Press 'Try it: WNS2503 BIO/UF'."
+  - "Plinth: open RITTAL-8601060 page 2: 'At 200 mm height, two 100 mm base/plinth trim panels may be used' — only 100 and 200 mm exist. Press 'Try it: 1 ft stand': it must say no plinth article."
+  - Page numbers printed on the Rittal data sheets are the same as the PDF page numbers.
+
+spot_checks:
+  - {label: "300 m³/h, 5 doors, 8 inch (page 2: 74 m³/h each → 5 fans)", tab: enclosure_accessories, inputs: {required_airflow_m3h: 300, doors: 5, fan_size_in: 8, supply_v: 230, frequency_hz: 50}}
+  - {label: "WNS2503 BIO/UF: 3515 m³/h, 7 doors (48 fans needed, 518 m³/h fitted)", tab: enclosure_accessories, inputs: {required_airflow_m3h: 3515.4, doors: 7, fan_size_in: 8, supply_v: 230, frequency_hz: 50, site_ambient_c: 50}}
+  - {label: "1 ft stand, 7 doors (8601.060 page 2: 100 / 200 mm only)", tab: enclosure_accessories, inputs: {required_airflow_m3h: 0, doors: 7, supply_v: 230, frequency_hz: 50, plinth_height_mm: 300, enclosure_depth_mm: 600, suites: 1}}
+
+decisions:
+  - id: A-1
+    question: "ECI asks for an '8 inch' fan. Rittal's SK 3239.100 is 204 mm square (8 inch = 203 mm); SK 3240.100 is 255 mm (10 inch). Treat SK 3239.100 as ECI's 8-inch fan?"
+    options: {"yes": "Yes, 8 inch = SK 3239.100", "no": "No, ask ECI which Rittal article they mean"}
+    recommended: "yes"
+  - id: A-2
+    question: "Each fan needs somewhere for the air to leave. Rittal prints the airflow with one or with two outlet filters per fan. Use one outlet filter per fan unless the designer asks for two?"
+    options: {"1": "One outlet filter per fan (Rittal's first line)", "2": "Two outlet filters per fan (more air, more cut-outs)"}
+    recommended: "1"
+  - id: A-3
+    question: "The SK 3239.100 data sheet gives two different powers: 16.5 W (page 2) and 19 W (page 5). Which should the UPS / auxiliary load use?"
+    options: {"higher": "The higher, 19 W (safe)", "features": "16.5 W from the features table"}
+    recommended: higher
+  - id: A-4
+    question: "ECI asks for a 'Rittal door limit switch and light'. Fit one door switch SZ 4127.010 and one LED light SZ 4140.820 on every door? (The light also has its own built-in door switch.)"
+    options: {"yes": "Yes, one switch and one light per door", "no": "No, use the light's built-in switch / fewer lights — tell us the rule"}
+    recommended: "yes"
+  - id: A-5
+    question: "ECI asks for a 1-foot (about 300 mm) panel stand with side covers. Rittal's plinth side panels come in 100 and 200 mm only. What should we do?"
+    options: {"ask": "Ask ECI to accept a 200 mm Rittal plinth (or a fabricated 300 mm stand)", "200": "Use the 200 mm Rittal plinth without asking"}
+    recommended: ask
+  - id: A-6
+    question: "WNS2503: one 8-inch fan per door gives only 518 m³/h, about 15 % (BIO/UF) and 25 % (RO) of what the panels need at 55 °C inside on a 50 °C site (48 and 29 fans would be needed). Tell ECI that fans per door are not enough and plan cooling units (enclosure decision H-5)?"
+    options: {"yes": "Yes, tell ECI and plan cooling units", "no": "No, fit one fan per door as specified (panel will run hotter than 55 °C)"}
+    recommended: "yes"
+
+# labels for the web form (built automatically from select())
+fields:
+  required_airflow_m3h: {label: "Airflow needed (m³/h)", help: "from the enclosure heat component"}
+  doors: "Number of doors"
+  supply_v: "Fan supply voltage (V)"
+  frequency_hz: {label: "Supply frequency (Hz)", options: [50, 60]}
+  fans_per_door: "Fans per door (ECI: 1)"
+  fan_size_in: {label: "Fan size (inch)", options: [8, 10]}
+  outlet_filters_per_fan: {label: "Outlet filters per fan", options: [1, 2]}
+  site_ambient_c: "Air outside the panel (°C)"
+  plinth_height_mm: {label: "Plinth height (mm)", help: "Rittal side panels: 100 or 200 mm"}
+  enclosure_depth_mm: "Panel depth (mm)"
+  suites: "Number of free-standing panel lines"
+  section_widths_mm: {label: "Section widths (optional, JSON list)", help: "recorded only"}
+
+out_of_scope: true   # owner instruction 2026-10-11: enclosures left out of the BOM
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/makers/rittal/rittal_sk3239100.yaml, data/makers/rittal/rittal_sk3239200.yaml, data/makers/rittal/rittal_sk3240100.yaml, data/makers/rittal/rittal_sk3240200.yaml, data/makers/rittal/rittal_sz4127010.yaml, data/makers/rittal/rittal_sz4140820.yaml, data/makers/rittal/rittal_ts8601060.yaml, data/makers/rittal/rittal_ts8602060.yaml, data/makers/rittal/rittal_tsc_fan_principle.yaml]

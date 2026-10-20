@@ -1,0 +1,226 @@
+# Golden cases for control_signalling — written BEFORE the code (G4).
+# Oracles: Finder S38 (PDF pp. 5, 12, 13, 18, 20), S39 (pp. 6, 22, 29–30, 33), S13 (pp. 5, 7, 8, 11),
+# S40 (pp. 4, 9, 10), S20 (pp. 3, 4); Connectwell CW-ES (pp. 44–45), CW-TB (pp. 10, 12–14, 283, 289, 297);
+# Rittal 4127010 (p.2), 4140820 (pp. 2–4); ECI-WNS2503-AUTO p.1 (DO counts); hand counts in `calc`.
+# Unless stated: Finder, series 38, screwless, 24 V DC coils, spare 0 %, 1 relay group, Connectwell CP
+# terminals, flexible conductor with ferrule, one strip per terminal type, end clamp CA103.
+# Common load for relay cases: 230 V AC, 1 A, AC-15 (a contactor coil), panel inside 45 °C.
+
+cases:
+  # --- slim relays, Finder 38 ----------------------------------------------------------------
+  - id: C01
+    in: {other_outputs: 10, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 45}
+    expect: {status: ok, slim_relay: "38.61.7.024.0050", slim_relay_qty: 10, slim_jumper: "093.20 ×1", slim_jumper_qty: 1, slim_separator: "093.01", slim_separator_qty: 2, slim_marker: "093.48", slim_marker_qty: 1, slim_coil_ma: 104, do_needed: 10, latch_relay: null}
+    oracle: "S38 p.18: 38.61.7.024.0050 = 24 V DC screwless (relay 34.51.7.024.0010, socket 93.51.7.024); p.13 7.024 10.4 mA; p.5 AC15 300 VA; p.20 093.20 20-way, 093.01 at start and end of a group, 093.48 48 tags"
+    calc: "AC-15: 300 VA / 230 V = 1.30 A ≥ 1 A; jumper ceil(10/20)=1; separators 2; tags ceil(10/48)=1; coil 10 × 10.4 = 104 mA"
+  - id: C02
+    in: {other_outputs: 20, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 45}
+    expect: {status: ok, slim_relay_qty: 20, slim_jumper: "093.20 ×1", slim_jumper_qty: 1, slim_marker_qty: 1, slim_coil_ma: 208}
+    oracle: "S38 p.20: one 20-way jumper covers 20 relays"
+    calc: "ceil(20/20) = 1"
+  - id: C03
+    in: {other_outputs: 21, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 45}
+    expect: {status: ok, slim_relay_qty: 21, slim_jumper: "093.20 ×2", slim_jumper_qty: 2, slim_marker_qty: 1}
+    oracle: "S38 p.20 20-way jumper link (cut to length, 'cut jumper links' p.20)"
+    calc: "ceil(21/20) = 2; ceil(21/48) = 1"
+  - id: C04
+    in: {other_outputs: 49, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 45}
+    expect: {status: ok, slim_relay_qty: 49, slim_jumper_qty: 3, slim_separator_qty: 2, slim_marker: "093.48", slim_marker_qty: 2}
+    oracle: "S38 p.20: sheet 093.48 = 48 tags"
+    calc: "ceil(49/20) = 3 jumpers; ceil(49/48) = 2 sheets"
+  - id: C05
+    in: {other_outputs: 5, relay_connection: screw, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 45}
+    expect: {status: ok, slim_relay: "38.51.7.024.0050", slim_relay_qty: 5}
+    oracle: "S38 p.18 box clamp 1 pole 6 A: 38.51.7.024.0050 24 V DC (socket 93.01.7.024)"
+  - id: C06
+    in: {other_outputs: 17, finder_series: "39", contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 45}
+    expect: {status: ok, slim_relay: "39.01.0.024.0060", slim_relay_qty: 17, slim_jumper: "093.16 ×2", slim_jumper_qty: 2, slim_separator_qty: 0, slim_marker: "093.48", slim_marker_qty: 1, slim_coil_ma: 187}
+    oracle: "S39 p.30 MasterBASIC push-in 39.01.0.024.0060 (24 V AC/DC); p.22 0.024 11 mA; p.33 16-way 093.16, separator 093.60 only for different voltages; p.6 AC15 300 VA"
+    calc: "ceil(17/16) = 2; 17 × 11 = 187 mA"
+  - id: C07
+    in: {other_outputs: 3, spare_pct: 10, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 45}
+    expect: {status: ok, slim_relay_qty: 4, do_needed: 3}
+    oracle: "R-CTL-07 spare % rule (owner decision C-3)"
+    calc: "3 × 1.10 = 3.3 → 4 relays; PLC outputs needed stay 3 (spares are not wired)"
+
+  # --- latching relays (DOL outputs) ------------------------------------------------------------
+  - id: C08
+    in: {dol_outputs: 5, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 45}
+    expect: {status: ok, latch_relay: "13.12.0.024.0000", latch_relay_qty: 5, do_needed: 10, slim_relay: null}
+    oracle: "S13 p.5 13.12 Call & Reset 12-24 V AC/DC, AC15 400 VA, −10…+60 °C; p.7 code 13.12.0.024.0000; p.11 SET and RESET inputs"
+    calc: "400 / 230 = 1.74 A ≥ 1 A; 5 relays × 2 inputs = 10 DO"
+  - id: C09
+    in: {dol_outputs: 5, other_outputs: 10, do_available: 20, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 45}
+    expect: {status: ok, latch_relay_qty: 5, slim_relay_qty: 10, do_needed: 20}
+    oracle: "R-CTL-05: 2 × 5 + 10 = 20 ≤ 20 DO available"
+  - id: C10
+    in: {dol_outputs: 5, other_outputs: 11, do_available: 20, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 45}
+    expect: {status: warning, do_needed: 21, warnings: [R-CTL-05]}
+    oracle: "R-CTL-05: 21 > 20 DO available"
+  - id: C11
+    in: {dol_outputs: 36, other_outputs: 44, do_available: 80, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 45}
+    expect: {status: warning, latch_relay_qty: 36, slim_relay_qty: 44, do_needed: 116, slim_jumper_qty: 3, slim_marker_qty: 1, warnings: [R-CTL-05]}
+    oracle: "WNS2503 BIO_UF: ECI-WNS2503-AUTO p.1 DO final 80; load list (component 14) 36 DOL units; other outputs = 80 − 36 (reading ECI's count as 1 DO per DOL)"
+    calc: "2 × 36 + 44 = 116 > 80; ceil(44/20) = 3 jumpers; ceil(44/48) = 1 sheet"
+  - id: C12
+    in: {dol_outputs: 39, other_outputs: 57, do_available: 96, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 45}
+    expect: {status: warning, latch_relay_qty: 39, slim_relay_qty: 57, do_needed: 135, slim_jumper_qty: 3, slim_marker_qty: 2, warnings: [R-CTL-05]}
+    oracle: "WNS2503 RO: ECI-WNS2503-AUTO p.1 DO final 96; load list 39 DOL units; other = 96 − 39"
+    calc: "2 × 39 + 57 = 135 > 96; ceil(57/20) = 3; ceil(57/48) = 2"
+
+  # --- makes ----------------------------------------------------------------------------------
+  - id: C13
+    in: {other_outputs: 4, relay_make: phoenix}
+    expect: {status: cannot_select, rule: R-CTL-03}
+    oracle: "Phoenix Contact data sheets not in sources/register.yaml"
+  - id: C14
+    in: {dol_outputs: 3, relay_make: connectwell}
+    expect: {status: cannot_select, rule: R-CTL-04}
+    oracle: "CW-ES-2526: no latching / bistable relay in the catalogue (whole-document search, G6)"
+  - id: C15
+    in: {other_outputs: 10, relay_make: connectwell, contact_v: 24, contact_a: 2, contact_load: dc1, panel_internal_c: 40}
+    expect: {status: ok, slim_relay: "CSR1S-24DXB", slim_relay_qty: 10, slim_jumper: "JX4/10 ×1", slim_jumper_qty: 1, slim_marker: "MC6", slim_marker_qty: 1, slim_end_clamp: "CA103", slim_end_clamp_qty: 2, slim_coil_ma: 70}
+    oracle: "CW-ES p.44 CSR1S-24DXB spring 24 VDC 7 mA, 6 A, 30 VDC, 180 W; p.45 JX4/10, MC6, CA103; CW-TB p.289 MC6 72 tags"
+    calc: "DC1: 24 V ≤ 30 V, 2 A ≤ min(6, 180/24 = 7.5); 10 = one JX4/10; 10 × 7 = 70 mA"
+  - id: C16
+    in: {other_outputs: 23, relay_make: connectwell, contact_v: 24, contact_a: 2, contact_load: dc1, panel_internal_c: 40}
+    expect: {status: ok, slim_relay_qty: 23, slim_jumper: "JX4/16 ×1, JX4/5 ×1, JX4/2 ×1", slim_jumper_qty: 3, slim_marker_qty: 1}
+    oracle: "CW-ES p.45 JX4 poles 2, 3, 4, 5, 8, 10, 16 (not cuttable)"
+    calc: "23 has no 1- or 2-piece sum; 3 pieces, largest first: 16 + 5 + 2"
+  - id: C17
+    in: {dol_outputs: 2, other_outputs: 4, relay_make: connectwell, latch_make: finder, contact_v: 230, contact_a: 2, contact_load: ac1, panel_internal_c: 40}
+    expect: {status: ok, latch_relay: "13.12.0.024.0000", latch_relay_qty: 2, slim_relay: "CSR1S-24DXB", slim_relay_qty: 4, slim_jumper: "JX4/4 ×1", do_needed: 8}
+    oracle: "S13 p.5 AC1 2000 VA 8 A; CW-ES p.44 6 A 1500 VA"
+    calc: "AC1: 2 A, 460 VA within both; 2 × 2 + 4 = 8 DO"
+
+  # --- contact load and ambient ----------------------------------------------------------------
+  - id: C18
+    in: {other_outputs: 4, contact_v: 230, contact_a: 1.5, contact_load: ac15, panel_internal_c: 45}
+    expect: {status: cannot_select, rule: R-CTL-08}
+    oracle: "S38 p.5 AC15 (230 V AC) 300 VA"
+    calc: "300 / 230 = 1.30 A < 1.5 A"
+  - id: C19
+    in: {other_outputs: 4, contact_v: 24, contact_a: 2, contact_load: dc13, panel_internal_c: 40}
+    expect: {status: warning, slim_relay: "38.61.7.024.0050", slim_relay_qty: 4, warnings: [R-CTL-09]}
+    oracle: "S38 p.5 DC1 24 V 6 A; p.12 DC13 needs a diode in parallel with the load"
+  - id: C20
+    in: {other_outputs: 4, contact_v: 110, contact_a: 0.5, contact_load: dc1, panel_internal_c: 40}
+    expect: {status: cannot_select, rule: R-CTL-08}
+    oracle: "S38 p.5 breaking capacity DC1 24/110/220 V: 6/0.2/0.12 A"
+    calc: "0.5 A > 0.2 A at 110 V"
+  - id: C21
+    in: {other_outputs: 4, contact_v: 48, contact_a: 0.2, contact_load: dc1, panel_internal_c: 40}
+    expect: {status: ok, slim_relay_qty: 4}
+    oracle: "S38 p.5: 48 V lies between the printed 24 and 110 V points; the 110 V value 0.2 A is used"
+    calc: "0.2 A ≤ 0.2 A"
+  - id: C22
+    in: {other_outputs: 4, relay_make: connectwell, contact_v: 230, contact_a: 0.5, contact_load: ac15, panel_internal_c: 40}
+    expect: {status: cannot_select, rule: R-CTL-08}
+    oracle: "CW-ES p.44 gives no AC-15 rating (only 6 A, 230 VAC / 30 VDC, 1500 VA / 180 W)"
+  - id: C23
+    in: {dol_outputs: 2, contact_v: 24, contact_a: 1, contact_load: dc13, panel_internal_c: 40}
+    expect: {status: cannot_select, rule: R-CTL-08}
+    oracle: "S13 p.5: 13.12 has AC1 / AC15 ratings only, no DC rating"
+  - id: C24
+    in: {other_outputs: 4, coil_v_dc: 110}
+    expect: {status: cannot_select, rule: R-CTL-02}
+    oracle: "scope: 24 V DC coils only"
+  - id: C25
+    in: {other_outputs: 4, relay_make: connectwell, contact_v: 230, contact_a: 2, contact_load: ac1, panel_internal_c: 58}
+    expect: {status: cannot_select, rule: R-CTL-10}
+    oracle: "CW-ES p.44 ambient operating −40 … +55 °C"
+  - id: C26
+    in: {other_outputs: 4, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 58}
+    expect: {status: ok, slim_relay_qty: 4}
+    oracle: "S38 p.5 −40 … +70 °C for UN ≤ 60 V"
+  - id: C27
+    in: {dol_outputs: 2, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 62}
+    expect: {status: cannot_select, rule: R-CTL-10}
+    oracle: "S13 p.5 13.12 ambient −10 … +60 °C"
+  - id: C28
+    in: {other_outputs: 4}
+    expect: {status: warning, slim_relay_qty: 4, warnings: [R-CTL-08, R-CTL-10]}
+    oracle: "load and panel temperature not given: relay chosen, not checked"
+
+  # --- terminal blocks ------------------------------------------------------------------------
+  - id: C29
+    in: {io_terminals: 100, io_conductor_mm2: 1.5}
+    expect: {status: ok, terminals: "CP2.5 ×100", terminal_qty: 100, end_plates: "EPCX2.5 ×1", end_plate_qty: 1, end_clamp: "CA103", end_clamp_qty: 2, markers: "MC5 ×2", marker_cards: 2}
+    oracle: "CW-TB p.12 CP1.5 ferrule 0.2-1.0 mm² (1.5 does not fit); p.13 CP2.5 ferrule 0.2-2.5, end plate EPCX2.5, tag MC5; p.289 MC5 84 tags; p.283 end clamps both sides"
+    calc: "ceil(100/84) = 2 cards; one strip → 2 end clamps"
+  - id: C30
+    in: {io_terminals: 30, io_conductor_mm2: 1.0}
+    expect: {status: ok, terminals: "CP1.5 ×30", end_plates: "EPCP1.5 ×1", markers: "MC3.5 ×1", end_clamp_qty: 2}
+    oracle: "CW-TB p.12 CP1.5 ferrule 0.2-1.0 mm², EPCP1.5, MC3.5; p.289 MC3.5 120 tags"
+  - id: C31
+    in: {io_terminals: 30, io_conductor_mm2: 1.5, conductor_type: flex}
+    expect: {status: ok, terminals: "CP1.5 ×30"}
+    oracle: "CW-TB p.12 CP1.5 stranded/flexible 0.2-1.5 mm² (without ferrule)"
+  - id: C32
+    in: {power_terminals: [{mm2: 4, count: 3, a: 25}, {mm2: 10, count: 3, a: 50}]}
+    expect: {status: ok, terminals: "CP4 ×3, CP6/10 ×3", terminal_qty: 6, end_plates: "EPCX4 ×1, EPCX6 ×1", end_plate_qty: 2, end_clamp_qty: 4, markers: "MC6 ×1, MC8 ×1", marker_cards: 2}
+    oracle: "CW-TB p.13: CP4 ferrule 0.2-4.0, 32 A, EPCX4, MC6; CP6/10 ferrule 0.5-10, 57 A, EPCX6, MC8; p.297 end plate per group; p.283 both sides"
+    calc: "2 types → 2 strips → 4 end clamps"
+  - id: C33
+    in: {power_terminals: [{mm2: 4, count: 3, a: 25}, {mm2: 10, count: 3, a: 50}], terminal_strips: 1}
+    expect: {status: ok, end_plate_qty: 2, end_clamp_qty: 2}
+    oracle: "CW-TB p.297: end plate at every change in size + at the end (2); p.283: one strip → 2 clamps"
+  - id: C34
+    in: {power_terminals: [{mm2: 4, count: 2, a: 35}]}
+    expect: {status: ok, terminals: "CP6/10 ×2"}
+    oracle: "CW-TB p.13: CP4 IEC 32 A < 35 A → CP6/10 57 A (ferrule 0.5-10 contains 4)"
+  - id: C35
+    in: {power_terminals: [{mm2: 25, count: 3, a: 60}]}
+    expect: {status: cannot_select, rule: R-CTL-13}
+    oracle: "CW-TB p.14 CP16 ferrule 1.5-16 mm² is the largest CP feed-through"
+  - id: C36
+    in: {power_terminals: [{mm2: 6, count: 3, a: 80}]}
+    expect: {status: cannot_select, rule: R-CTL-13}
+    oracle: "CW-TB p.14 CP16 IEC 76 A < 80 A"
+  - id: C37
+    in: {io_terminals: 40, io_conductor_mm2: 1.5, jumper_groups: [10, 25]}
+    expect: {status: ok, terminals: "CP2.5 ×40", jumpers: "JX2.5/20 ×1, JX2.5/10 ×1, JX2.5/6 ×1", jumper_qty: 3}
+    oracle: "CW-TB p.13 JX2.5 poles 2-8, 10, 20; p.10 two independent jumper rows"
+    calc: "10 → JX2.5/10; 25 → 2 pieces overlapping one terminal: 20 + 6 − 1 = 25"
+  - id: C38
+    in: {io_terminals: 10, io_conductor_mm2: 1.5, terminal_make: phoenix}
+    expect: {status: cannot_select, rule: R-CTL-03}
+    oracle: "Phoenix Contact data sheets not held"
+
+  # --- Rittal door switch and light -------------------------------------------------------------
+  - id: C39
+    in: {doors: 7}
+    expect: {status: ok, door_switch: "SZ 4127.010", door_switch_qty: 7, light: "SZ 4140.820", light_qty: 7, light_current_a: 0.56, light_rows_min: 1}
+    oracle: "RITTAL-4127010 p.2 24 V DC/6 A; RITTAL-4140820 p.3 24 V DC 0.08 A, rows ≤ 2 A"
+    calc: "7 × 0.08 = 0.56 A ≤ 2 A → 1 row"
+  - id: C40
+    in: {doors: 30}
+    expect: {status: ok, light_qty: 30, light_current_a: 2.4, light_rows_min: 2}
+    oracle: "RITTAL-4140820 p.3: rows of lights max 2 A"
+    calc: "30 × 0.08 = 2.4 A > 2 A → ceil(2.4/2) = 2 rows (≤ 25 lights per row)"
+
+  # --- invalid inputs ---------------------------------------------------------------------------
+  - id: C41
+    in: {other_outputs: -1}
+    expect: {status: invalid}
+    oracle: "counts must be whole numbers ≥ 0"
+  - id: C42
+    in: {}
+    expect: {status: invalid}
+    oracle: "nothing to select"
+  - id: C43
+    in: {io_terminals: 10}
+    expect: {status: invalid}
+    oracle: "io_conductor_mm2 required with io_terminals"
+  - id: C44
+    in: {other_outputs: 4, contact_load: ac15}
+    expect: {status: invalid}
+    oracle: "contact_load needs contact_v and contact_a"
+  - id: C45
+    in: {io_terminals: 10, io_conductor_mm2: 1.5, jumper_groups: [12]}
+    expect: {status: invalid}
+    oracle: "a commoned group cannot be larger than the I/O terminals"
+  - id: C46
+    in: {other_outputs: 2, contact_v: 230, contact_a: 1, contact_load: ac15, panel_internal_c: 45, relay_groups: 5}
+    expect: {status: invalid}
+    oracle: "regression audit 2026-10-14: more relay groups than relays is impossible (gave 10 separators for 2 relays)"

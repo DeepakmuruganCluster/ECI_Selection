@@ -1,0 +1,61 @@
+# Golden cases for feeder_kit — written BEFORE the code (G4).
+# Oracles: the kit rows of DOL Motors BOM 30 05 23.xlsx (sheet, row) and the costing sheet; motor FLC from component 1
+# (guide: 5.5 kW 11.5 A, 7.5 kW 15.5 A, 22 kW 41 A, 30 kW 55 A, 160 kW 280 A; 3.7 kW and > 160 kW not in the guide).
+
+cases:
+  - id: K01
+    in: {starter: DOL, kw: 5.5}
+    expect: {status: ok, kit: "BELT CONVEYOR 5.5KW DOL", mpcb: GZ1E16, contactor: LC1E18, price_inr: 3245.84, n_items: 15, price_complete: 0}
+    oracle: "BELT CONVEYOR rows 37–52: GZ1E16 9–14 A ∋ 11.5 A; LC1E18 18 A ≥ 11.5 A; priced lines = sheet total H53 3245.8371; cables and wiring accessories unpriced"
+  - id: K02
+    in: {starter: DOL, kw: 7.5}
+    expect: {status: warning, mpcb: GZ1E16, warnings: [R-KIT-03]}
+    oracle: "BELT CONVEYOR 7.5 kW (row 54): GZ1E16 9–14 A does not contain 15.5 A"
+  - id: K03
+    in: {starter: DOL, kw: 22, application: screen feeder}
+    expect: {status: warning, kit: "SCREEN FEEDER (MVS-2060) 22 KW DOL", mpcb: GV3P40, warnings: [R-KIT-03]}
+    oracle: "SCREEN FEEDER row 38: GV3P40 30–40 A does not contain 41 A"
+  - id: K04
+    in: {starter: DOL, kw: 3.7}
+    expect: {status: warning, mpcb: GZ1E14, warnings: [R-KIT-03]}
+    oracle: "3.7 kW not in the guide table → motor current unknown, range not checked"
+  - id: K05
+    in: {starter: DOL, kw: 3.7, flc_a: 7.5}
+    expect: {status: ok, mpcb: GZ1E14}
+    oracle: "nameplate 7.5 A ∈ 6–10 A (GZ1E14), LC1E12 12 A ≥ 7.5 A"
+  - id: K06
+    in: {starter: DOL, kw: 45}
+    expect: {status: cannot_select, rule: R-KIT-01}
+    oracle: "no 45 kW DOL kit"
+  - id: K07
+    in: {starter: SD, kw: 30}
+    expect: {status: ok, kit: "BELT CONVEYOR 30KW SDL - Prowash / eco wash", line_contactor: LC1E50, star_contactor: LC1E40M7, price_inr: 15179.92}
+    oracle: "BELT CONVEYOR rows 158–174: 55 A / √3 = 31.75 A ≤ 50 A (LC1E50 × 2); 55 / 3 = 18.3 A ≤ 40 A (LC1E40M7); OLR 23–32 A ∋ 31.75 A; sheet total 15179.9235"
+  - id: K08
+    in: {starter: SD, kw: 160, kit: KIT-45343a8c}
+    expect: {status: ok, kit: "160/187KW STAR-DELTA STARTER PANEL", line_contactor: LC1E250M5, star_contactor: LC1E200M5}
+    oracle: "costing sheet '187KW SD' covers 160/187 kW, chosen by the designer (R-KIT-06: '160KW SD WITH PLC' fits too, so the kit is asked); 280 / √3 = 161.7 A ≤ 250 A; 280 / 3 = 93.3 A ≤ 200 A; OLR 124–198 A ∋ 161.7 A"
+  - id: K09
+    in: {starter: SD, kw: 160, application: lub with plc}
+    expect: {status: ok, kit: "AVCONE 160KW S/D LUB WITH PLC OPTION", line_contactor: LC1E200M5, star_contactor: LC1E160M5}
+    oracle: "costing sheet '160KW SD WITH PLC' = drawing AVELCPSDL08WPLC K1, K2 200 A and K3 160 A; 161.7 ≤ 200; 93.3 ≤ 160; several overload relays (lube motors) → not checked"
+  - id: K10
+    in: {starter: SD, kw: 220, kit: KIT-65417521}
+    expect: {status: warning, warnings: [R-KIT-05]}
+    oracle: "220 kW not in the guide table → motor current unknown: star-delta ratings not checked"
+  - id: K11
+    in: {starter: VFD, kw: 7.5}
+    expect: {status: cannot_select, rule: R-KIT-01}
+    oracle: "no VFD BOM structure received yet"
+  - id: K12
+    in: {starter: XYZ, kw: 7.5}
+    expect: {status: invalid}
+    oracle: "starter must be DOL, DOL_FR, SD or VFD"
+  - id: K12
+    in: {starter: SD, kw: 160}
+    expect: {status: cannot_select}
+    oracle: "R-KIT-06 (owner 2026-10-17, audit #17): two kits fit 160 kW star-delta ('187KW SD' and '160KW SD WITH PLC') and nothing narrows them — refused with the choices, never the first silently"
+  - id: K13
+    in: {starter: DOL, kw: 11, application: pump}
+    expect: {status: cannot_select}
+    oracle: "R-KIT-06: no 11 kW DOL kit is named after 'pump' — no kit taken (the panel offers the 11 kW kits as choices)"

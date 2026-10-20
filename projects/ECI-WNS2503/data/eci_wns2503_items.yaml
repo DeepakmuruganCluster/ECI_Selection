@@ -1,0 +1,81 @@
+# ECI WNS2503 — items the client specifies directly (Automation_Rittal Panel Specification Rev02).
+# Transcribed 2026-10-11 from the PDF (page 1 table "Total PLC Requirements" and the item list
+# below it; page 2: last two rows). Checked against the rendered page images.
+#
+#   panel:     BIO_UF | RO | plant (one lot for the whole job, not per panel)
+#   qty:       as written; null = the spec does not state a quantity (open point)
+#   qty_basis: "stated" (number written) | "per_panel" (one per panel, e.g. "for each panel")
+#              | "interpreted" (our reading; listed as an open point to confirm)
+#   verify_by: the engineering component that must check this item (null = bought-out item, no check)
+#   spec:      the wording of the spec cell (typos kept)
+
+source:
+  ref: ECI-WNS2503-AUTO
+  section: "Total PLC Requirements table and item list"
+
+rows:
+  # --- PLC / automation (page 1, table) ---
+  - {panel: BIO_UF, item: "PLC CPU", make: Siemens, model: "CPU 1513-1 PN 6ES7513-1AM03-0AB0", qty: 1, unit: no, qty_basis: stated, verify_by: plc, spec: "CPU1513-1PN -6ES7 513-1AM03-0AB0/ 12MB Memory Card / Remote Station ET200SP; table: CPU-1513 = 1 (BIO_UF)", page: 1}
+  - {panel: BIO_UF, item: "Memory card 12 MB", make: Siemens, model: "SIMATIC Memory Card 12 MB", qty: 1, unit: no, qty_basis: interpreted, verify_by: plc, spec: "12MB Memory Card (one per CPU)", page: 1}
+  - {panel: BIO_UF, item: "ET 200SP interface module station", make: Siemens, model: "IM station ET200SP", qty: 2, unit: no, qty_basis: stated, verify_by: plc, spec: "IM Station-ET200SP: ET200SP = 2", page: 1}
+  - {panel: RO,     item: "ET 200SP interface module station", make: Siemens, model: "IM station ET200SP", qty: 2, unit: no, qty_basis: stated, verify_by: plc, spec: "IM Station-ET200SP: ET200SP = 2", page: 1}
+  - {panel: BIO_UF, item: "HMI 7 inch", make: Siemens, model: "HMI 7 inch", qty: null, unit: no, qty_basis: stated, verify_by: control_power, spec: "column 'HMI 7Inch' with no quantity entered", page: 1}
+  - {panel: RO,     item: "HMI 7 inch", make: Siemens, model: "HMI 7 inch", qty: null, unit: no, qty_basis: stated, verify_by: control_power, spec: "column 'HMI 7Inch' with no quantity entered", page: 1}
+  # --- SCADA (page 1) ---
+  - {panel: plant,  item: "SCADA runtime software", make: Siemens, model: "WinCC Professional 4096 tags runtime", qty: 1, unit: no, qty_basis: stated, verify_by: null, spec: "WinCC Professional 4096 Tags Run time software - 1No", page: 1}
+  - {panel: plant,  item: "SCADA PC", make: HP, model: "i7, 32 GB RAM, 1.5 TB disk, Windows 11, MS Office, Wi-Fi, wireless mouse and keyboard", qty: 1, unit: no, qty_basis: stated, verify_by: null, spec: "HP i7 Processor ,32GB RAM ,1.5 TB Hard Disk windows 11 with MS office Original, Inbuild Wifi ,Wireless Mouse and Keyboard - 1No's", page: 1}
+  - {panel: plant,  item: "SCADA display 55 inch", make: Samsung, model: "HPU800 hospitality TV", qty: null, unit: no, qty_basis: stated, verify_by: null, spec: "55 Inch Samsung Model HPU800 Hospitality TV", page: 1}
+  # --- power distribution (page 1) ---
+  - {panel: BIO_UF, item: "Main incomer", make: Siemens, model: "3VA 630 A 55 kA adjustable thermal-magnetic", qty: 1, unit: no, qty_basis: stated, verify_by: incomer_busbar, spec: "Main Incommer For Bio MBR Panel: 3VA-630A 55KA Adjustable Thermal Magnetic", page: 1}
+  - {panel: RO,     item: "Main incomer", make: Siemens, model: "3VA 630 A 55 kA adjustable thermal-magnetic", qty: 1, unit: no, qty_basis: stated, verify_by: incomer_busbar, spec: "Main Incommer For RO Panel: 3VA-630A 55KA Adjustable Thermal Magnetic", page: 1}
+  - {panel: BIO_UF, item: "Busbar", make: null, model: "Copper 75 × 10 mm", qty: 1, unit: set, qty_basis: per_panel, verify_by: incomer_busbar, spec: "Bus Bar: 75mm Width and 10mm Thickness _Copper", page: 1}
+  - {panel: RO,     item: "Busbar", make: null, model: "Copper 75 × 10 mm", qty: 1, unit: set, qty_basis: per_panel, verify_by: incomer_busbar, spec: "Bus Bar: 75mm Width and 10mm Thickness _Copper", page: 1}
+  - {panel: BIO_UF, item: "Surge arrester, main incomer (3-phase)", make: Phoenix Contact, model: "3-phase SPD", qty: 1, unit: no, qty_basis: interpreted, verify_by: aux_switchgear, spec: "Surge Arrester For Main Incommer: Need to Consider Phoneix Surger Arrester for 3pH Supply", page: 1}
+  - {panel: RO,     item: "Surge arrester, main incomer (3-phase)", make: Phoenix Contact, model: "3-phase SPD", qty: 1, unit: no, qty_basis: interpreted, verify_by: aux_switchgear, spec: "Surge Arrester For Main Incommer: Need to Consider Phoneix Surger Arrester for 3pH Supply", page: 1}
+  - {panel: plant,  item: "Surge arrester, UPS supply", make: Phoenix Contact, model: "SPD for UPS supply", qty: 1, unit: no, qty_basis: interpreted, verify_by: aux_switchgear, spec: "Surge Arrester For UPS Supply: Need to Consider Phoneix Surger Arrester for UPS Supply", page: 1}
+  - {panel: BIO_UF, item: "Energy meter with PROFINET", make: Siemens, model: "SENTRON 7KM series with PROFINET", qty: 1, unit: no, qty_basis: per_panel, verify_by: metering, spec: "Siemens Energy Meter with Profinet communiction for Each Panel - 7KM series with Profinet Communication", page: 1}
+  - {panel: RO,     item: "Energy meter with PROFINET", make: Siemens, model: "SENTRON 7KM series with PROFINET", qty: 1, unit: no, qty_basis: per_panel, verify_by: metering, spec: "Siemens Energy Meter with Profinet communiction for Each Panel - 7KM series with Profinet Communication", page: 1}
+  - {panel: plant,  item: "Current transformers (make)", make: "Rishabh / Selec", model: "LV metering CT", qty: null, unit: no, qty_basis: stated, verify_by: metering, spec: "Rishabh/Select Currnet Transformer", page: 1}
+  # --- control power (page 1) ---
+  - {panel: BIO_UF, item: "24 V DC power supply 10 A", make: Siemens, model: "SITOP 10 A", qty: 1, unit: no, qty_basis: stated, verify_by: control_power, spec: "Sitop Siemens Power Supply ( BIO Panel 10A-1No, 20A-1No)", page: 1}
+  - {panel: BIO_UF, item: "24 V DC power supply 20 A", make: Siemens, model: "SITOP 20 A", qty: 1, unit: no, qty_basis: stated, verify_by: control_power, spec: "Sitop Siemens Power Supply ( BIO Panel 10A-1No, 20A-1No)", page: 1}
+  - {panel: RO,     item: "24 V DC power supply 20 A", make: Siemens, model: "SITOP 20 A", qty: 1, unit: no, qty_basis: stated, verify_by: control_power, spec: "(RO Panel - 20A -1 NO)", page: 1}
+  - {panel: plant,  item: "UPS 5 kVA, 20 min backup, with UPS box", make: null, model: "5 kVA, 20 min", qty: 1, unit: no, qty_basis: interpreted, verify_by: control_power, spec: "5 KVA UPS with 20min Backuup for PLC, SCADA PC , and Instruement Power Supply with UPS Box", page: 1}
+  # --- network (pages 1, 2) ---
+  - {panel: plant,  item: "Ethernet switch 8-port", make: Siemens, model: "8-port Ethernet hub", qty: 4, unit: no, qty_basis: stated, verify_by: control_power, spec: "Siemens 8 Port Ethernet Hub -4No's", page: 1}
+  - {panel: plant,  item: "Ethernet surge protector", make: null, model: "Ethernet SPD", qty: 6, unit: no, qty_basis: stated, verify_by: control_power, spec: "Ethernet Surge Protector - 6No's", page: 1}
+  - {panel: plant,  item: "PROFINET cable for site", make: null, model: "PROFINET cable", qty: 250, unit: m, qty_basis: stated, verify_by: null, spec: "250mtr for Site purpose", page: 1}
+  - {panel: plant,  item: "PROFINET connector", make: null, model: "PROFINET connector", qty: 20, unit: no, qty_basis: stated, verify_by: null, spec: "20No's of Profinet Connector", page: 1}
+  - {panel: plant,  item: "Panel internal PROFINET cable with connectors", make: Phoenix Contact, model: "Ethernet cable with Ethernet connector", qty: null, unit: m, qty_basis: stated, verify_by: control_power, spec: "Phoneix Ethernet cable with Ethernet Connector", page: 2}
+  # --- control / wiring / earthing (page 1) ---
+  - {panel: plant,  item: "Interface relays (rule)", make: "Phoenix / Finder", model: "latching on DOL outputs, slim on other outputs", qty: null, unit: no, qty_basis: stated, verify_by: control_signalling, spec: "DOL output need to use Latch Relay and Other Outputs slim Relay - Phoneix/Finder", page: 1}
+  - {panel: plant,  item: "Terminals and distribution links (make)", make: "Phoenix / Connectwell", model: "screwless terminals, distribution short links", qty: null, unit: no, qty_basis: stated, verify_by: control_signalling, spec: "Phoneix or Connectwell Screw less Connectors and Phoneix /Connectwell Distribution short link Connectors", page: 1}
+  - {panel: plant,  item: "Internal panel wiring cable (make)", make: Lapp, model: "LAPP cable", qty: null, unit: m, qty_basis: stated, verify_by: internal_wiring, spec: "LAP Cable Internal Wiring", page: 1}
+  - {panel: BIO_UF, item: "Earth busbar, copper", make: null, model: "copper earth bar", qty: 1, unit: no, qty_basis: per_panel, verify_by: earthing, spec: "Earthing Bus Bar With Copper", page: 1}
+  - {panel: RO,     item: "Earth busbar, copper", make: null, model: "copper earth bar", qty: 1, unit: no, qty_basis: per_panel, verify_by: earthing, spec: "Earthing Bus Bar With Copper", page: 1}
+  - {panel: BIO_UF, item: "Instrument / analog shield earth bar 30 × 10", make: null, model: "copper 30 × 10 mm", qty: 1, unit: no, qty_basis: per_panel, verify_by: earthing, spec: "Separte Earth bar for Analog Signal Shield and Instrument Earth(30mmX10mm)", page: 1}
+  - {panel: RO,     item: "Instrument / analog shield earth bar 30 × 10", make: null, model: "copper 30 × 10 mm", qty: 1, unit: no, qty_basis: per_panel, verify_by: earthing, spec: "Separte Earth bar for Analog Signal Shield and Instrument Earth(30mmX10mm)", page: 1}
+  # --- enclosure (pages 1, 2) ---
+  - {panel: BIO_UF, item: "Enclosure, Rittal PS", make: Rittal, model: "7800 × 2000 × 600 mm (600 × 1, 1200 × 6)", qty: 1, unit: lot, qty_basis: per_panel, verify_by: panel_layout, spec: "BIO_MBR Panel Size Suggestion 7800X2000x600(LXHXD) ( 600-1No, 1200- 6No's)", page: 1, length_mm: 7800, sections_mm: [600, 1200, 1200, 1200, 1200, 1200, 1200]}
+  - {panel: RO,     item: "Enclosure, Rittal PS", make: Rittal, model: "7800 × 2000 × 600 mm (600 × 1, 1200 × 4, 1000 × 2)", qty: 1, unit: lot, qty_basis: per_panel, verify_by: panel_layout, spec: "RO Panel Size Suggestion 7800X2000x600(LXHXD) ( 600-1No, 1200- 4No's,1000-2No's)", page: 1, length_mm: 7800, sections_mm: [600, 1200, 1200, 1200, 1200, 1000, 1000]}
+  - {panel: BIO_UF, item: "Cooling fan 8 inch on each door", make: Rittal, model: "8 inch filter fan", qty: null, unit: no, qty_basis: stated, verify_by: enclosure, spec: "Rittal cooling Fan - 8Inch Each Door Need To Consdier Cooling Fan", page: 1}
+  - {panel: RO,     item: "Cooling fan 8 inch on each door", make: Rittal, model: "8 inch filter fan", qty: null, unit: no, qty_basis: stated, verify_by: enclosure, spec: "Rittal cooling Fan - 8Inch Each Door Need To Consdier Cooling Fan", page: 1}
+  - {panel: BIO_UF, item: "Door limit switch and panel light", make: Rittal, model: "door switch + light", qty: null, unit: set, qty_basis: stated, verify_by: enclosure_accessories, spec: "Rittal Door limit switch and Light", page: 1}
+  - {panel: RO,     item: "Door limit switch and panel light", make: Rittal, model: "door switch + light", qty: null, unit: set, qty_basis: stated, verify_by: enclosure_accessories, spec: "Rittal Door limit switch and Light", page: 1}
+  - {panel: BIO_UF, item: "Panel stand 1 ft with side covers", make: null, model: "plinth ≈ 300 mm with side covers", qty: 1, unit: lot, qty_basis: per_panel, verify_by: panel_layout, spec: "Need to consider Panel stand 1 Feet Height with Side covers", page: 2}
+  - {panel: RO,     item: "Panel stand 1 ft with side covers", make: null, model: "plinth ≈ 300 mm with side covers", qty: 1, unit: lot, qty_basis: per_panel, verify_by: panel_layout, spec: "Need to consider Panel stand 1 Feet Height with Side covers", page: 2}
+  - {panel: plant,  item: "Tower lamp with buzzer", make: Schneider, model: "tower lamp with buzzer", qty: 3, unit: no, qty_basis: stated, verify_by: control_signalling, spec: "Schneider Tower lamp with Buzzer - 3No's", page: 1}
+
+# I/O table (page 1) — kept for the arithmetic check and for the control-power component later
+io:
+  - {panel: BIO_UF, signal: DI,          required: 259, spare: 13, final: 272, page: 1}
+  - {panel: BIO_UF, signal: DO,          required: 68,  spare: 12, final: 80,  page: 1}
+  - {panel: BIO_UF, signal: AI 4-20mA,   required: 33,  spare: 7,  final: 40,  page: 1}
+  - {panel: BIO_UF, signal: AI 0-10V,    required: 1,   spare: 3,  final: 4,   page: 1}
+  - {panel: BIO_UF, signal: AO 4-20mA,   required: 10,  spare: 6,  final: 16,  page: 1}
+  - {panel: RO,     signal: DI,          required: 330, spare: 6,  final: 336, page: 1}
+  - {panel: RO,     signal: DO,          required: 83,  spare: 13, final: 96,  page: 1}
+  - {panel: RO,     signal: AI 4-20mA,   required: 48,  spare: 8,  final: 56,  page: 1}
+  - {panel: RO,     signal: AI 0-10V,    required: 1,   spare: 3,  final: 4,   page: 1}
+  - {panel: RO,     signal: AO 4-20mA,   required: 22,  spare: 10, final: 32,  page: 1}
+io_totals: {DI: 608, DO: 176, AI 4-20mA: 96, AO 4-20mA: 48, AI 0-10V: 8, page: 1}

@@ -1,0 +1,84 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 6
+title: Motor / feeder cable (Cu XLPE armoured 0.6/1 kV, Polycab or KEI)
+what_it_does: >
+  Picks the smallest copper XLPE armoured cable for a feeder. It takes the cable's
+  current rating from the maker's table (in air, buried in the ground, or in a
+  duct), reduces it for the air or ground temperature using the maker's factor
+  table, and checks it against the load current and the protective device. It
+  then checks the voltage drop along the cable (and, if asked, at motor start and
+  the short-circuit strength). All numbers come from one maker's book (Polycab by
+  default, or KEI). Where the maker gives no number — cable trays, cables grouped
+  together, aluminium — it refuses instead of guessing.
+
+how_to_check:
+  - "Ratings: open Polycab page 43. For 3-core 6 mm² the 'In air' rating is 52 A and 'Buried direct in the ground' is 56 A. Press 'Try it: 38 A motor, 40 A breaker, 50 °C air': the 4 mm² cable gives 41 A × 0.89 = 36.5 A (too small), so it must pick 6 mm² with 52 × 0.89 = 46.3 A."
+  - "Temperature: open Polycab page 87 (first table). At 50 °C the factor is 0.89; at 35 °C it is 1.05. If the temperature is between two columns (e.g. 47 °C) the tool uses the hotter column (50 °C)."
+  - "Long cable: press 'Try it: 20 A, 200 m'. 4 mm² is big enough for the current, but the voltage drop would be 8.7 % (limit 5 %), so it must pick 10 mm² (3.5 %). The resistance it uses is on page 11 ('A.C Resistance at 90 °C, plain copper': 2.33 Ω/km for 10 mm²)."
+  - "Refusals: choose installation 'tray', or more than one cable in a group with Polycab — the tool must refuse and say why (Polycab prints no tray or grouping factors)."
+  - "Page numbers: Polycab prints the same number as the PDF page. KEI prints two book pages on one PDF page (PDF page 38 shows printed pages 73 and 74)."
+
+spot_checks:
+  - {label: "38 A motor, 40 A breaker, air 50 °C (page 43/87: 6 mm²)", tab: cable, inputs: {ib_a: 38, in_a: 40, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 50}}
+  - {label: "20 A, 200 m run (page 11: voltage drop → 10 mm²)", tab: cable, inputs: {ib_a: 20, in_a: 20, length_m: 200, voltage_v: 400, pf_run: 0.85, installation: air, ambient_c: 40}}
+  - {label: "Cable on a tray (must refuse: not in the maker's tables)", tab: cable, inputs: {ib_a: 20, in_a: 20, length_m: 50, voltage_v: 400, pf_run: 0.85, installation: tray, ambient_c: 40}}
+
+decisions:
+  - id: C-1
+    question: "Voltage-drop limit for a running motor feeder. The IEC standard is not held yet, so this is our rule. What limit should the tool use (the designer can still type a project limit)?"
+    options: {"5": "5 % (recommended until IEC 60364-5-52 is bought)", "3": "3 %", "4": "4 %"}
+    recommended: "5"
+  - id: C-2
+    question: "Voltage-drop limit while a DOL motor is starting (only checked when the starting current and starting power factor are typed in)."
+    options: {"15": "15 %", "10": "10 %", "20": "20 %"}
+    recommended: "15"
+  - id: C-3
+    question: "Neither maker gives rating factors for cables on trays or for groups of cables in air for low-voltage cables (KEI has some in its high-voltage section, page 20). Until IEC 60364-5-52 / IS 3961 is held, should the tool keep refusing tray and grouped-in-air cables?"
+    options: {"yes": "Yes, refuse (buy the standard to cover trays)", "no": "No, use KEI's high-voltage tray factors for low-voltage cables"}
+    recommended: "yes"
+  - id: C-4
+    question: "Which make should the tool use when the designer does not say? Both books give the same current ratings; the temperature factors differ slightly (e.g. 50 °C air: Polycab 0.89, KEI 0.90)."
+    options: {polycab: "Polycab", kei: "KEI"}
+    recommended: polycab
+  - id: C-5
+    question: "With parallel cables, the short-circuit check assumes each cable must survive the whole fault on its own. This is safe but can pick bigger cables. Keep it?"
+    options: {"yes": "Yes, each run takes the full fault (safe)", "no": "No, share the fault between the runs"}
+    recommended: "yes"
+  - id: C-6
+    question: "Maximum number of parallel cables per phase the tool may use (only possible today with KEI, buried in the ground)."
+    options: {"4": "4", "2": "2", "6": "6"}
+    recommended: "4"
+  - id: C-7
+    question: "When the motor power factor is not given, the voltage drop is checked with the worst case √(R² + X²) instead of R·cos φ + X·sin φ: never smaller than the true drop, so a cable can come out one size larger than with the nameplate cos φ. Accept, so the designer is no longer asked for it?"
+    options: {"yes": "Yes, use the worst case when cos φ is not given", "no": "No, always ask for cos φ"}
+    recommended: "yes"
+
+# labels for the web form (built automatically from select())
+fields:
+  ib_a: "Design current Ib (A)"
+  length_m: "Cable length (m)"
+  voltage_v: "Voltage (V)"
+  pf_run: "Power factor when running"
+  installation: {label: "Installed", options: ["air", "ground", "duct", "tray"], help: "tray is refused until grouping data is held"}
+  ambient_c: "Air or ground temperature (°C)"
+  in_a: "Protective device rating In (A)"
+  overload_device: {label: "Protective device gives overload protection", options: [true, false], help: "No when a VFD protects the cable"}
+  phases: {label: "Phases", options: [3, 1]}
+  cores: {label: "Cores", options: ["3", "3.5", "4", "2"]}
+  make: {label: "Cable make", options: ["polycab", "kei"]}
+  conductor: {label: "Conductor", options: ["Cu"]}
+  frequency_hz: "Frequency (Hz)"
+  other_cables: "Other cables grouped with it"
+  group_spacing: {label: "Spacing in the group", options: ["touching", "150", "300", "450"]}
+  depth_mm: "Laying depth (mm)"
+  soil_kmw: "Soil thermal resistivity (K·m/W)"
+  vd_limit_pct: "Running voltage-drop limit (%)"
+  start_multiple: "Starting current (× Ib)"
+  pf_start: "Power factor at start"
+  fault_ka: "Fault current (kA)"
+  clearing_s: "Fault clearing time (s)"
+  i2t_a2s: "Let-through I²t of the device (A²s)"
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/makers/kei/kei_armoured_ratings.yaml, data/makers/kei/kei_factors.yaml, data/makers/polycab/polycab_2xwy_ratings.yaml, data/makers/polycab/polycab_conductor.yaml, data/makers/polycab/polycab_factors.yaml]

@@ -1,0 +1,17 @@
+# Rittal SZ 4127.010 door-operated switch — data sheet (pdf-creator, 3 pages). PDF page = printed page.
+# Supplied WITHOUT connection cable (p.2). Rittal lists it for "standard and courtesy light without integral
+# door-operated switch" (p.2) — SZ 4140.820 has an integral door-operated switch mode (decision A-4).
+
+source:
+  ref: RITTAL-4127010
+  section: "SZ 4127.010 door-operated switch: features (pp. 2–3)"
+
+article: "SZ 4127.010"
+
+rows:
+  - {quantity: design,               value: "Without connection cable", page: 2}
+  - {quantity: rating_24vdc_a,       value: 6, printed: "24 V DC/6 A", page: 2}
+  - {quantity: rating_240vac_a,      value: 6, printed: "240 V AC/6 A", page: 2}
+  - {quantity: rated_insulation_v,   value: 400, printed: "Rated insulation voltage 400 V AC", page: 2}
+  - {quantity: ip_standard,          value: 40, printed: "IP 40", page: 2}
+  - {quantity: for_light,            value: "for standard and courtesy light without integral door-operated switch", page: 2}

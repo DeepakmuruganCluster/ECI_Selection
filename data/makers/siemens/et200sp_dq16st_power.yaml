@@ -1,0 +1,13 @@
+# ET 200SP DQ 16x24VDC/0.5A ST (6ES7132-6BH01-0BA0): supply data and output limits, Equipment Manual 01/2025
+# (A5E03574420-AE), technical specifications pp.28-32, transcribed 2026-10-13 (page = PDF page).
+# Derating: Figure 7-1 "Load current vs. ambient temperature", read at the grid lines on the rendered page (°C, A);
+# the curves are straight between these points.
+source:
+  ref: SIE-ET200SP-DQ16ST
+  section: "7.1 Technical specifications: Supply voltage, Total current of the outputs, Derating trend"
+rows:
+  - {article: 6ES7132-6BH01-0BA0, item: current_max_ma, value: 30, text: "Current consumption, max. 30 mA; without load", page: 28}
+  - {article: 6ES7132-6BH01-0BA0, item: total_current_a, value: 8, text: "Current per module, max. 8 A; see Equipment Manual \"Derating curve\"", page: 29}
+  - {article: 6ES7132-6BH01-0BA0, item: derating_horizontal, value: [[0, 8], [40, 8], [50, 6], [60, 4]], text: "Figure 7-1 Load current vs. ambient temperature (horizontal)", page: 31}
+  - {article: 6ES7132-6BH01-0BA0, item: derating_vertical, value: [[0, 8], [30, 8], [40, 6], [50, 4]], text: "Figure 7-1 Load current vs. ambient temperature (vertical)", page: 31}
+  - {article: 6ES7132-6BH01-0BA0, item: inductive_channel_a, value: 0.5, text: "If one channel drives a cyclically switched inductive load, this channel contributes 500 mA to the total current.", page: 31}

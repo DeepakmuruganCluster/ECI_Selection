@@ -1,0 +1,71 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 3
+title: Branch circuit breaker (Siemens 3VM MCCB)
+what_it_does: >
+  Picks the Siemens 3VM moulded-case circuit breaker for a branch feeder. The breaker must
+  carry the load current (its rated current must be at least the load current) and must be
+  able to break the largest fault current at that point in the panel. The tool takes the
+  smallest breaker that does both and gives its Siemens order number straight from the
+  Siemens 3VM catalogue (2018 edition). It refuses when the catalogue does not cover the
+  case, for example more than 630 A, more than 55 kA, or a panel hotter than 50 °C.
+
+how_to_check:
+  - "Fault level: open PDF page 10 (printed 1/4). In the row '380 - 415 V AC' under 'Rated ultimate short-circuit breaking capacity Icu', the 3VM10 columns are 16, 25, 36 kA and the 3VM11 3/4-pole columns 25, 36, 55 kA. At 50 kA only the 55 kA column (letter M) is enough."
+  - "Order number: open PDF page 29 (printed 2/5). In the row 100 A of the second group (3VM11), the right-hand column 'medium breaking capacity M' shows 3VM1110-5ED32-0AA0. Press 'Try it: 90 A at 50 kA': it must give that number, Icu 55 kA and Ics 41 kA."
+  - "Small fault level: on page 28 (printed 2/4) the 3VM10 100 A breaker with letter B (16 kA) is 3VM1010-2ED32-0AA0. At 20 kA, 16 kA is not enough, so the tool must take letter N (25 kA) from page 29: 3VM1010-3ED32-0AA0. Press 'Try it: 90 A at 20 kA'."
+  - "Hot panel: page 9 (printed 1/3) says 'No derating up to +50 °C' and page 19 (printed 1/13) says the current is reduced above +50 °C, without numbers. Press 'Try it: 90 A at 55 °C': the tool must refuse."
+  - "Page numbers: the pictures are PDF pages. Siemens prints chapter/page numbers at the bottom (e.g. '2/5'), so the printed number is different."
+
+spot_checks:
+  - {label: "90 A at 50 kA (page 29: 3VM1110-5ED32-0AA0)", tab: mccb, inputs: {ib_a: 90, fault_ka: 50, ambient_c: 40}}
+  - {label: "90 A at 20 kA (page 29: 3VM1010-3ED32-0AA0)", tab: mccb, inputs: {ib_a: 90, fault_ka: 20, ambient_c: 40}}
+  - {label: "90 A at 55 °C (pages 9, 19: refused)", tab: mccb, inputs: {ib_a: 90, fault_ka: 50, ambient_c: 55}}
+
+decisions:
+  - id: M-1
+    question: "Should the breaker rating have a margin above the load current? The catalogue only requires rating ≥ load current. A margin of 1.25 would, for example, turn a 90 A load into a 125 A breaker."
+    options: {"1.0": "No margin: rating ≥ load current", "1.25": "Rating ≥ 1.25 × load current"}
+    recommended: "1.0"
+    answered: "owner 2026-10-16: for the panel incomer the factor is an input, 1.5 by default (company template OWN-SWG-CALC L27; requirement R-REQ-10, project power); the MCCB component's own margin default stays 1.0 for single breakers"
+  - id: M-2
+    question: "Siemens gives two short-circuit ratings: Icu (the most the breaker can break) and Ics (what it can break and still be used normally afterwards). At ECI's 50 kA, Icu works (55 kA) but Ics does not (41 kA): with Ics no 3VM breaker can be used. Which rating must be at least the fault level?"
+    options: {icu: "Icu (normal practice, IEC 60947-2 minimum)", ics: "Ics (stricter; no 3VM at 50 kA)"}
+    recommended: icu
+  - id: M-3
+    question: "Siemens says the breakers lose rating above 50 °C but this catalogue gives no figures, so the tool refuses above 50 °C. Should we fetch the Siemens 3VM manual with the derating table?"
+    options: {fetch: "Keep refusing above 50 °C and fetch the derating table", refuse: "Keep refusing above 50 °C; panels stay at or below 50 °C"}
+    recommended: fetch
+  - id: M-4
+    question: "The cable check needs the energy a breaker lets through during a fault (I²t). This catalogue does not give it. Fetch a Siemens document with 3VM let-through curves?"
+    options: {fetch: "Fetch the Siemens let-through data", none: "Cable check works without it"}
+    recommended: fetch
+  - id: M-5
+    question: "The catalogue is the 2018 edition. Check every order number in the current Siemens Industry Mall before ordering?"
+    options: {"yes": "Yes, confirm order numbers before ordering", "no": "No, use the 2018 numbers as they are"}
+    recommended: "yes"
+  - id: M-6
+    question: "When the designer does not say, which trip unit should the tool use? TM210 has a fixed overload setting (smallest breakers, 3VM10, only come this way); TM220 can be adjusted."
+    options: {TM210: "TM210 (fixed setting)", TM220: "TM220 (adjustable setting)"}
+    recommended: TM210
+  - id: M-7
+    question: "Among the breakers that work, the tool takes the smallest rating, then the smallest frame, then the lowest breaking-capacity letter (B, N, S, M). Should ECI instead use one letter everywhere (e.g. always M)?"
+    options: {smallest: "Smallest rating, frame and letter that work", always_m: "Always class M (55 kA) for ECI"}
+    recommended: smallest
+
+# labels for the web form (built automatically from select())
+fields:
+  ib_a: "Load current Ib (A)"
+  fault_ka: "Fault level at the breaker (kA)"
+  ambient_c: "Air around the breaker (°C)"
+  poles: {label: "Poles", options: [3, 4]}
+  neutral_protection: {label: "Neutral protection (4-pole)", options: ["none", "100"]}
+  release: {label: "Trip unit", options: ["TM210", "TM220"], help: "TM210 fixed, TM220 adjustable"}
+  margin: "Margin on load current (×)"
+  breaking_basis: {label: "Breaking capacity checked against", options: ["icu", "ics"]}
+  voltage_v: "Voltage (V)"
+  phases: {label: "Phases", options: [3]}
+  altitude_m: "Altitude (m)"
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/makers/siemens/3vm_breaking_capacity.yaml, data/makers/siemens/3vm_line_protection_articles.yaml, data/makers/siemens/3vm_trip_ratings.yaml]

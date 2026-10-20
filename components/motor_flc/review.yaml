@@ -1,0 +1,49 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 1
+title: Motor full-load current
+what_it_does: >
+  Works out how many amps a motor or heater draws at full load. If you type the
+  current from the motor's nameplate, it uses that. Otherwise it takes Siemens'
+  guide value from their manual (pages 28–29). If the manual does not cover the
+  motor, it refuses and asks for the nameplate instead of guessing.
+
+how_to_check:
+  - Open the Siemens page 28 picture below. Look at the columns "Standard output P (kW)" and "Motor current I (A)".
+  - Pick any row, e.g. 11 kW → 22 A.
+  - Press "Try it", or go to the Motor FLC tab and type that kW. The answer must be the same number of amps.
+  - Do this for three rows on page 28 or 29. If any number differs, do not sign off. Note the row instead.
+
+spot_checks:
+  - {label: "11 kW (page 28: 22 A)", tab: motor_flc, inputs: {kw: 11}}
+  - {label: "37 kW (page 29: 66 A)", tab: motor_flc, inputs: {kw: 37}}
+  - {label: "3.7 kW (not on the page: must refuse)", tab: motor_flc, inputs: {kw: 3.7}}
+
+decisions:
+  - id: D-1
+    question: "Siemens gives currents for 400 V. For 380–420 V, may the tool convert the current (e.g. 415 V gives a slightly lower current)? It always shows a caution when it does."
+    options: {keep: "Yes, convert within ±5 % and show a caution", strict: "No, only 400 V; other voltages need the nameplate"}
+    recommended: keep
+  - id: D-2
+    question: "Ratings not in the Siemens table (3.7 kW, 9.3 kW, 1.9 kW): what should happen?"
+    options: {refuse: "Refuse and ask for the nameplate", interpolate: "Estimate between the nearest ratings"}
+    recommended: refuse
+  - id: D-3
+    question: "Can a Siemens guide value go on a BOM that is sent to the client?"
+    options: {preliminary: "Only as preliminary; the nameplate value is needed before issue", "yes": "Yes"}
+    recommended: preliminary
+  - id: D-4
+    question: "Caution levels: nameplate vs guide value 15 %, nameplate vs its own efficiency/power factor 5 %, client list vs design 10 %."
+    options: {accept: "Accept these levels", change: "Change them (write the new values in the notes)"}
+    recommended: accept
+  - id: D-5
+    question: "No nameplate: should the design current be the Siemens value, or the higher of the Siemens value and the client's list?"
+    options: {guide: "Siemens value (client value is only compared)", max: "Higher of the two"}
+    recommended: guide
+  - id: D-6
+    question: "Single-phase motors (15 dosing pumps on WNS2503) have no source yet."
+    options: {source: "Find a maker's single-phase table next", nameplate: "Use nameplates only"}
+    recommended: source
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/makers/siemens/siemens_guide_400v_4p.yaml]

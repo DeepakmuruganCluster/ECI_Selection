@@ -1,0 +1,32 @@
+# Metering rules. Authority: MFR = manufacturer document, PHYS = physics / geometry,
+# RULE = our decision (SIGNOFF.md), CLIENT = the project's client requirements (client_requirements; e.g. ECI WNS2503).
+
+component: metering
+
+rules:
+  R-MTR-01: {authority: MFR,    text: "Scope: 3-phase 4-wire (3P4W) AC system, line voltage ≤ 690 V and line-to-neutral ≤ 400 V for direct connection of the PAC3220 (SIE-PAC3220 pp. 15, 98), and ≤ 720 V for the CTs (Um 720 V / 0.72 kV: RISH-LTRP p.2, RISH-TW p.2, SELEC-MEAS p.9). Other systems (3P3W, 1-phase, voltage transformers): cannot select."}
+  R-MTR-02: {authority: CLIENT, text: "One Siemens 7KM energy meter with PROFINET per panel when the client asks for it (requirement 'meter_communication'; e.g. ECI-WNS2503-AUTO p.1). The 7KM Switched Ethernet PROFINET module 7KM9300-0AE02-0AA0 fits PAC3200, PAC3220 and PAC4200 (SIE-7KM-PN p.21) and is listed as an accessory for the PAC3220 only, not the PAC3120 (SIE-PAC3220 pp. 9–10). Only the PAC3220 manual is held → SENTRON PAC3220 + 7KM9300-0AE02-0AA0. Communication 'modbus_tcp' (the PAC3220's own Ethernet, p.101) or 'none' (local display only; owner 2026-10-17: asked, not defaulted) gives the meter without the module — a warning only when the client asks for PROFINET."}
+  R-MTR-15: {authority: MFR, text: "Owner 2026-10-20 (RFQ part 1): the meter's full order number from its supply version, Catalog LV 10 · 2026 p.10/32 (PDF 834), transformer measurement, screw terminals, Modbus TCP, without MID: AC/DC wide-range supply (AC 100 … 250 V, DC 100 … 250 V) → 7KM3220-0BA01-1DA0; DC 24 … 60 V → 7KM3220-1BA01-1EA0. Supply not given → the pattern (R-MTR-03)."}
+  R-MTR-03: {authority: MFR,    text: "Meter article number: the manual prints the pattern 7KM3x20-xBA01-1xA0 (p.73) and one full PAC3220 number, 7KM3220-1BA01-1EA0, in a certificate link (p.107), without saying which supply version it is (supply 100 … 250 V AC/DC or 24 … 60 V DC, p.99). The tool reports the pattern and that number; confirm the full number in the Siemens Industry Mall (owner decision MT-5)."}
+  R-MTR-04: {authority: MFR,    text: "CT secondary current must match a meter input: 1 A or 5 A (SIE-PAC3220 pp. 75, 98). CT ratings are held only for 5 A secondaries (Rishabh: '5A (1A on request)', no 1 A tables, RISH-LTRP p.2 / RISH-TW p.2; Selec: 5 A only, SELEC-MEAS p.9) → 1 A: cannot select."}
+  R-MTR-05: {authority: RULE,   text: "CT ratio: the primary is the smallest primary current printed in the chosen make's tables that is ≥ the circuit current (never rounded down) and within the meter's CT PRIMARY setting 1 … 99999 A (SIE-PAC3220 p.75). If no CT at that primary meets the class, burden and window checks, the next larger printed primary is taken with a warning (owner decision MT-3). Above the largest printed primary: cannot select."}
+  R-MTR-06: {authority: RULE,   text: "Accuracy class: the CT class must be the required class or better (order 0.2 < 0.5S < 0.5 < 1 < 3 < 5, as printed in the CT tables). Default required class 0.5, equal to the PAC3220 active-energy class 0.5 (SIE-PAC3220 p.99) (owner decision MT-1). Among qualifying classes the one closest to the required class is taken."}
+  R-MTR-07: {authority: MFR,    text: "Meter burden per phase: 0.3 VA ('Max. power consumption per phase 300 mVA at 5 A', SIE-PAC3220 p.98)."}
+  R-MTR-08: {authority: PHYS,   text: "Lead burden = 2 · L · I² · ρθ / A (L one-way lead length in m, I = CT secondary current, A lead cross-section in mm², factor 2 = out-and-return loop, conservative for a star-connected 3P4W set). ρθ = ρ20 · (1 + α20 · (θ − 20)), ρ20 = 1/58 Ω·mm²/m and α20 = 0.00393 /K (annealed copper, IEC 60028); θ = conductor temperature, default 70 °C (owner decision MT-2). Terminal contact resistance not included. Lead length or cross-section not given: lead burden not checked (warning)."}
+  R-MTR-09: {authority: RULE,   text: "CT rated burden (VA, as printed for that class) ≥ total burden = meter burden + lead burden, no extra margin. Among qualifying CTs the smallest rated VA is taken. The lower burden limit of the accuracy class (IEC 61869-2) is not held and not checked."}
+  R-MTR-10: {authority: PHYS,   text: "The conductor must pass through the CT window (window sizes from the data sheet drawings / nomenclature). Busbar w × t through a rectangular window W × H: (w ≤ W and t ≤ H) or (w ≤ H and t ≤ W); through a round window Ø D: √(w² + t²) ≤ D. Round cable of outside diameter d: d ≤ min(W, H), or d ≤ D. No clearance allowance (owner decision MT-4); one busbar or one cable per phase only. Conductor not given: window not checked (warning)."}
+  R-MTR-11: {authority: MFR,    text: "Ambient temperature around meter and CTs: PAC3220 −25 … +55 °C (SIE-PAC3220 p.106); Rishabh LTRP / TW −25 … +40 °C (RISH-LTRP p.2, RISH-TW p.2); Selec SPCT / TWCT 0 … +50 °C (SELEC-CT pp. 7, 10). Outside: cannot select. Not given: not checked (warning)."}
+  R-MTR-12: {authority: RULE,   text: "Choice among qualifying CTs: smallest primary (R-MTR-05), then class closest to the required class (R-MTR-06), then smallest rated VA (R-MTR-09), then family order (Rishabh LTRP before TW; Selec SPCT before TWCT), then the smaller size in the order printed."}
+  R-MTR-13: {authority: MFR,    text: "Quantity: 3 CTs per meter for a 3P4W connection without voltage transformers (SIE-PAC3220 p.48, Figure 4-3); one meter per panel when the client asks for it (requirement 'meter_communication'; e.g. ECI-WNS2503-AUTO p.1)."}
+  R-MTR-14: {authority: RULE,   text: "CT designation: Selec type code assembled from the printed nomenclature (SPCT-<size>-<primary>/5A-VA<va>-CL<class>-CE, SELEC-MEAS p.9; TWCT-T-<size>-<primary>/5A-VA<va>-CL<class>, p.10); Rishabh data sheets print no order code → described as size, ratio, VA and class. Confirm the code with the maker before ordering (owner decision MT-5)."}
+
+params:
+  accuracy_class_default: "0.5"
+  ct_secondary_default: 5
+  communication_default: profinet
+  lead_temp_default_c: 70
+  rho20_cu_ohm_mm2_per_m: 0.017241379   # 1/58, IEC 60028
+  alpha20_cu_per_k: 0.00393             # IEC 60028
+  lead_loop_factor: 2
+  class_order: ["0.2", "0.5S", "0.5", "1", "3", "5"]
+  family_order: {rishabh: [LTRP, TW], selec: [SPCT, TWCT]}

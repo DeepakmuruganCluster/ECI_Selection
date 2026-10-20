@@ -1,0 +1,20 @@
+# 3VA1 incomer / line MCCB rules. Authority: MFR = manufacturer document, RULE = our decision (SIGNOFF.md).
+
+component: mccb_3va
+
+rules:
+  R-3VA-01: {authority: MFR,  text: "Scope: 3-phase 380 … 415 V AC (the Icu / Ics row of LV 10 · 2026 p.2/9), SENTRON 3VA1 line protection with the TM240 ATAM trip unit, 3-pole, without neutral conductor protection, nut keeper kit (p.2/27). Anything else: cannot select."}
+  R-3VA-02: {authority: RULE, text: "Required rated current = load current Ib × margin (the panel incomer factor, owner decision M-1); a margin below 1 is rejected."}
+  R-3VA-03: {authority: MFR,  text: "Rated current In ≥ required current, from the rated currents each frame carries (p.2/26), rated at 50 °C ambient (p.2/9). Above 1000 A: cannot select."}
+  R-3VA-04: {authority: MFR,  text: "Ambient around the breaker: In is rated at 50 °C (p.2/9). Above 50 °C only the article's data sheet derating is used (current at the ambient ≥ required); no data sheet: cannot select (no extrapolation)."}
+  R-3VA-05: {authority: MFR,  text: "Breaking capacity at 380 … 415 V by class (p.2/9): Icu ≥ fault current (Icu basis, default) or Ics ≥ fault current (Ics basis, owner decision M-2). Ics is reported."}
+  R-3VA-06: {authority: RULE, text: "Owner 2026-10-20: smallest rated current, then the smallest frame that fits, then the lowest breaking-capacity class. A frame given by the designer is used instead (e.g. headroom)."}
+  R-3VA-07: {authority: MFR,  text: "The article number is built from the catalogue's structure (pp.2/26-2/27: size, rated current, breaking capacity, E, F, 3, 2, -0AA0). The catalogue says the structure is an overview and a valid configuration is confirmed in the Siemens configurator: an article confirmed by a held Siemens data sheet passes; otherwise a warning (confirm with its data sheet)."}
+  R-3VA-08: {authority: MFR,  text: "TM240 ATAM settings: Ir and Ii adjustable (p.2/7). The ranges come from the article's data sheet when held — Ir set at the required current within its range; not held: reported as not held."}
+
+params:
+  margin_default: 1.0
+  breaking_basis_default: icu
+  poles_default: 3
+  class_order: [N, S, M, H, C]
+  frame_order: [3VA11, 3VA12, 3VA13, 3VA14, 3VA15]

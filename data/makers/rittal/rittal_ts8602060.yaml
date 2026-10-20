@@ -1,0 +1,17 @@
+# Rittal TS 8602.060 base/plinth trim panels, side, 200 mm — data sheet (pdf-creator, 3 pages). PDF page = printed.
+# As TS 8601.060 but 200 mm high. Note: its "Assembly instruction" row repeats the 100 mm text of TS 8601.060
+# (copy in Rittal's data sheet; it does not change height or fit).
+
+source:
+  ref: RITTAL-8602060
+  section: "TS 8602.060 side base/plinth trim panels 200 mm: features (pp. 2–3)"
+
+article: "TS 8602.060"
+
+rows:
+  - {quantity: height_mm,       value: 200, printed: "Height: 200 mm", page: 2}
+  - {quantity: fits_width_mm,   value: 600, printed: "Enclosure type: TS: = 600 mm", page: 2}
+  - {quantity: fits_width_mm,   value: 600, printed: "TS Trim panel, sides, H: 200 mm, for W: 600 mm", page: 3}
+  - {quantity: pieces_per_pack, value: 2, printed: "Packs of 2 pc(s).", page: 2}
+  - {quantity: supply_includes, value: "2 base/plinth trim panels", page: 2}
+  - {quantity: colour,          value: "RAL 7022", page: 2}

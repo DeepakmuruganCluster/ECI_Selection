@@ -1,0 +1,36 @@
+# SINAMICS PM240-2 IP20 Power Modules, 380 … 480 V 3 AC, frame sizes A … F.
+# Section 6.6.2 "Specific technical data, 400 V converters", Tables 6-15 … 6-28.
+# page = PDF page (printed page = page − 2).
+# Values per article: order_no = "Article No. without filter", order_no_c2 = "with filter";
+# lo_* / ho_* = LO / HO base load power (kW), input current (A), output current (A);
+# fuse = "Fuse according to IEC" with its rating; loss_w = power loss; air_ls = required cooling air flow.
+
+source:
+  ref: SIE-PM240-2
+  section: "6.6.2 Specific technical data, 400 V converters (Tables 6-15 … 6-28)"
+
+conditions: {voltage_min_v: 380, voltage_max_v: 480, phases: 3, max_fault_ka: 100, motor_power_min_pct: 25, motor_power_max_pct: 150}
+condition_pages: {voltage: 97, fault: 97, motor_power: 96}
+
+rows:
+  - {order_no: 6SL3210-1PE11-8UL1, order_no_c2: 6SL3210-1PE11-8AL1, frame: FSA, lo_kw: 0.55, lo_in: 2.3,  lo_out: 1.7,  ho_kw: 0.37, ho_in: 2.0,  ho_out: 1.3,  fuse: 3NA3803, fuse_a: 10,  loss_w: 40,   air_ls: 5,    page: 99}
+  - {order_no: 6SL3210-1PE12-3UL1, order_no_c2: 6SL3210-1PE12-3AL1, frame: FSA, lo_kw: 0.75, lo_in: 2.9,  lo_out: 2.2,  ho_kw: 0.55, ho_in: 2.6,  ho_out: 1.7,  fuse: 3NA3803, fuse_a: 10,  loss_w: 40,   air_ls: 5,    page: 99}
+  - {order_no: 6SL3210-1PE13-2UL1, order_no_c2: 6SL3210-1PE13-2AL1, frame: FSA, lo_kw: 1.1,  lo_in: 4.1,  lo_out: 3.1,  ho_kw: 0.75, ho_in: 3.3,  ho_out: 2.2,  fuse: 3NA3805, fuse_a: 16,  loss_w: 40,   air_ls: 5,    page: 99}
+  - {order_no: 6SL3210-1PE14-3UL1, order_no_c2: 6SL3210-1PE14-3AL1, frame: FSA, lo_kw: 1.5,  lo_in: 5.5,  lo_out: 4.1,  ho_kw: 1.1,  ho_in: 4.7,  ho_out: 3.1,  fuse: 3NA3805, fuse_a: 16,  loss_w: 70,   air_ls: 5,    page: 99}
+  - {order_no: 6SL3210-1PE16-1UL1, order_no_c2: 6SL3210-1PE16-1AL1, frame: FSA, lo_kw: 2.2,  lo_in: 7.7,  lo_out: 5.9,  ho_kw: 1.5,  ho_in: 6.1,  ho_out: 4.1,  fuse: 3NA3805, fuse_a: 16,  loss_w: 100,  air_ls: 5,    page: 99}
+  - {order_no: 6SL3210-1PE18-0UL1, order_no_c2: 6SL3210-1PE18-0AL1, frame: FSA, lo_kw: 3.0,  lo_in: 10.1, lo_out: 7.7,  ho_kw: 2.2,  ho_in: 8.8,  ho_out: 5.9,  fuse: 3NA3805, fuse_a: 16,  loss_w: 120,  air_ls: 5,    page: 99}
+  - {order_no: 6SL3210-1PE21-1UL0, order_no_c2: 6SL3210-1PE21-1AL0, frame: FSB, lo_kw: 4.0,  lo_in: 13.3, lo_out: 10.2, ho_kw: 3.0,  ho_in: 11.6, ho_out: 7.7,  fuse: 3NA3812, fuse_a: 32,  loss_w: 110,  air_ls: 9.2,  page: 100}
+  - {order_no: 6SL3210-1PE21-4UL0, order_no_c2: 6SL3210-1PE21-4AL0, frame: FSB, lo_kw: 5.5,  lo_in: 17.2, lo_out: 13.2, ho_kw: 4.0,  ho_in: 15.3, ho_out: 10.2, fuse: 3NA3812, fuse_a: 32,  loss_w: 150,  air_ls: 9.2,  page: 100}
+  - {order_no: 6SL3210-1PE21-8UL0, order_no_c2: 6SL3210-1PE21-8AL0, frame: FSB, lo_kw: 7.5,  lo_in: 22.2, lo_out: 18.0, ho_kw: 5.5,  ho_in: 19.8, ho_out: 13.2, fuse: 3NA3812, fuse_a: 32,  loss_w: 200,  air_ls: 9.2,  page: 100}
+  - {order_no: 6SL3210-1PE22-7UL0, order_no_c2: 6SL3210-1PE22-7AL0, frame: FSC, lo_kw: 11,   lo_in: 32.6, lo_out: 26.0, ho_kw: 7.5,  ho_in: 27.0, ho_out: 18.0, fuse: 3NA3820, fuse_a: 50,  loss_w: 300,  air_ls: 18.5, page: 101}
+  - {order_no: 6SL3210-1PE23-3UL0, order_no_c2: 6SL3210-1PE23-3AL0, frame: FSC, lo_kw: 15,   lo_in: 39.9, lo_out: 32.0, ho_kw: 11,   ho_in: 36.0, ho_out: 26.0, fuse: 3NA3820, fuse_a: 50,  loss_w: 370,  air_ls: 18.5, page: 101}
+  - {order_no: 6SL3210-1PE23-8UL0, order_no_c2: 6SL3210-1PE23-8AL0, frame: FSD, lo_kw: 18.5, lo_in: 36,   lo_out: 38,   ho_kw: 15,   ho_in: 33,   ho_out: 32,   fuse: 3NA3822, fuse_a: 63,  loss_w: 570,  air_ls: 55,   page: 102}
+  - {order_no: 6SL3210-1PE24-5UL0, order_no_c2: 6SL3210-1PE24-5AL0, frame: FSD, lo_kw: 22,   lo_in: 42,   lo_out: 45,   ho_kw: 18.5, ho_in: 38,   ho_out: 38,   fuse: 3NA3824, fuse_a: 80,  loss_w: 700,  air_ls: 55,   page: 102}
+  - {order_no: 6SL3210-1PE26-0UL0, order_no_c2: 6SL3210-1PE26-0AL0, frame: FSD, lo_kw: 30,   lo_in: 57,   lo_out: 60,   ho_kw: 22,   ho_in: 47,   ho_out: 45,   fuse: 3NA3830, fuse_a: 100, loss_w: 820,  air_ls: 55,   page: 102}
+  - {order_no: 6SL3210-1PE27-5UL0, order_no_c2: 6SL3210-1PE27-5AL0, frame: FSD, lo_kw: 37,   lo_in: 70,   lo_out: 75,   ho_kw: 30,   ho_in: 62,   ho_out: 60,   fuse: 3NA3830, fuse_a: 100, loss_w: 1090, air_ls: 55,   page: 103}
+  - {order_no: 6SL3210-1PE28-8UL0, order_no_c2: 6SL3210-1PE28-8AL0, frame: FSE, lo_kw: 45,   lo_in: 86,   lo_out: 90,   ho_kw: 37,   ho_in: 78,   ho_out: 75,   fuse: 3NA3832, fuse_a: 125, loss_w: 1290, air_ls: 83,   page: 104}
+  - {order_no: 6SL3210-1PE31-1UL0, order_no_c2: 6SL3210-1PE31-1AL0, frame: FSE, lo_kw: 55,   lo_in: 104,  lo_out: 110,  ho_kw: 45,   ho_in: 94,   ho_out: 90,   fuse: 3NA3836, fuse_a: 160, loss_w: 1650, air_ls: 83,   page: 104}
+  - {order_no: 6SL3210-1PE31-5UL0, order_no_c2: 6SL3210-1PE31-5AL0, frame: FSF, lo_kw: 75,   lo_in: 140,  lo_out: 145,  ho_kw: 55,   ho_in: 117,  ho_out: 110,  fuse: 3NA3140, fuse_a: 200, loss_w: 1910, air_ls: 153,  page: 105}
+  - {order_no: 6SL3210-1PE31-8UL0, order_no_c2: 6SL3210-1PE31-8AL0, frame: FSF, lo_kw: 90,   lo_in: 172,  lo_out: 178,  ho_kw: 75,   ho_in: 154,  ho_out: 145,  fuse: 3NA3142, fuse_a: 224, loss_w: 2460, air_ls: 153,  page: 105}
+  - {order_no: 6SL3210-1PE32-1UL0, order_no_c2: 6SL3210-1PE32-1AL0, frame: FSF, lo_kw: 110,  lo_in: 198,  lo_out: 205,  ho_kw: 90,   ho_in: 189,  ho_out: 178,  fuse: 3NA3250, fuse_a: 300, loss_w: 2280, air_ls: 153,  page: 105}
+  - {order_no: 6SL3210-1PE32-5UL0, order_no_c2: 6SL3210-1PE32-5AL0, frame: FSF, lo_kw: 132,  lo_in: 242,  lo_out: 250,  ho_kw: 110,  ho_in: 218,  ho_out: 205,  fuse: 3NA3252, fuse_a: 315, loss_w: 2980, air_ls: 153,  page: 105}

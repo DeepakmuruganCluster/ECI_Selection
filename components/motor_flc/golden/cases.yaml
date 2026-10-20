@@ -1,0 +1,163 @@
+# Golden cases for motor_flc — written BEFORE the code (G4).
+# Each case: inputs, expected result, and the oracle that gives the expected answer.
+# Oracles:
+#   PDF p.NN        — read directly from the SIRIUS manual page
+#   hand calc       — arithmetic shown in `calc`, independent of the code
+#   scope           — SCOPE.md says this must be refused
+# expect.flc_a is compared to 2 decimals; expect.warnings lists rule ids that must warn.
+
+cases:
+  # --- guide values (PDF) ---------------------------------------------------------
+  - id: G01
+    in: {kw: 7.5}
+    expect: {status: ok, basis: guide, flc_a: 15.5}
+    oracle: "PDF p.28, 7.5 kW row: 15.5 A"
+  - id: G02
+    in: {kw: 0.04}
+    expect: {status: ok, basis: guide, flc_a: 0.16}
+    oracle: "PDF p.28, first row (lowest rating)"
+  - id: G03
+    in: {kw: 250}
+    expect: {status: ok, basis: guide, flc_a: 430}
+    oracle: "PDF p.29, last row (highest rating)"
+  - id: G04
+    in: {kw: 0.06}
+    expect: {status: ok, basis: guide, flc_a: 0.2}
+    oracle: "PDF p.28, 0.06 kW appears on two rows, both 0.2 A"
+  - id: G05
+    in: {kw: 18.5}
+    expect: {status: ok, basis: guide, flc_a: 35}
+    oracle: "PDF p.29, 18.5 kW: 35 A"
+  - id: G06
+    in: {kw: 132, voltage_v: 400, phases: 3, poles: 4, frequency_hz: 50}
+    expect: {status: ok, basis: guide, flc_a: 230}
+    oracle: "PDF p.29, 132 kW: 230 A"
+
+  # --- refused: not in the source -------------------------------------------------
+  - id: G07
+    in: {kw: 3.7}
+    expect: {status: cannot_select, basis: none, rule: R-FLC-03}
+    oracle: "scope: IS 325 rating, not in the Siemens table, no interpolation"
+  - id: G08
+    in: {kw: 9.3}
+    expect: {status: cannot_select, basis: none, rule: R-FLC-03}
+    oracle: "scope"
+  - id: G09
+    in: {kw: 315}
+    expect: {status: cannot_select, basis: none, rule: R-FLC-03}
+    oracle: "scope: above 250 kW"
+  - id: G10
+    in: {kw: 7.5, poles: 2}
+    expect: {status: cannot_select, basis: none, rule: R-FLC-02}
+    oracle: "scope: table is 4-pole only (PDF p.29 footnote 1)"
+  - id: G11
+    in: {kw: 0.75, phases: 1, voltage_v: 230}
+    expect: {status: cannot_select, basis: none, rule: R-FLC-02}
+    oracle: "scope: no single-phase motor source"
+  - id: G12
+    in: {kw: 7.5, frequency_hz: 60}
+    expect: {status: cannot_select, basis: none, rule: R-FLC-02}
+    oracle: "scope: table is 50 Hz"
+  - id: G13
+    in: {kw: 7.5, voltage_v: 440}
+    expect: {status: cannot_select, basis: none, rule: R-FLC-05}
+    oracle: "scope: 440 V is +10 %, outside the ±5 % window"
+  - id: G14
+    in: {kw: 30, voltage_v: 690}
+    expect: {status: cannot_select, basis: none, rule: R-FLC-05}
+    oracle: "scope"
+
+  # --- voltage scaling (rule R-FLC-05) --------------------------------------------
+  - id: G15
+    in: {kw: 7.5, voltage_v: 415}
+    expect: {status: warning, basis: guide_voltage_scaled, flc_a: 14.94, warnings: [R-FLC-05]}
+    oracle: "hand calc"
+    calc: "15.5 × 400 / 415 = 14.9398 → 14.94"
+  - id: G16
+    in: {kw: 7.5, voltage_v: 380}
+    expect: {status: warning, basis: guide_voltage_scaled, flc_a: 16.32, warnings: [R-FLC-05]}
+    oracle: "hand calc"
+    calc: "15.5 × 400 / 380 = 16.3158 → 16.32"
+  - id: G17
+    in: {kw: 55, voltage_v: 420}
+    expect: {status: warning, basis: guide_voltage_scaled, flc_a: 92.38, warnings: [R-FLC-05]}
+    oracle: "hand calc (window edge, +5 % exactly)"
+    calc: "97 × 400 / 420 = 92.381 → 92.38"
+
+  # --- nameplate ------------------------------------------------------------------
+  - id: G18
+    in: {kw: 7.5, voltage_v: 415, nameplate_flc_a: 14.2}
+    expect: {status: ok, basis: nameplate, flc_a: 14.2}
+    oracle: "R-FLC-01; vs scaled guide 14.94: −5 %, within 15 %"
+  - id: G19
+    in: {kw: 3.7, nameplate_flc_a: 7.6, nameplate_source: datasheet}
+    expect: {status: ok, basis: datasheet, flc_a: 7.6}
+    oracle: "R-FLC-01; no guide value to compare (3.7 kW not in table)"
+  - id: G20
+    in: {kw: 7.5, nameplate_flc_a: 25}
+    expect: {status: warning, basis: nameplate, flc_a: 25, warnings: [R-FLC-06]}
+    oracle: "hand calc: (25 − 15.5)/15.5 = +61 % > 15 %"
+  - id: G21
+    in: {kw: 7.5, nameplate_flc_a: 14.6, efficiency_pct: 91.0, power_factor: 0.82}
+    expect: {status: ok, basis: nameplate, flc_a: 14.6}
+    oracle: "hand calc"
+    calc: "7500 / (1.7321 × 400 × 0.910 × 0.82) = 7500 / 516.98 = 14.507 A; 14.6 is +0.6 % (≤ 5 %); vs guide 15.5: −5.8 % (≤ 15 %)"
+  - id: G22
+    in: {kw: 7.5, nameplate_flc_a: 14.6, efficiency_pct: 91.0, power_factor: 0.70}
+    expect: {status: warning, basis: nameplate, flc_a: 14.6, warnings: [R-FLC-07]}
+    oracle: "hand calc"
+    calc: "7500 / (692.82 × 0.91 × 0.70) = 16.994 A; 14.6 is −14.1 % (> 5 %)"
+  - id: G23
+    in: {kw: 0.75, phases: 1, voltage_v: 230, nameplate_flc_a: 5.1}
+    expect: {status: ok, basis: nameplate, flc_a: 5.1}
+    oracle: "R-FLC-01: out-of-scope motor accepted with its nameplate"
+
+  # --- heaters ----------------------------------------------------------------------
+  - id: G24
+    in: {kw: 9, load_type: heater}
+    expect: {status: ok, basis: calculated, flc_a: 12.99}
+    oracle: "hand calc"
+    calc: "9000 / (1.73205 × 400) = 9000 / 692.82 = 12.990 → 12.99"
+  - id: G25
+    in: {kw: 2, load_type: heater, phases: 1, voltage_v: 230}
+    expect: {status: ok, basis: calculated, flc_a: 8.70}
+    oracle: "hand calc"
+    calc: "2000 / 230 = 8.6957 → 8.70"
+  - id: G26
+    in: {kw: 24, load_type: heater, voltage_v: 415}
+    expect: {status: ok, basis: calculated, flc_a: 33.39}
+    oracle: "hand calc"
+    calc: "24000 / (1.73205 × 415) = 24000 / 718.80 = 33.389 → 33.39"
+
+  # --- client list value -------------------------------------------------------------
+  - id: G27
+    in: {kw: 0.37, client_flc_a: 0.7}
+    expect: {status: warning, basis: guide, flc_a: 1.1, warnings: [R-FLC-08]}
+    oracle: "WNS2503 S101 (client 0.7 A); hand calc (0.7 − 1.1)/1.1 = −36 %"
+  - id: G28
+    in: {kw: 7.5, client_flc_a: 14.25}
+    expect: {status: ok, basis: guide, flc_a: 15.5}
+    oracle: "hand calc: client 1.9 × 7.5 = 14.25; −8.1 % within 10 %"
+
+  # --- invalid input -------------------------------------------------------------------
+  - id: G29
+    in: {kw: 0}
+    expect: {status: invalid}
+    oracle: "kW must be > 0"
+  - id: G30
+    in: {kw: 7.5, phases: 2}
+    expect: {status: invalid}
+    oracle: "phases must be 1 or 3"
+  # --- test-agent findings 2026-10-14, written before the fix ---------------------------------------------------
+  - id: G31
+    in: {kw: 7.5, nameplate_flc_a: 15.5, efficiency_pct: 190, power_factor: 0.85}
+    expect: {status: invalid}
+    oracle: "efficiency must be 0 < η ≤ 100 % (gave only a warning)"
+  - id: G32
+    in: {kw: 7.5, nameplate_flc_a: 15.5, efficiency_pct: 90, power_factor: 5}
+    expect: {status: invalid}
+    oracle: "power factor must be 0 < cos φ ≤ 1"
+  - id: G33
+    in: {kw: 7.5, nameplate_flc_a: 13.175}
+    expect: {status: ok, flc_a: 13.175}
+    oracle: "R-FLC-06: guide 15.5 A (p.28); 13.175 is exactly −15.0 %: 'within ±15 %' → PASS (float rounding gave WARN). Compared on the percentage rounded to 0.01 %"

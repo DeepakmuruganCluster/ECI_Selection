@@ -1,0 +1,128 @@
+# Golden cases for io_list — written BEFORE the code (G4).
+# Oracle: the signal rules in rules.yaml, counted by hand.
+
+cases:
+  - id: I01
+    in: {load_list: "K1 11 DOL"}
+    expect: {status: ok, n_signals: 3, io_di: 2, io_do: 1, io_ai: 0, io_ao: 0, io_pn: 0, io_safety: 0}
+    oracle: "R-IO-02 slim: running + tripped DI, run DO"
+  - id: I02
+    in: {load_list: "K1 11 DOL", dol_relays: latching}
+    expect: {status: ok, io_di: 2, io_do: 2}
+    oracle: "R-IO-02 latching: set + reset DO"
+  - id: I03
+    in: {load_list: "P1 7.5 VFD qty=2 cable=50"}
+    expect: {status: ok, io_di: 0, io_do: 0, io_pn: 2, io_safety: 0}
+    oracle: "R-IO-04: two drives on the bus"
+  - id: I04
+    in: {load_list: "P1 7.5 VFD qty=2 cable=50", vfd_sto: true}
+    expect: {status: ok, io_pn: 2, io_safety: 2}
+    oracle: "R-IO-05: one STO signal per drive"
+  - id: I05
+    in: {load_list: "P1 7.5 VFD qty=2", vfd_control: hardwired}
+    expect: {status: ok, io_di: 4, io_do: 2, io_ai: 2, io_ao: 2, io_pn: 0}
+    oracle: "R-IO-04 hardwired: per drive DO run, DI running, DI fault, AO setpoint, AI speed"
+  - id: I06
+    in: {load_list: "H1 3 HEATER"}
+    expect: {status: ok, n_signals: 0, n_excluded: 1}
+    oracle: "R-IO-06"
+  - id: I07
+    in: {load_list: "K1 11 DOL qty=3", do_available: 2}
+    expect: {status: warning, io_do: 3, warnings: [R-IO-07]}
+    oracle: "3 DO needed, 2 available"
+  - id: I08
+    in: {load_list: "K1 eleven DOL"}
+    expect: {status: invalid}
+    oracle: "R-IO-01: unreadable kW"
+  - id: I09
+    in: {load_list: "E1 7.5 SS qty=2 standby=1"}
+    expect: {status: ok, io_di: 4, io_do: 2}
+    oracle: "R-IO-03 per installed unit (standby included): 2 × (2 DI + 1 DO)"
+  - id: I10
+    in: {load_list: "K1 11 DOL\nP1 7.5 VFD qty=2\nE1 7.5 SS", dol_relays: latching, vfd_sto: true, di_available: 10, do_available: 10}
+    expect: {status: ok, io_di: 4, io_do: 3, io_pn: 2, io_safety: 2}
+    oracle: "DOL 2 DI + 2 DO; SS 2 DI + 1 DO; drives 2 bus + 2 STO; fits 10 / 10"
+  - id: I11
+    in: {load_list: "C1 160 SD qty=2"}
+    expect: {status: ok, io_di: 4, io_do: 2, io_pn: 0}
+    oracle: "R-IO-08: per star-delta unit 2 DI + 1 DO; never treated as a drive"
+  # --- 2026-10-16 (owner: inputs and outputs listed separately, named I_… / O_…, panel signals as in the company drawing)
+  # Oracle: rules R-IO-09 … R-IO-11 below, names written by hand.
+  - id: I12
+    in: {load_list: "K1 11 DOL"}
+    expect: {status: ok, n_inputs: 2, n_outputs: 1, input_names: "I_K1_Running, I_K1_Tripped", output_names: "O_K1_Run",
+             input_channels: "DI01, DI02", output_channels: "DO01"}
+    oracle: "R-IO-09 names, R-IO-11 numbering: DOL running + tripped in, run out"
+  - id: I13
+    in: {load_list: "K1 11 DOL", dol_relays: latching}
+    expect: {status: ok, output_names: "O_K1_Start, O_K1_Stop"}
+    oracle: "R-IO-09: latching relay set → Start, reset → Stop"
+  - id: I14
+    in: {load_list: "P1 5.5 DOL qty=2"}
+    expect: {status: ok, input_names: "I_P1_1_Running, I_P1_1_Tripped, I_P1_2_Running, I_P1_2_Tripped", output_names: "O_P1_1_Run, O_P1_2_Run"}
+    oracle: "R-IO-01 unit P1.1 / P1.2 → name part P1_1 / P1_2 (a dot is not used in a PLC tag)"
+  - id: I15
+    in: {load_list: "K1 11 DOL", panel_signals: true, pmr: true}
+    expect: {status: ok, io_di: 5, io_do: 3,
+             input_names: "I_EmergencyStop, I_Reset, I_PhaseFailure, I_K1_Running, I_K1_Tripped",
+             output_names: "O_GeneralTrip, O_GeneralWarning, O_K1_Run",
+             input_channels: "DI01, DI02, DI03, DI04, DI05"}
+    oracle: "R-IO-10: company drawing AVELCPSDL08WPLC sheet 12 (OWN-PROPEL-SCH160 p.12): EMERGENCY STOP, RESET, PHASE FAILURE in; GENERAL TRIP, GENERAL WARNING out; panel signals first"
+  - id: I16
+    in: {load_list: "K1 11 DOL", panel_signals: true}
+    expect: {status: ok, io_di: 4, io_do: 3, input_names: "I_EmergencyStop, I_Reset, I_K1_Running, I_K1_Tripped"}
+    oracle: "R-IO-10: no phase monitoring relay → no I_PhaseFailure"
+  - id: I17
+    in: {load_list: "P1 7.5 VFD", vfd_control: hardwired}
+    expect: {status: ok, input_names: "I_P1_Running, I_P1_Fault, I_P1_ActualSpeed", output_names: "O_P1_Run, O_P1_SpeedSetpoint",
+             input_channels: "DI01, DI02, AI01", output_channels: "DO01, AO01"}
+    oracle: "R-IO-09 / R-IO-11: analog in is an input (I_), analog out an output (O_); channels counted per type"
+  - id: I18
+    in: {load_list: "C1 160 SD\nE1 45 SS"}
+    expect: {status: ok, input_names: "I_C1_Running, I_C1_Tripped, I_E1_Running, I_E1_Fault", output_names: "O_C1_Run, O_E1_Run"}
+    oracle: "R-IO-08 / R-IO-03 names"
+  - id: I19
+    in: {load_list: "P1 7.5 VFD qty=2", vfd_sto: true}
+    expect: {status: ok, n_inputs: 0, n_outputs: 0, bus_names: "PN_P1_1, PN_P1_2", safety_names: "O_P1_1_STO, O_P1_2_STO"}
+    oracle: "R-IO-04 / R-IO-05: drives on the bus and STO are listed apart from the PLC channels"
+  # --- 2026-10-16 (owner: every output editable): the designer's I/O edits, R-IO-12
+  - id: I20
+    in: {load_list: "K1 11 DOL", edits: [{action: add, type: DI, name: I_DoorOpen, signal: "panel door open"}]}
+    expect: {status: ok, io_di: 3, input_names: "I_K1_Running, I_K1_Tripped, I_DoorOpen", input_channels: "DI01, DI02, DI03"}
+    oracle: "R-IO-12 add: listed (info), counted, numbered after the others"
+  - id: I21
+    in: {load_list: "K1 11 DOL", edits: [{action: remove, name: I_K1_Tripped}]}
+    expect: {status: warning, io_di: 1, input_names: "I_K1_Running", warnings: [R-IO-12]}
+    oracle: "R-IO-12 remove: the signal leaves every count; a removed signal is a warning (the rule asked for it)"
+  - id: I22
+    in: {load_list: "K1 11 DOL", edits: [{action: rename, name: I_K1_Running, to: I_K1_RunFB}]}
+    expect: {status: warning, input_names: "I_K1_RunFB, I_K1_Tripped", warnings: [R-IO-12]}
+    oracle: "R-IO-12 rename"
+  - id: I23
+    in: {load_list: "K1 11 DOL", edits: [{action: add, type: DO, name: I_Lamp, signal: "lamp"}]}
+    expect: {status: invalid}
+    oracle: "R-IO-09: an output must be named O_…"
+  - id: I24
+    in: {load_list: "K1 11 DOL", edits: [{action: remove, name: I_Nothing}]}
+    expect: {status: invalid}
+    oracle: "R-IO-12: an edit must name a signal of this list"
+  - id: I25
+    in: {load_list: "K1 11 DOL", edits: [{action: add, type: DI, name: I_K1_Running, signal: "x"}]}
+    expect: {status: invalid}
+    oracle: "R-IO-09: names are unique"
+  - id: I26
+    in: {load_list: "K1 11 DOL", edits: [{action: add, type: AO, name: O_Valve_Setpoint, signal: "valve setpoint 4–20 mA"}]}
+    expect: {status: ok, io_ao: 1, output_names: "O_K1_Run, O_Valve_Setpoint", output_channels: "DO01, AO01"}
+    oracle: "R-IO-12 add an analog output; R-IO-11 numbering per type"
+  - id: I27
+    in: {load_list: "K1 11 DOL", edits: [{action: set, name: I_K1_Tripped, type: AI}]}
+    expect: {status: warning, io_di: 1, io_ai: 1, input_channels: "DI01, AI01"}
+    oracle: "R-IO-12 set: type changed within its direction (DI → AI keeps I_)"
+  - id: I28
+    in: {load_list: "K1 11 DOL", edits: [{action: set, name: I_K1_Tripped, type: DO}]}
+    expect: {status: invalid}
+    oracle: "R-IO-09: I_ cannot become an output — remove it and add an O_ signal"
+  - id: I29
+    in: {load_list: "P301A/B 5.5 DOL qty=2"}
+    expect: {status: ok, input_names: "I_P301A_B_1_Running, I_P301A_B_1_Tripped, I_P301A_B_2_Running, I_P301A_B_2_Tripped"}
+    oracle: "R-IO-09: a '/' in a client tag is written '_' (PLC tags take letters, digits and '_')"

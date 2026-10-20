@@ -1,0 +1,11 @@
+# Siemens CPU 1513-1 PN (6ES7513-1AM03-0AB0): supply data, Equipment Manual 01/2026 (A5E40881673-AF), Technical
+# specifications pp.44-45, transcribed 2026-10-13 (page = PDF page = printed page).
+source:
+  ref: SIE-CPU1513-MAN
+  section: "6 Technical specifications: Supply voltage, Input current, Power, Memory"
+rows:
+  - {article: 6ES7513-1AM03-0AB0, item: current_rated_a, value: 0.56, text: "Current consumption (rated value) 0.56 A", page: 44}
+  - {article: 6ES7513-1AM03-0AB0, item: current_max_a, value: 0.9, text: "Current consumption, max. 0.9 A", page: 44}
+  - {article: 6ES7513-1AM03-0AB0, item: inrush_a, value: 1.15, text: "Inrush current, max. 1.15 A; Rated value", page: 44}
+  - {article: 6ES7513-1AM03-0AB0, item: backplane_infeed_w, value: 10, text: "Infeed power to the backplane bus 10 W", page: 45}
+  - {article: 6ES7513-1AM03-0AB0, item: memory_card_required, value: true, text: "SIMATIC memory card required Yes", page: 45}

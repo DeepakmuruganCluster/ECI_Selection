@@ -1,0 +1,11 @@
+# Siemens data sheet 3VA1563-5EF32-0AA0 (SIE-3VA1563-DS), saved by the owner 2026-10-20.
+# Confirms the article built from the LV 10 structure (3VA1 5 63 - 5 E F 3 2 - 0AA0) and gives the TM240 settings.
+
+source:
+  ref: SIE-3VA1563-DS
+  section: "Data sheet pp.1-2: designation, current at ambient, breaking capacities, adjustable parameters"
+
+rows:
+  - {article: 3VA1563-5EF32-0AA0, frame: 3VA15, in_a: 630, icu_ka: 55, ics_ka: 55, class: M, release: "TM240 ATAM",
+     ir_min_a: 440, ir_max_a: 630, ii_min_a: 3150, ii_max_a: 6300,
+     in_at_c: {40: 630, 45: 630, 50: 630, 55: 618, 60: 607, 65: 595, 70: 583}, power_loss_w: 60, page: 1}

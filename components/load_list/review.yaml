@@ -1,0 +1,66 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 14
+title: Load-list import (ECI WNS2503 Word load list)
+what_it_does: >
+  Reads ECI's own load list (the Word file 'VFD_SS_DOL Panel Specification … WNS2503') and turns
+  every motor and heater row into one line for the Panel tab: tag, kW, starter (drive, DOL,
+  soft starter or heater), quantity and, for 230 V single-phase pumps, 'ph=1 v=230'. Every line
+  says which Word table and row it came from. It never makes up a value: ECI gives no cable
+  lengths and does not say which pumps are standby, so those are left out unless you type them,
+  and then they are marked as yours. It also lists everything in ECI's file that does not add up
+  or does not match ECI's other list (the equipment PDF), so it can be sent back to ECI.
+
+how_to_check:
+  - "Open the Word file (sources/pdf/client/ECI-WNS2503/VFD_SS_DOL Panel Specification_Siemens_Rev02_WNS2503_03062025.docx). Count rows from the top of the first table; the heading row is row 1."
+  - "Row 3 (Equlaisaton Blower): the Word file says K101A/B, 3PH 400V, 18.5 kW, 35.17 A, Total Qty 2, Req Inverter 2. Press 'Try it: K101A/B'. The tool must show 'K101A/B 18.5 VFD qty=2' and warn that ECI's PDF says 15 kW for the same blower."
+  - "Row 49 (Coagulant Dosing Pump): the Word file says P701A/B, 1PH 230V, 0.25 kW, rating '1.1A To 1.6AMPCB-3RV' (two cells run together). Press 'Try it: P701A/B'. The tool must show 'P701A/B 0.25 DOL qty=2 ph=1 v=230', range 1.1–1.6 A, and list the repair."
+  - "Row 55 (RO CIP Heater): HT401, 15 kW, the range written in the wrong column. The tool must show 'HT401 15 HEATER' in the RO panel."
+  - "Press 'Try it: BIO/UF panel'. It must find 35 rows: 10 drive rows (22 drives, as ECI's 'BIO/UF Panel Total VFD' row says), 1 soft starter, 24 DOL rows (36 starters). It must also say that the Total Qty column adds up to 23 drives, not 22 (P103A/B says 3)."
+  - "Read the warnings: each is something to confirm with ECI (decisions below)."
+
+spot_checks:
+  - {label: "K101A/B (Word 18.5 kW, PDF 15 kW)", tab: load_list, inputs: {project: WNS2503, tag: "K101A/B"}}
+  - {label: "P701A/B (merged cell, single-phase)", tab: load_list, inputs: {project: WNS2503, tag: "P701A/B"}}
+  - {label: "BIO/UF panel", tab: load_list, inputs: {project: WNS2503, panel: BIO_UF}}
+
+decisions:
+  - id: L-1
+    question: "Equalisation blower K101A/B: the Word load list says 18.5 kW (35.17 A), ECI's equipment PDF says 15 kW (28.52 A). Both are Rev02 of 03-06-2025. What do we use?"
+    options: {ask: "Use the Word value (18.5 kW) for now and ask ECI", word: "Word load list (18.5 kW)", pdf: "Equipment PDF (15 kW)"}
+    recommended: ask
+  - id: L-2
+    question: "Acid dosing pumps P102A/B: the Word list says 3PH 400V, the PDF says 1PH 230V. Both give 1.43 A, which fits a 0.75 kW three-phase motor. What do we use?"
+    options: {ask: "Use the Word value (3-phase) for now and ask ECI", word: "Word load list (3-phase)", pdf: "Equipment PDF (single-phase)"}
+    recommended: ask
+  - id: L-3
+    question: "P103A/B: 'Total Qty' says 3, but 'Req Inverter' says 2, there are two tags (A/B) and the panel total (22) counts 2. How many drives?"
+    options: {req: "2 (Req Inverter column) and ask ECI", total: "3 (Total Qty column)"}
+    recommended: req
+  - id: L-4
+    question: "ECI gives total quantities only. Should A/B pump groups be treated as one running and one standby?"
+    options: {ask: "Show all running until ECI confirms", "yes": "One standby per group"}
+    recommended: ask
+  - id: L-5
+    question: "'Extra DOL' P507A/B/C/D (4 × 4 kW): keep these spare starters in the load list? ECI counts them in its DOL total of 40."
+    options: {"yes": "Yes, build them", "no": "No, leave them out"}
+    recommended: "yes"
+  - id: L-6
+    question: "Tag problems in ECI's file: S102 used for two machines, P412A/B in both panels, five Instrument IDs that differ from the Group Marking, and three tags that differ from the PDF (P410/P411, P701/P419, P703/P418). What do we do?"
+    options: {send: "Keep the Word Instrument IDs (repeats written _2) and send the list to ECI", stop: "Stop until ECI corrects the file"}
+    recommended: send
+  - id: L-7
+    question: "Heater HT401 is listed by ECI as a DOL starter. Treat it as a heater feeder (a separate component) instead of a motor starter?"
+    options: {"yes": "Yes, heater feeder", "no": "No, a motor DOL starter"}
+    recommended: "yes"
+  - id: L-8
+    question: "For 23 rows ECI's own current is outside ECI's own MPCB range (e.g. mixers 2.71 A with 1.8–2.5 A). The tool never uses ECI's ranges for selection. Report this to ECI?"
+    options: {"yes": "Yes, report it", "no": "No, ignore it"}
+    recommended: "yes"
+
+fields:
+  project: {label: "Project", options: ["WNS2503"]}
+  panel: {label: "Panel", options: ["all", "BIO_UF", "RO"]}
+  default_cable_m: {label: "Cable length for every line (m) — your value, ECI gives none", help: "leave empty: no cable= is written"}
+  standby_per_group: {label: "Standby units per A/B group — your reading", help: "leave empty: all running"}
+  tag: {label: "Only this tag (e.g. K101A/B)", help: "a repeated tag is written TAG_2"}

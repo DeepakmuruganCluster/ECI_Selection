@@ -1,0 +1,28 @@
+# Cable rules. Authority: MFR = maker document (Polycab catalogue v9 / KEI handbook 2023),
+# PHYS = physics / arithmetic, RULE = our decision (owner sign-off, SIGNOFF.md).
+# Limits that come from IEC 60364 (voltage drop, overload coordination) are RULE parameters:
+# the standard is not held yet.
+
+component: cable
+
+rules:
+  R-CAB-01: {authority: MFR,  text: "Scope: copper conductor, XLPE insulated, galvanised-steel round-wire armoured (2XWY) multi-core cable to IS 7098-1, rated up to 1100 V AC, data at 50 Hz. Aluminium, other voltages and frequencies: cannot select."}
+  R-CAB-02: {authority: RULE, text: "The make is an input (default Polycab, or KEI). Every value in one selection — ratings, rating factors, resistance, reactance, short-circuit rating — comes from that make's document; makes are never mixed."}
+  R-CAB-03: {authority: MFR,  text: "Installation only as the maker tabulates it: in air (ambient air 40 °C basis), buried direct in the ground, or in a single-way buried duct (ground 30 °C, soil 1.5 K.m/W, depth 750 mm). Tray, conduit, trench or another depth / soil resistivity: cannot select."}
+  R-CAB-04: {authority: MFR,  text: "Current rating = tabulated rating for the installation × the maker's rating factor for the air temperature (in air) or ground temperature (ground, duct)."}
+  R-CAB-05: {authority: RULE, text: "Temperature between two tabulated columns: use the next higher column (the more conservative factor). Below the lowest column: use the lowest column. Above the highest column: cannot select (no extrapolation)."}
+  R-CAB-06: {authority: MFR,  text: "Grouping: more than one loaded cable (parallel runs or other cables) needs the maker's group factor for that installation. Only KEI tabulates one for multi-core cables (buried direct, horizontal formation, 2 … 6 cables, touching / 150 / 300 / 450 mm). Polycab gives none. No factor: cannot select."}
+  R-CAB-07: {authority: RULE, text: "Overload coordination (IEC 60364-4-43, not held): Ib ≤ In ≤ Iz when the protective device protects the cable against overload; Iz ≥ Ib when it does not (e.g. a VFD protects the motor cable) — then the input flag says so."}
+  R-CAB-08: {authority: RULE, text: "Choice order: fewest parallel runs first (1 … max_runs, all runs the same size), then the smallest size that passes every check."}
+  R-CAB-09: {authority: PHYS, text: "Voltage drop: 3-phase ΔU = √3·I·L·(R cos φ + X sin φ)/runs, single-phase ΔU = 2·I·L·(R cos φ + X sin φ)/runs, with the maker's AC resistance at 90 °C and reactance at 50 Hz; % of the stated voltage (line-line for 3-phase, line-neutral for single-phase). Running cos φ not given: R cos φ + X sin φ is replaced by its upper bound √(R² + X²), which holds for every cos φ (never smaller than the true drop), and the result says so."}
+  R-CAB-10: {authority: RULE, text: "Running voltage drop at Ib ≤ vd_run_limit_pct (parameter; the designer may give a project limit)."}
+  R-CAB-11: {authority: RULE, text: "Optional DOL starting check: with the starting-current multiple and starting power factor given (no defaults), the voltage drop at starting current ≤ vd_start_limit_pct. Not given: not checked (reported)."}
+  R-CAB-12: {authority: MFR,  text: "Optional short-circuit withstand: let-through I²t (or Ik²·t) ≤ (1-second rating)² from the maker's table, using the maker's Isc(t) = Isc1/√t; each parallel run must withstand the full value (RULE); clearing time ≤ sc_max_clearing_s (RULE). Not given: not checked (reported)."}
+  R-CAB-13: {authority: MFR,  text: "Only sizes that the maker lists as a product for that core count (product code in the dimension table) are offered."}
+
+params:
+  make_default: polycab
+  max_runs: 4
+  vd_run_limit_pct: 5.0
+  vd_start_limit_pct: 15.0
+  sc_max_clearing_s: 5.0

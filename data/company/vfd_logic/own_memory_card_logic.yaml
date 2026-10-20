@@ -1,0 +1,15 @@
+# Memory card + licence selection logic — company flowchart (ECI-VFD-Selection "Memory card.pdf", 1 page).
+# Customer preference takes precedence over the logic. Leaves:
+
+source:
+  ref: OWN-MC-LOGIC
+  section: "Memmory card + Licence Selection logic (flowchart)"
+
+rows:
+  - {cu250s: true,  advanced: true,  positioning: true,  copy: any,   article: "6SL3054-4AG00-2AA0-Z F01+E01", page: 1}
+  - {cu250s: true,  advanced: true,  positioning: false, copy: any,   article: "6SL3054-4AG00-2AA0-Z F01",     page: 1}
+  - {cu250s: true,  advanced: false, positioning: true,  copy: any,   article: "6SL3054-4AG00-2AA0-Z E01",     page: 1}
+  - {cu250s: true,  advanced: false, positioning: false, copy: true,  article: "6SL3054-4AG00-2AA0",           page: 1}
+  - {cu250s: true,  advanced: false, positioning: false, copy: false, article: null,                           page: 1}
+  - {cu250s: false, advanced: any,   positioning: any,   copy: true,  article: "6SL3054-4AG00-2AA0",           page: 1}
+  - {cu250s: false, advanced: any,   positioning: any,   copy: false, article: null,                           page: 1}

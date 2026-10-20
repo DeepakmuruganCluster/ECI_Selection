@@ -1,0 +1,88 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 0
+title: Requirement (describe the machine)
+what_it_does: >
+  Step 1 of ClusterVise. You describe the machine in your own words. The tool reads only the facts it
+  can read for certain (motor kW, starter, voltage, fault level, cable length, STO, fieldbus,
+  application, IP rating, country, budget) and underlines the words each fact came from. Anything
+  the selection needs but the text does not give becomes a question; there are no hidden defaults.
+  If the text gives two different values (two powers, two voltages), it asks instead of picking one.
+  IP rating, outdoor and budget are written down but not used yet (enclosure out of scope, no price
+  list). Only after you confirm does it run the panel selection and the I/O list.
+
+how_to_check:
+  - "Press 'Try it: your example'. It must read 75 kW, conveyor, IP54, outdoor, Germany and 'under €8,000', suggest heavy duty because of 'conveyor', and ask 10 questions (starter, voltage, fault level, panel temperature, cable temperature, power factor, cable length, PLC 24 V current, surge arrester, phase monitoring relay). It must not guess the voltage from 'Germany'."
+  - "Press 'Try it: answered and confirmed'. It must give the 4 drive components in your selector's order: Power Module 6SL3210-1PE31-8UL0 (HO 75 kW; PM240-2 manual page 105 shows 145 A, more than the motor's 132 A), Control Unit CU240E-2 PN 6SL3244-0BB12-1FA0, memory card 6SL3054-4AG00-2AA0, BOP-2 6SL3255-0AA00-4CA1."
+  - "Press 'Try it: two motors in one sentence'. It must make two motors (75 kW conveyor, 90 kW pump) and ask the starter and cable length for each."
+  - "Change 'conveyor' to 'pump' in the text: the duty suggestion must change to normal."
+  - "Press 'Try it: whole panel'. It must split the text into two motors (M1 75 kW conveyor VFD, M2 2 × 11 kW pumps DOL), add up the incomer current 154 A (drive input, PM240-2 manual page 105) + 2 × 22 A = 198 A and pick a 3VM 200 A breaker (3VM1220-4ED32-0AA0), put the energy meter CTs on 200 A (Rishabh TW-4 200/5 A), and give 2 relays and 6 I/O terminals. It must also give the 24 V supply Omron S8VK-S12024 (2.68 A needed), the Phoenix surge arrester VAL-MS 320/3+1/FM and the Siemens phase monitoring relay 7UG0 753 1AA20. The five blocked items must be listed as 'not selected' with the document each one waits for."
+
+spot_checks:
+  - {label: "your example", tab: requirement, inputs: {text: "I need a control panel for a 75kW special purpose conveyor system, IP54, outdoor installation in Germany, budget under €8,000."}}
+  - {label: "answered and confirmed", tab: requirement, inputs: {text: "I need a control panel for a 75kW special purpose conveyor system, IP54, outdoor installation in Germany, budget under €8,000.", starter: VFD, voltage_v: 400, fault_ka: 25, panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.86, cable_m: 50, cu_encoder: false, cu_safety: sto, cu_fieldbus: profinet, mc_copy_parameters: true, plc_make: other, plc_24v_a: 2, spd: false, pmr: false, confirmed: true}}
+  - {label: "two motors in one sentence", tab: requirement, inputs: {text: "A 75 kW conveyor and a 90 kW pump"}}
+  - {label: "whole panel", tab: requirement, inputs: {text: "75 kW conveyor with VFD, 50 m cable; 2 x 11 kW pumps DOL, 30 m cable. 400 V, 25 kA, PROFINET, STO, energy meter", panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.86, cu_encoder: false, mc_copy_parameters: true, ct_make: rishabh, plc_make: other, plc_24v_a: 2, spd: true, spd_make: Phoenix, pmr: true, confirmed: true}}
+
+decisions:
+  - id: RQ-1
+    question: "When the text does not give something the selection needs (e.g. the voltage), should the tool ask, or fill in a usual value (e.g. 400 V for Germany)?"
+    options: {ask: "Always ask; no hidden defaults", default: "Fill in usual values and show them"}
+    recommended: ask
+  - id: RQ-2
+    question: "Should the application word suggest the drive duty (conveyor, crusher, mixer, hoist, extruder, agitator → heavy; pump, fan, blower, compressor → normal), to be confirmed by you?"
+    options: {"yes": "Yes, suggest it; I confirm", "no": "No, always ask"}
+    recommended: "yes"
+  - id: RQ-3
+    question: "The tool fills in these without asking: DOL coil 230 V AC, IE3 motor, cable in air, Polycab cable, fuses for drives, 3-phase supply (unless the text says single-phase). They are listed on every result. Is that acceptable?"
+    options: {"yes": "Yes, list them", "no": "No, ask each one"}
+    recommended: "yes"
+
+  - id: RQ-4
+    question: "The incomer breaker is sized on the sum of all running motors' currents (drive input current, DOL motor current), with no diversity factor, until the incomer component (8) is built. Is that acceptable?"
+    options: {sum: "Yes, the plain sum (safe side)", diversity: "No, I'll give a diversity factor"}
+    recommended: sum
+  - id: RQ-5
+    question: "With several motors, the text is split at ';', full stops, new lines, and at 'and' / 'plus' / commas only where a new kW follows. A fact in a part without kW (e.g. 'All with VFD') applies to every motor that does not say its own. Is that how you'd write a requirement?"
+    options: {"yes": "Yes", "list": "No, I'd rather type a load list"}
+    recommended: "yes"
+  - id: RQ-6
+    question: "Inputs worked out instead of asked (R-REQ-20): the cable route temperature is taken as the site temperature when the text states one and the cables run in air; the motor power factor is no longer asked (worst-case cable drop). Both are shown as 'derived'. Accept?"
+    options: {"yes": "Yes, work them out and show them", "no": "No, ask each one"}
+    recommended: "yes"
+  - id: RQ-7
+    question: "Soft starter on a board above its breaker's tested kA (R-REQ-24): the tool now asks for the protection (gG fuses, semiconductor fuses or the breaker). Should gG fuses be the default instead of asking?"
+    options: {"ask": "Keep asking", "gg": "Default to gG fuses (type 1)", "semi": "Default to semiconductor fuses (type 2)"}
+    recommended: "ask"
+    answered: "ask — owner 2026-10-16: keep asking (no default protection)"
+  - id: RQ-8
+    question: "Incomer against the outgoing devices (R-REQ-25): today a warning when an outgoing device is rated at or above the incomer. Real selectivity needs the Siemens selectivity tables (3VM / 3NA / 3RV), not yet held. Add them as a source (G2) so selectivity can be checked?"
+    options: {"yes": "Yes, add the selectivity source", "no": "No, the warning is enough"}
+    recommended: "yes"
+    answered: "yes — owner 2026-10-16: add the Siemens selectivity source (being fetched; R-REQ-25 stays a warning until it is registered)"
+  - id: RQ-9
+    question: "Smallest internal power wire 0.75 mm² (QA M3): the company drawing wires even the 230 V control circuit in 0.75 mm² (OWN-PROPEL-SCH160 p.3), so power wiring is never thinner. IEC 60204-1's own minimum is not held as a source. Keep 0.75 mm²?"
+    options: {"yes": "Yes, 0.75 mm² minimum", "1.5": "1.5 mm² minimum", "no": "No minimum (ampacity only)"}
+    recommended: "yes"
+    answered: "options — owner 2026-10-16: offer every size (0.5 / 0.75 / 1 / 1.5 / 2.5 mm²) as a setting; 0.75 mm² stays the default"
+  - id: RQ-10
+    question: "Meter CT at low load (QA M3): the CT is sized on the incomer rating; a small machine then loads it to a few % of its primary, where a class 0.5 CT is less accurate. Today the tool shows the % and warns below 20 %. Add IEC 61869-2 as a source so the accuracy limits are checked?"
+    options: {"yes": "Yes, add the source", "no": "No, the % warning is enough"}
+    recommended: "yes"
+    answered: "yes — owner 2026-10-16: add IEC 61869-2 as a source (the owner supplies the standard; the % warning stays until then)"
+  - id: RQ-11
+    question: "Every output editable (owner 2026-10-16): BOM lines, power loads (AC and 24 V DC), I/O signals and the motors' design choices each have ✎; the assistant on the Power and I/O pages proposes edits that apply only when you press Apply and pass the same engine checks; on other pages it only answers from the page. Accept this split?"
+    options: {"yes": "Yes", "auto": "Let the assistant apply edits without Apply", "off": "No assistant on the result pages"}
+    recommended: "yes"
+
+out_of_scope_note: "IP rating, outdoor and budget are recorded only (owner 2026-10-12)."
+
+fields:
+  text: {label: "Describe the machine", textarea: true}
+  starter: {label: "Starter", options: ["VFD", "DOL", "SS"]}
+  duty: {label: "Drive duty", options: ["normal", "heavy"]}
+  cu_safety: {label: "Drive safety", options: ["sto", "none"]}
+  cu_fieldbus: {label: "Fieldbus", options: ["profinet", "ethernet_ip", "profibus", "modbus", "none"]}
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/company/propel/propel_drawing_conventions.yaml]

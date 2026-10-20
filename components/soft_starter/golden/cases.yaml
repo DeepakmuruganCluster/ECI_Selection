@@ -1,0 +1,197 @@
+# Golden cases for soft_starter — written BEFORE the code (G4), 2026-10-14.
+# Oracle: Siemens Catalog IC 10 · 2026, read by hand (tables imported to data/makers/siemens/ic10_3rw52_*.yaml):
+#   IM (A) at 40/50/60 °C, inline, individual mounting — pp. 6/59–6/62 (PDF 491–494)
+#     type      Ie   Class 10A        Class 10E        Class 20E        IM min/max
+#     3RW5215   25   25/22.3/19.6     25/22.3/19.6     25/22.3/19.6     11.5/25
+#     3RW5216   32   32/28.4/26       32/28.4/26       29.6/27.2/23.6   14/32
+#     3RW5226   77   77/68/62         77/68/62         65/59/53         32/77
+#     3RW5227   93   93/82.5/75.5     93/82.5/75.5     93/82.5/75.5     40.5/93
+#     3RW5234  113   113/101/89       113/101/89       109/97/85        53/113
+#     3RW5235  143   143/128/118      139/127/116      113/103/93       68/143
+#     3RW5236  171   171/153/141      158/146/129      129/117/105      81/171
+#   Type 1, 3RV2 / 3VA, 400 V column (p. 6/63): 3RW5215 3RV2032-4EA10 65 kA (500 V: 15 kA); 3RW5216 3RV2032-4VA10 65;
+#     3RW5227 3VA2216-7MN32-0AA0 15 kA; 3RW5235 3VA2220-7MN32-0AA0 65 kA (500 V: --)
+#   Type 1, 3NA3 gG, 65 kA (p. 6/64): 3RW5215 3NA3822-6 / Q21 3RT2027; 3RW5227 3NA3136-6 / 3RT2046; 3RW5236 3NA3365-6 / 3RT1056
+#   Type 2, 3NE1 gR/gS, 65 kA (p. 6/65): 3RW5215 3NE1817-0
+#   Starts/h Class 10A (p. 6/59): 300 % IM 5 s 43, 10 s 18; 350 % 5 s 28, 10 s 10
+#   Ordering (pp. 6/67–6/70): sizes 3RW521./522. screw '-1', spring '-3'; 3RW523./524. screw '-6', spring '-2';
+#     AC = analog output, TC = thermistor; Us digit 0 = 24 V AC/DC, 1 = 110 … 250 V AC; Ue digit 4 = 200 … 480 V, 5 = 200 … 600 V.
+# Unless stated: 400 V, flc_basis nameplate, control 230 V AC → Us 110 … 250 V AC, screw terminals, analog output.
+
+cases:
+  # --- the selection on current, class and temperature ----------------------------------------------------
+  - id: S01
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal}
+    expect: {status: ok, type: 3RW5215, soft_starter: 3RW5215-1AC14, starting_class: 10A, column_c: 40, im_rated_a: 25,
+             set_im_a: 22, protection_device: 3RV2032-4EA10, coordination: "1", iq_ka: 65, line_contactor: null, kw_400v_guide: 11}
+    oracle: "11 kW pump, FLC 22 A: smallest Class 10A IM@40 ≥ 22 → 3RW5215 (25 A, range 11.5–25); Type 1 3RV2032-4EA10 Iq 65 ≥ 25 kA (p. 6/63); p. 6/67 row 25 A, 11 kW → 3RW5215-1AC14"
+  - id: S02
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 50, duty: normal}
+    expect: {status: ok, type: 3RW5215, column_c: 50, im_rated_a: 22.3}
+    oracle: "50 °C column: 3RW5215 22.3 ≥ 22"
+  - id: S03
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 55, duty: normal}
+    expect: {status: ok, type: 3RW5216, column_c: 60, im_rated_a: 26, protection_device: 3RV2032-4VA10}
+    oracle: "55 °C → 60 °C column (R-SS-03): 3RW5215 19.6 < 22; 3RW5216 26 ≥ 22; Q1 3RV2032-4VA10 (p. 6/63)"
+  - id: S04
+    in: {flc_a: 70, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: heavy}
+    expect: {status: warning, type: 3RW5227, starting_class: 20E, im_rated_a: 93, protection_device: 3NA3136-6, protection_qty: 3,
+             coordination: "1", iq_ka: 65, line_contactor: 3RT2046, warnings: [R-SS-11]}
+    oracle: "heavy → Class 20E (SS-1): 3RW5226 20E@40 = 65 < 70 (the odd row, image-checked p. 6/60); 3RW5227 93; class 20E → fuse_gg (SS-2): 3NA3136-6 × 3; line contactor added (SS-3) 3RT2046, coil version open → warning"
+  - id: S05
+    in: {flc_a: 70, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: heavy, protection: mpcb}
+    expect: {status: cannot_select}
+    oracle: "R-SS-09: fuseless (3RV / 3VA) feeders are tested for Class 10 only; Class 20 needs fuses (p. 6/12)"
+  - id: S06
+    in: {flc_a: 132, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal}
+    expect: {status: ok, type: 3RW5235, soft_starter: 3RW5235-6AC14, protection_device: 3VA2220-7MN32-0AA0, iq_ka: 65, kw_400v_guide: 75}
+    oracle: "75 kW conveyor, 132 A: 3RW5234 113 < 132, 3RW5235 143 (range 68–143); 3VA2220 Iq 65 (p. 6/63); size 3RW523. screw → '-6' (p. 6/67)"
+  - id: S07
+    in: {flc_a: 90, flc_basis: nameplate, fault_ka: 50, ambient_c: 40, duty: normal}
+    expect: {status: cannot_select}
+    oracle: "3RW5227 with 3VA2216-7MN32-0AA0: Iq 15 kA < 50 kA (p. 6/63) → cannot with mpcb (R-SS-08); choose fuses"
+  - id: S08
+    in: {flc_a: 90, flc_basis: nameplate, fault_ka: 50, ambient_c: 40, duty: normal, protection: fuse_gg}
+    expect: {status: ok, type: 3RW5227, protection_device: 3NA3136-6, protection_qty: 3, iq_ka: 65, line_contactor: null}
+    oracle: "as S07 with 3NA3 gG fuses, Iq 65 ≥ 50 (p. 6/64); Class 10A → no line contactor (SS-3)"
+  - id: S09
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal, protection: fuse_semi}
+    expect: {status: ok, type: 3RW5215, protection_device: 3NE1817-0, protection_qty: 3, coordination: "2", iq_ka: 65}
+    oracle: "Type 2 with 3NE1817-0 gR/gS (p. 6/65)"
+  - id: S10
+    in: {flc_a: 140, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, starting_class: 10E}
+    expect: {status: ok, type: 3RW5236, starting_class: 10E, im_rated_a: 158, protection_device: 3VA2325-7MN32-0AA0, iq_ka: 30}
+    oracle: "Class 10E: 3RW5235 139 < 140 (p. 6/61); 3RW5236 158; 3VA2325 Iq 30 ≥ 25 (p. 6/63)"
+  - id: S11
+    in: {flc_a: 120, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: heavy, line_contactor: false}
+    expect: {status: ok, type: 3RW5236, im_rated_a: 129, protection_device: 3NA3365-6, protection_qty: 3, line_contactor: null}
+    oracle: "20E: 3RW5234 109, 3RW5235 113 < 120; 3RW5236 129; fuse 3NA3365-6 (p. 6/64); line contactor declined by the designer"
+  # --- starting frequency ----------------------------------------------------------------------------------
+  - id: S12
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal, starts_per_hour: 15, start_current_pct: 300, start_time_s: 8}
+    expect: {status: ok, type: 3RW5215}
+    oracle: "8 s → the 10 s column (R-SS-07); Class 10A 300 % 10 s = 18 ≥ 15 (p. 6/59)"
+  - id: S13
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal, starts_per_hour: 20, start_current_pct: 300, start_time_s: 10}
+    expect: {status: cannot_select}
+    oracle: "18 < 20 for every 3RW52 up to 3RW5246 at 300 % 10 s (pp. 6/59–6/62); larger types give fewer → none"
+  - id: S14
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal, starts_per_hour: 5, start_current_pct: 300, start_time_s: 12}
+    expect: {status: cannot_select}
+    oracle: "12 s is longer than the longest tabulated time for Class 10A (10 s): cannot select (R-SS-07)"
+  # --- versions -----------------------------------------------------------------------------------------------
+  - id: S15
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal, control_supply: 24V, thermistor: true, terminals: spring}
+    expect: {status: ok, soft_starter: 3RW5215-3TC04}
+    oracle: "p. 6/68: thermistor version, 24 V AC/DC, spring-loaded control terminals"
+  - id: S16
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 10, ambient_c: 40, duty: normal, voltage_v: 500}
+    expect: {status: ok, soft_starter: 3RW5215-1AC15, protection_device: 3RV2032-4EA10, iq_ka: 15}
+    oracle: "500 V → version ..5 (200 … 600 V, p. 6/69); 500 V column Iq 15 ≥ 10 (p. 6/63)"
+  - id: S17
+    in: {flc_a: 132, flc_basis: nameplate, fault_ka: 10, ambient_c: 40, duty: normal, voltage_v: 500}
+    expect: {status: cannot_select}
+    oracle: "3RW5235 with mpcb at 500 V: printed '--' (no tested combination, p. 6/63)"
+  - id: S18
+    in: {flc_a: 22, fault_ka: 25, ambient_c: 40, duty: normal}
+    expect: {status: warning, type: 3RW5215, warnings: [R-SS-13]}
+    oracle: "FLC basis not stated → warning (R-SS-13)"
+  - id: S19
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 40}
+    expect: {status: ok, starting_class: 10A}
+    oracle: "no duty, no class → Class 10A, noted (R-SS-06)"
+  # --- refusals and invalid input -----------------------------------------------------------------------------
+  - id: S20
+    in: {flc_a: 4, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal}
+    expect: {status: cannot_select}
+    oracle: "below the smallest adjustable IM (3RW5213 minimum 5.5 A, p. 6/59)"
+  - id: S21
+    in: {flc_a: 600, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal}
+    expect: {status: cannot_select}
+    oracle: "above the largest 3RW52 (3RW5248 570 A, p. 6/62)"
+  - id: S22
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 65, duty: normal}
+    expect: {status: cannot_select}
+    oracle: "above 60 °C (p. 6/13)"
+  - id: S23
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal, voltage_v: 690}
+    expect: {status: cannot_select}
+    oracle: "above 600 V (R-SS-01)"
+  - id: S24
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal, circuit: inside_delta}
+    expect: {status: cannot_select}
+    oracle: "inside-delta not in scope (R-SS-01)"
+  - id: S25
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal, altitude_m: 1500}
+    expect: {status: cannot_select}
+    oracle: "R-SS-14: derating above 1 000 m not transcribed"
+  - id: S26
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, duty: normal, protection: mpcb, line_contactor: true}
+    expect: {status: cannot_select}
+    oracle: "R-SS-11: no tested line contactor with the fuseless combination"
+  - id: S27
+    in: {flc_a: -5, fault_ka: 25, ambient_c: 40}
+    expect: {status: invalid}
+    oracle: "FLC must be > 0"
+  - id: S28
+    in: {flc_a: 22, ambient_c: 40}
+    expect: {status: invalid}
+    oracle: "fault level required"
+  - id: S29
+    in: {flc_a: 22, fault_ka: 25, ambient_c: 40, starting_class: 30}
+    expect: {status: invalid}
+    oracle: "starting class must be 10A, 10E or 20E"
+  - id: S30
+    in: {flc_a: 22, fault_ka: 25, ambient_c: 40, starts_per_hour: 5}
+    expect: {status: invalid}
+    oracle: "R-SS-07: the starting-frequency check needs all three values (no defaults)"
+  - id: S31
+    in: {flc_a: 22, fault_ka: 25}
+    expect: {status: invalid}
+    oracle: "ambient temperature required"
+  - id: S32
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, phases: 1}
+    expect: {status: cannot_select}
+    oracle: "1-phase: out of scope (R-SS-01)"
+  # --- regression audit 2026-10-14, written before the fix ---------------------------------------------------------
+  - id: S33
+    in: {flc_a: 45, flc_basis: nameplate, fault_ka: 10, ambient_c: 40, starting_class: 10E, starts_per_hour: 15, start_current_pct: 300, start_time_s: 10}
+    expect: {status: ok, type: 3RW5224}
+    oracle: "p. 6/60 (image): 3RW5224 Class 10E 300 % IM 10 s = 21 starts/h ≥ 15 (the import had filed the 350 % value 13 under 300 %: the chapter tab '6' preceded the line)"
+  - id: S34
+    in: {flc_a: 45, flc_basis: nameplate, fault_ka: 10, ambient_c: 40, starting_class: 10E, starts_per_hour: 15, start_current_pct: 350, start_time_s: 10}
+    expect: {status: cannot_select}
+    oracle: "Class 10E 350 % 10 s: 13 (3RW5224–27, p. 6/60), 13 / 12 / 12 (3RW5234–36, p. 6/61), 12 / 13 / … (p. 6/62): none ≥ 15 (was a KeyError)"
+  - id: S35
+    in: {flc_a: 10, flc_basis: nameplate, fault_ka: 15, ambient_c: 40, voltage_v: 600, protection: mpcb}
+    expect: {status: cannot_select}
+    oracle: "R-SS-08 (2026-10-14, decision SS-5): p. 6/63 prints 3RV / 3VA combinations for 400 V and 500 V systems only: above 500 V no tested fuseless combination (it used the 500 V column at 600 V)"
+  - id: S36
+    in: {flc_a: 22, flc_basis: nameplate, fault_ka: 25, ambient_c: 40, voltage_v: 480, protection: mpcb}
+    expect: {status: cannot_select}
+    oracle: "480 V is not a 400 V system: the 500 V column applies, 3RV2032-4EA10 Iq 15 kA < 25 kA (it used the 400 V column, 65 kA)"
+  - id: S37
+    in: {flc_a: 22, fault_ka: 25, ambient_c: 40, starts_per_hour: 5, start_current_pct: 35, start_time_s: 5}
+    expect: {status: invalid}
+    oracle: "a starting current is at least 100 % of IM (35 % is a typing error); the table covers 300 and 350 %"
+  - id: S38
+    in: {flc_a: 10, flc_basis: nameplate, fault_ka: 15, ambient_c: 40, voltage_v: 600}
+    expect: {status: ok, type: 3RW5213, soft_starter: 3RW5213-1AC15, protection: fuse_gg, protection_device: 3NA3820-6, protection_qty: 3}
+    oracle: "R-SS-10 (2026-10-14, test agent): protection not given above 500 V → fuse_gg (no tested fuseless combination, SS-5): 3NA3820-6 (p. 6/64, up to 600 V); ..15 version (p. 6/69)"
+  # --- 2026-10-20 (owner, RFQ part 4): "3RW52 with Display and Profinet": accessories, R-SS-15
+  - id: S40
+    in: {flc_a: 15.5, flc_basis: nameplate, fault_ka: 55, ambient_c: 40, duty: normal, protection: mpcb, comm: profinet, hmi: standard, hmi_mounting: door, hmi_cable_m: 2.5}
+    expect: {status: ok, soft_starter: 3RW5214-1AC14, protection_device: 3RV2032-4DA10}
+    oracle: "15.5 A → 3RW5214 + tested 3RV2032-4DA10 at 55 kA (pp.6/63-6/65); IC 10 6/75: PROFINET Standard 3RW5980-0CS00; 6/76: HMI Standard 3RW5980-0HS00, IP65 door kit 3RW5980-0HD00, 2.5 m round cable 3UF7933-0BA00-0"
+  - id: S41
+    in: {flc_a: 15.5, flc_basis: nameplate, fault_ka: 55, ambient_c: 40, duty: normal, protection: mpcb, hmi: standard, hmi_mounting: door}
+    expect: {status: warning, warnings: [R-SS-15]}
+    oracle: "door mounting without a cable length: the cable is not selected (warning)"
+  - id: S42
+    in: {flc_a: 15.5, flc_basis: nameplate, fault_ka: 55, ambient_c: 40, duty: normal, protection: mpcb, hmi: standard, hmi_mounting: device}
+    expect: {status: ok}
+    oracle: "in the device: hinged cover 3RW5950-0GL40 + 0.1 m flat cable 3UF7931-0AA00-0 (6/75-6/76)"
+  - id: S43
+    in: {flc_a: 15.5, fault_ka: 55, ambient_c: 40, duty: normal, hmi_cable_m: 3}
+    expect: {status: invalid}
+    oracle: "cable lengths printed: 0.5, 1, 2.5, 5 m"

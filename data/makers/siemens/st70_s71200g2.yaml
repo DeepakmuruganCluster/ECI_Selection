@@ -1,0 +1,40 @@
+# Siemens SIMATIC S7-1200 G2: standard CPUs and signal modules (SM) from Catalog ST 70 · 2026 (chapter 4).
+#
+# Transcribed 2026-10-13 from "Selection and ordering data" and "Technical specifications" (page = PDF page; printed
+# page in 'printed'); the text layer was read and multi-column cells checked on the rendered pages (e.g. p.432).
+# The G1 family is not included: Siemens phases it out from 1 November 2026 (owner 2026-10-13: build G2).
+# Fail-safe CPUs (1212FC / 1214FC), SIPLUS variants, signal boards (SB), CM / CP and TC / RTD modules are not included.
+#   CPU rows: di / do on board, do_type as printed ("relay" for RLY variants; the DC/DC/DC outputs are printed as
+#             "6 x DO 24 V DC" without sourcing / sinking → do_type "dc (type not printed)"), max_sm = "Expandable by:
+#             … extension modules (SM, CM, or CP)", max_board = extension boards, profinet_max_devices from the
+#             technical specifications. The catalogue prints no backplane current or 24 V sensor supply for the G2 CPUs.
+#   SM rows: bus_5v_ma = "from backplane bus 5 V DC" (max. or typ. as printed in bus_5v_basis); L+ (24 V DC load
+#             voltage) consumption: lplus_per_input_ma ("from load voltage L+ (without load), max.; per channel"),
+#             lplus_outputs_ma (digital outputs "from load voltage L+, max."), lplus_per_relay_ma ("per relay coil"),
+#             lplus_typ_ma ("Current consumption, typ." of analog / 16DI/16DO modules).
+
+source:
+  ref: SIE-ST70-2026
+  section: "4 SIMATIC S7-1200 G2 Basic Controllers: Central processing units (standard CPUs), I/O modules (digital, analog)"
+
+rows:
+  # ---- standard CPUs (p.392 ordering, p.394-397 1212C; p.398 ordering, p.400-403 1214C)
+  - {article: 6ES7212-1AG50-0XB0, model: CPU 1212C DC/DC/DC, kind: cpu, supply: "20.4-28.8 V DC", di: 8, do: 6, do_type: "dc (type not printed)", max_sm: 6, max_board: 1, profinet_max_devices: 31, max_ambient_c: 40, page: 392, printed: "4/4"}
+  - {article: 6ES7212-1BG50-0XB0, model: CPU 1212C AC/DC/RLY, kind: cpu, supply: "85-264 V AC", di: 8, do: 6, do_type: relay, max_sm: 6, max_board: 1, profinet_max_devices: 31, max_ambient_c: 40, page: 392, printed: "4/4"}
+  - {article: 6ES7212-1HG50-0XB0, model: CPU 1212C DC/DC/RLY, kind: cpu, supply: "20.4-28.8 V DC", di: 8, do: 6, do_type: relay, max_sm: 6, max_board: 1, profinet_max_devices: 31, max_ambient_c: 40, page: 392, printed: "4/4"}
+  - {article: 6ES7214-1AH50-0XB0, model: CPU 1214C DC/DC/DC, kind: cpu, supply: "20.4-28.8 V DC", di: 14, do: 10, do_type: "dc (type not printed)", max_sm: 10, max_board: 1, profinet_max_devices: 31, max_ambient_c: 40, page: 398, printed: "4/10"}
+  - {article: 6ES7214-1BH50-0XB0, model: CPU 1214C AC/DC/RLY, kind: cpu, supply: "85-264 V AC", di: 14, do: 10, do_type: relay, max_sm: 10, max_board: 1, profinet_max_devices: 31, max_ambient_c: 40, page: 398, printed: "4/10"}
+  - {article: 6ES7214-1HH50-0XB0, model: CPU 1214C DC/DC/RLY, kind: cpu, supply: "20.4-28.8 V DC", di: 14, do: 10, do_type: relay, max_sm: 10, max_board: 1, profinet_max_devices: 31, max_ambient_c: 40, page: 398, printed: "4/10"}
+  # ---- digital signal modules
+  - {article: 6ES7221-1BH50-0XB0, model: SM 1221 DI 16x24VDC, kind: sm, di: 16, bus_5v_ma: 90, bus_5v_basis: max, lplus_per_input_ma: 4.1, page: 421, printed: "4/33"}
+  - {article: 6ES7222-5BH50-0XB0, model: SM 1222 DQ 16x24VDC/0.5A, kind: sm, do: 16, do_type: sourcing, bus_5v_ma: 120, bus_5v_basis: max, lplus_outputs_ma: 45, note: "short-circuit protection: No; to be provided externally", page: 426, printed: "4/38"}
+  - {article: 6ES7222-5HH50-0XB0, model: SM 1222 DQ 16x relay/2A, kind: sm, do: 16, do_type: relay, bus_5v_ma: 115, bus_5v_basis: max, lplus_per_relay_ma: 9, note: "short-circuit protection: No; to be provided externally", page: 426, printed: "4/38"}
+  - {article: 6ES7223-5BH50-0XB0, model: SM 1223 DI 8x24VDC/DQ 8x24VDC 0.5A, kind: sm, di: 8, do: 8, do_type: sourcing, bus_5v_ma: 110, bus_5v_basis: max, lplus_per_input_ma: 4.1, lplus_outputs_ma: 45, page: 432, printed: "4/44"}
+  - {article: 6ES7223-5PH50-0XB0, model: SM 1223 DI 8x24VDC/DQ 8x relay, kind: sm, di: 8, do: 8, do_type: relay, bus_5v_ma: 105, bus_5v_basis: max, lplus_per_input_ma: 4.1, lplus_per_relay_ma: 9, page: 432, printed: "4/44"}
+  - {article: 6ES7223-5BL50-0XB0, model: SM 1223 DI 16x24VDC/DQ 16x24VDC, kind: sm, di: 16, do: 16, do_type: sourcing, bus_5v_ma: 165, bus_5v_basis: max, lplus_per_input_ma: 4.1, lplus_typ_ma: 45, page: 432, printed: "4/44"}
+  - {article: 6ES7223-5BL50-1XB0, model: SM 1223 DI 16x24VDC/DQ 16x24VDC sink, kind: sm, di: 16, do: 16, do_type: sinking, bus_5v_ma: 165, bus_5v_basis: max, lplus_per_input_ma: 4.1, lplus_typ_ma: 40, page: 432, printed: "4/44"}
+  - {article: 6ES7223-5PL50-0XB0, model: SM 1223 DI 16x24VDC/DQ 16x relay, kind: sm, di: 16, do: 16, do_type: relay, bus_5v_ma: 160, bus_5v_basis: max, lplus_per_input_ma: 4.1, lplus_per_relay_ma: 9, lplus_typ_ma: 175, page: 432, printed: "4/44"}
+  # ---- analog signal modules
+  - {article: 6ES7231-4HF50-0XB0, model: SM 1231 AI 8x14bit, kind: sm, ai: 8, bus_5v_ma: 75, bus_5v_basis: typ, lplus_typ_ma: 45, page: 449, printed: "4/61"}
+  - {article: 6ES7232-4HF50-0XB0, model: SM 1232 AQ 8x14bit, kind: sm, aq: 8, bus_5v_ma: 90, bus_5v_basis: typ, lplus_typ_ma: 45, page: 455, printed: "4/67"}
+  - {article: 6ES7233-4HF50-0XB0, model: SM 1233 AI 4x/AQ 4x14bit, kind: sm, ai: 4, aq: 4, bus_5v_ma: 80, bus_5v_basis: typ, lplus_typ_ma: 40, page: 461, printed: "4/73"}

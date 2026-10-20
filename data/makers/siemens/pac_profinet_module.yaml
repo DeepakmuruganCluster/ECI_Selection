@@ -1,0 +1,16 @@
+# 7KM Switched Ethernet PROFINET expansion module: which devices it can be installed in.
+# Equipment Manual 01/2020 (A5E01168846B-09). page = PDF page; printed page = PDF page − 2.
+# The PAC3120 is not listed (and the PAC3120/3220 manual lists the module as an accessory for
+# the PAC3220 only, SIE-PAC3220 p.9–10). PAC3200 and PAC4200 accept the module but their
+# manuals are not held, so the tool offers the PAC3220 only.
+
+source:
+  ref: SIE-7KM-PN
+  section: "3.1 Installation location (p.21); 2.1 Area of application (p.15); 6.9.1 I&M (p.79)"
+  printed_page_offset: -2
+
+rows:
+  - {device: PAC3200, slots: [MOD1], page: 21}
+  - {device: PAC3220, slots: [MOD1, MOD2], page: 21}
+  - {device: PAC4200, slots: [MOD1, MOD2], page: 21}
+  - {device: module, article: 7KM9300-0AE02-0AA0, page: 79}

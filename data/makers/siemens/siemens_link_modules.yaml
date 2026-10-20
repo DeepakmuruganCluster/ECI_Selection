@@ -1,0 +1,16 @@
+# Link modules MPCB – contactor, screw-type connection system.
+# Transcribed 2026-10-10 from Table 2-1 "Link module versions", p. 22.
+# The table lists one size per row ("motor starter protector – contactor in size …"),
+# so a link module is only sourced where MPCB and contactor have the same size.
+# coil: AC / DC where the table distinguishes them (size S0), else any.
+
+source:
+  ref: SIE-SIRIUS-CM
+  section: "Table 2-1 Link module versions"
+
+rows:
+  - {size: S00, coil: any, article: 3RA1921-1DA00, page: 22}
+  - {size: S0,  coil: AC,  article: 3RA2921-1AA00, page: 22}
+  - {size: S0,  coil: DC,  article: 3RA2921-1BA00, page: 22}
+  - {size: S2,  coil: any, article: 3RA2931-1AA00, page: 22}
+  - {size: S3,  coil: any, article: 3RA1941-1AA00, page: 22}

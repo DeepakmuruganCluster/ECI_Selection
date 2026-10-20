@@ -1,0 +1,109 @@
+# Golden cases for power — written BEFORE the code (G4), 2026-10-15. Hand calculation (U = 400 V → U_LN = 230.94 V).
+cases:
+  - id: W01
+    in: {voltage_v: 400,
+         three_phase: [{tag: M1, description: "11 kW pump DOL", running: 1, i_a: 22, kw: 11, source: "SIE-SIRIUS-CM p.28"}],
+         single_phase: [{name: "load A", i_a: 2.0, connection: LN, source: "test"}, {name: "load B", i_a: 1.0, connection: LN, source: "test"},
+                        {name: "load C", i_a: 0.5, connection: LN, source: "test"}]}
+    expect: {status: ok, i_l1_a: 24, i_l2_a: 23, i_l3_a: 22.5, imbalance_pct: 3.6, neutral_a: 1.32, s_kva: 16.05, kw_rated: 11}
+    oracle: "22 A on every phase (R-PWR-01); 2.0 → L1, 1.0 → L2, 0.5 → L3 (R-PWR-03); mean 23.167, (24 − 23.167)/23.167 = 3.6 %; neutral |2∠0 + 1∠−120 + 0.5∠120| = 1.323 A; S = 230.94 × 69.5 = 16.05 kVA"
+  - id: W02
+    in: {voltage_v: 400,
+         single_phase: [{name: "control transformer primary", va: 600, connection: LL, u_v: 415, source: "control circuit"},
+                        {name: "lamp board", va: 460, connection: LN, source: "test"}]}
+    expect: {status: ok, i_l1_a: 1.99, i_l2_a: 1.45, i_l3_a: 1.45, imbalance_pct: 22.36, neutral_a: 1.99}
+    oracle: "460 / 230.94 = 1.992 A (largest) → L1; 600 / 415 = 1.446 A on the two least-loaded lines L2 + L3 (R-PWR-02/03); mean 1.6278, imbalance (1.99186 − 1.62781)/1.62781 = 22.36 % (unrounded currents); neutral = the one line-to-neutral load 1.992 A"
+  - id: W03
+    in: {voltage_v: 400, single_phase: [{name: "fixed", i_a: 3, connection: LN, phase: L3, source: "test"}, {name: "free", i_a: 1, connection: LN, source: "test"}]}
+    expect: {status: ok, i_l1_a: 1, i_l2_a: 0, i_l3_a: 3}
+    oracle: "a load given a phase keeps it (L3); the free one goes to the least-loaded phase, L1 (tie L1 / L2 → L1)"
+  - id: W04
+    in: {voltage_v: 400,
+         dc: [{item: "digital inputs", qty: 14, per_unit: 0.03, source: "OWN-SWG-CALC"}, {item: "relay coils", qty: 9, per_unit: 0.0104, source: "FINDER-S38"},
+              {item: "PLC", qty: 1, per_unit: 0.7, source: "SIE-S71200G2-SYS"}],
+         dc_factor: 1.25, dc_available_a: 2.5, dc_supply: "Omron S8VK-S06024", dc_efficiency: 0.87}
+    expect: {status: warning, dc_load_a: 1.2136, dc_required_a: 1.517, dc_available_a: 2.5, dc_input_w: 33.48, warnings: [R-PWR-07]}
+    oracle: "14 × 0.03 + 9 × 0.0104 + 0.7 = 1.2136 A; × 1.25 = 1.517 A ≤ 2.5 A; AC input 24 × 1.2136 / 0.87 = 33.48 W, on one phase (power factor not held → warning R-PWR-07)"
+  - id: W05
+    in: {voltage_v: 400, dc: [{item: "HMI", qty: 1, per_unit: null, source: "not held"}], dc_factor: 1.25}
+    expect: {status: warning, warnings: [R-PWR-08]}
+    oracle: "a line without a value makes the 24 V total partial (R-PWR-08)"
+  - id: W06
+    in: {voltage_v: 400, three_phase: [{tag: M1, running: 1, i_a: 22}], not_counted: [energy meter, phase monitoring relay]}
+    expect: {status: ok, i_l1_a: 22, imbalance_pct: 0}
+    oracle: "balanced; not-counted items listed (R-PWR-09, info)"
+  - id: W07
+    in: {voltage_v: 400, three_phase: [{tag: M1, running: 2, i_a: 10}], imbalance_limit_pct: 5, single_phase: [{name: x, i_a: 3, connection: LN, source: t}]}
+    expect: {status: warning, i_l1_a: 23, i_l2_a: 20, imbalance_pct: 9.52, warnings: [R-PWR-04]}
+    oracle: "2 running × 10 A = 20 A per phase; + 3 A on L1 → 23 / 20 / 20, mean 21, 9.52 % > 5 % limit set → warning"
+  - id: W08
+    in: {voltage_v: 0}
+    expect: {status: invalid}
+    oracle: "voltage required"
+  - id: W09
+    in: {voltage_v: 400, single_phase: [{name: x, va: 100, connection: XY}]}
+    expect: {status: invalid}
+    oracle: "connection must be LN or LL"
+  - id: W10
+    in: {voltage_v: 400, three_phase: [{tag: M1, running: 1, i_a: -5}]}
+    expect: {status: invalid}
+    oracle: "negative current"
+  - id: W11
+    in: {voltage_v: 400, main_fos: 1.5,
+         three_phase: [{tag: M1, description: "11 kW pump DOL", running: 1, i_a: 22, kw: 11, protection: "3RV2021-4DA10 (18 … 23 A)", source: "SIE-SIRIUS-CM p.28"}],
+         single_phase: [{name: "load A", i_a: 2.0, connection: LN, group: supply, source: "test"}]}
+    expect: {status: ok, i_l1_a: 24, main_load_a: 36, main_fos: 1.5}
+    oracle: "R-PWR-10 (template OWN-SWG-CALC 'U1_Main_Switchgear' L27): load current with FOS = largest phase 24 A × 1.5 = 36 A; the AC rows list the supply load first, then the motors, each with L1 / L2 / L3"
+  # --- audit 2026-10-15 (owner: "transformer is single phase but current is across both phases"), written before the fix ---
+  - id: W12
+    in: {voltage_v: 400, single_phase: [{key: control, name: "control transformer primary", va: 600, connection: LL, u_v: 415, source: t}]}
+    expect: {status: ok, i_l1_a: 1.4458, i_l2_a: 1.4458, i_l3_a: 0, s_kva: 0.6}
+    oracle: "a 415 V primary between two lines draws I = 600 / 415 = 1.446 A in BOTH lines (physics); its apparent power is U_LL × I = 0.600 kVA (was counted U_LN × 2I = 0.668 kVA, 11 % high)"
+  - id: W13
+    in: {voltage_v: 400, single_phase: [{key: control, name: "control transformer primary", va: 460, connection: LL, u_v: 415, source: t}],
+         edits: [{action: set, key: control, connection: LN, phase: L2, u_v: 230}]}
+    expect: {status: warning, i_l1_a: 0, i_l2_a: 2, i_l3_a: 0, s_kva: 0.46, warnings: [R-PWR-11]}
+    oracle: "R-PWR-11: the designer sets the transformer as 230 V line–neutral on L2 (template U1_Transformer: 230 / 230 V): 460 / 230 = 2.0 A on L2 only; a changed calculated load → warning (listed)"
+  - id: W14
+    in: {voltage_v: 400, three_phase: [{tag: M1, running: 1, i_a: 10}],
+         edits: [{action: add, key: fan1, name: "Cooling fan", va: 46, connection: LN},
+                 {action: add, key: P407, name: "P407A/B 0.25 kW (nameplate)", i_a: 1.9, connection: LN, phase: L3}]}
+    expect: {status: ok, i_l1_a: 10.2, i_l2_a: 10, i_l3_a: 11.9}
+    oracle: "added loads: the fixed one first (1.9 A on L3), then 46 / 230.94 = 0.199 A to the least-loaded phase L1 (tie L1/L2 → L1); added loads are info (R-PWR-11)"
+  - id: W15
+    in: {voltage_v: 400, three_phase: [{tag: M1, running: 2, i_a: 10}], edits: [{action: set, key: M1, running: 1}]}
+    expect: {status: warning, i_l1_a: 10, warnings: [R-PWR-11]}
+    oracle: "running units of a 3-phase load changed by the designer (e.g. one runs, one standby): 1 × 10 A; warning (listed)"
+  - id: W16
+    in: {voltage_v: 400, single_phase: [{key: smps, name: s, i_a: 1, connection: LN}], edits: [{action: remove, key: smps}]}
+    expect: {status: warning, i_l1_a: 0, warnings: [R-PWR-11]}
+    oracle: "a calculated load removed by the designer: not counted, warning"
+  - id: W17
+    in: {voltage_v: 400, edits: [{action: set, key: nothing, phase: L1}]}
+    expect: {status: invalid}
+    oracle: "an edit naming no load is refused (nothing silently ignored)"
+  - id: W18
+    in: {voltage_v: 400, edits: [{action: add, key: x, name: x, i_a: 2, connection: LN, phase: L4}]}
+    expect: {status: invalid}
+    oracle: "phase must be L1, L2 or L3"
+  # --- 2026-10-16 (owner: every output editable): edits to the 24 V DC rows, R-PWR-12
+  - id: W19
+    in: {voltage_v: 400, dc_factor: 1.25, dc: [{key: di, item: "digital inputs", qty: 10, per_unit: 0.03}],
+         edits: [{action: set, key: di, qty: 12, dc: true}]}
+    expect: {status: warning, dc_load_a: 0.36, dc_required_a: 0.45, warnings: [R-PWR-12]}
+    oracle: "R-PWR-12 set: 12 × 0.03 = 0.36 A × 1.25 = 0.45 A; a changed row is a warning"
+  - id: W20
+    in: {voltage_v: 400, dc_factor: 1.25, dc: [{key: di, item: "digital inputs", qty: 10, per_unit: 0.03}],
+         edits: [{action: add, key: prox, item: "proximity sensors", qty: 4, per_unit: 0.015, dc: true}]}
+    expect: {status: ok, dc_load_a: 0.36, dc_required_a: 0.45}
+    oracle: "R-PWR-12 add: 0.30 + 4 × 0.015 = 0.36 A × 1.25 = 0.45 A; an added row is listed (info)"
+  - id: W21
+    in: {voltage_v: 400, dc_factor: 1.25, dc: [{key: di, item: "digital inputs", qty: 10, per_unit: 0.03}],
+         edits: [{action: remove, key: relays, dc: true}]}
+    expect: {status: invalid}
+    oracle: "R-PWR-11 / 12: an edit must name a row of this calculation"
+  - id: W22
+    in: {voltage_v: 400, dc_factor: 1.25, dc: [{key: di, item: "digital inputs", qty: 10, per_unit: 0.03}],
+         edits: [{action: set, key: di, per_unit: -1, dc: true}]}
+    expect: {status: invalid}
+    oracle: "R-PWR-12: a current per unit must be ≥ 0"

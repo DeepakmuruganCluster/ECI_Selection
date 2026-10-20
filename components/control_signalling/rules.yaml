@@ -1,0 +1,42 @@
+# Control and signalling rules. Authority: MFR = manufacturer document, CLIENT = client specification,
+# RULE = our decision (SIGNOFF.md, owner decisions C-1 … C-8).
+
+component: control_signalling
+
+rules:
+  R-CTL-01: {authority: CLIENT, text: "The project's client requirement 'relay_terminal_scheme' (passed as client_requirements; e.g. ECI WNS2503, ECI-WNS2503-AUTO p.1): DOL outputs use a latching relay, other outputs a slim relay, make Phoenix or Finder; terminals screwless, Phoenix or Connectwell, with distribution short links; Rittal door limit switch and light."}
+  R-CTL-02: {authority: RULE, text: "Scope: relay coils driven by 24 V DC PLC outputs (ET 200SP DQ). Any other coil voltage: cannot select (only the 24 V versions are transcribed)."}
+  R-CTL-03: {authority: RULE, text: "A make whose documents are not held (Phoenix Contact) cannot be selected: refuse with 'not held' until its data sheets are registered and transcribed."}
+  R-CTL-04: {authority: MFR, text: "Latching relay for a DOL output: Finder 13.12.0.024.0000 Call & Reset relay (S13 p.5, p.7): the output closes on a SET impulse and opens only on a RESET impulse (p.8); 24 V AC/DC supply, 1 CO + 1 NO 8 A. No other held catalogue offers a 24 V DC set/reset latching interface relay: 13.01 and 20 series step relays toggle (S13 p.8, S20 p.3), 40.xx.6 bistable relays reset by reversing the coil current through RDC (S40 p.10), S38/S39 and the Connectwell catalogue have none."}
+  R-CTL-05: {authority: MFR, text: "PLC outputs needed = 2 per latching relay (SET and RESET inputs, S13 p.11) + 1 per slim relay. Each SET / RESET command must be a pulse of 100 ms … 10 s (S13 p.5), not a held output. If the client's DO count is given and is smaller: warning (the client's I/O count does not allow it)."}
+  R-CTL-06: {authority: MFR, text: "Slim relay: Finder 38 series 6.2 mm 1 CO 6 A interface module with sensitive 24 V DC coil (38.61.7.024.0050 screwless, 38.51.7.024.0050 box clamp, S38 p.18); Finder 39 MasterBASIC 24 V AC/DC (39.01.0.024.0060 push-in, 39.11.0.024.0060 box clamp, S39 pp. 29–30); Connectwell CSR1S-24DXB (spring) / CSR1S-24DYB (screw), 24 V DC (CW-ES p.44). Module code = relay + socket as printed."}
+  R-CTL-07: {authority: RULE, text: "One relay per output; spare relays = outputs × spare % rounded up (default 0 %: the client's DO count already contains spare channels; owner decision C-3)."}
+  R-CTL-08: {authority: MFR, text: "Contact load within the printed rating: AC-1 current ≤ rated current and V × I ≤ AC1 VA; AC-15 (rated at 230 V AC only) current ≤ AC15 VA / 230 V at any voltage ≤ the rated voltage; DC-1 current ≤ the DC1 breaking capacity at the next printed voltage at or above the load voltage (Finder 24 / 110 / 220 V; Connectwell ≤ 30 V DC and ≤ 180 W). A duty the catalogue does not rate (Connectwell AC-15 / DC-13, 13.12 any DC load): cannot select. Load not given: warning, not checked."}
+  R-CTL-09: {authority: MFR, text: "DC-13 (inductive DC, e.g. a 24 V DC contactor coil) on a Finder 38 / 39 contact: allowed as DC-1 only with a diode in parallel with the load (S38 p.12, S39 p.21) — warning: fit the diode."}
+  R-CTL-10: {authority: MFR, text: "Air temperature inside the panel within the relay's printed ambient range (Finder 38/39 −40 … +70 °C at UN ≤ 60 V; 13.12 −10 … +60 °C; Connectwell CSR −40 … +55 °C); outside: cannot select. Not given: not checked (warning)."}
+  R-CTL-11: {authority: MFR, text: "Slim-relay accessories as printed: Finder 38 plastic separator 093.01 'required at the start and the end of a group of interfaces' (S38 p.20) = 2 per group; Finder 39 separator 093.60 only for separation of different voltages (S39 p.33) = none by default; markers one tag per relay on sheets of 48 (093.48) or MC6 cards of 72 tags (CW-TB p.289)."}
+  R-CTL-12: {authority: RULE, text: "Coil-common jumpering: one jumpered row (A2, 0 V) per relay group. Finder jumper links (20-way 093.20, 16-way 093.16) are cut to length: ceil(relays / ways) per group, blocks joined by a wire. Connectwell JX4 jumpers (2, 3, 4, 5, 8, 10, 16 poles, CW-ES p.45) cannot be cut: fewest pieces whose poles add up exactly to the group, blocks joined by a wire. Connectwell relay groups get 2 end clamps (CA103) like a terminal assembly (CW-TB p.283)."}
+  R-CTL-13: {authority: MFR, text: "Terminal block: the smallest CP push-in feed-through block (CP1.5 < CP2.5 < CP4 < CP6/10 < CP16) whose printed connection range for the conductor type (default: flexible with ferrule) contains the conductor size and whose IEC 60947-7-1 rated current is at least the circuit current (CW-TB pp. 12–14). Above the CP16 range or current: cannot select."}
+  R-CTL-14: {authority: MFR, text: "End plates: one per group of identical terminal blocks — 'at the end of an assembly of identical Terminal Blocks and whenever [there] is [a] change in physical size' (CW-TB p.297), with the end plate printed for that block (pp. 12–14)."}
+  R-CTL-15: {authority: MFR, text: "End clamps: 'fixed on both sides of the Terminal Block assemblies' (CW-TB p.283) = 2 per terminal strip. Strips default to one per terminal type (owner decision C-8); end clamp CA103 (screwless, p.283)."}
+  R-CTL-16: {authority: RULE, text: "Markers: one marking tag per terminal, on the MC card printed for that block (CW-TB pp. 12–14), cards = ceil(terminals / tags per card, p.289)."}
+  R-CTL-17: {authority: RULE, text: "Distribution short links: a commoned group of n terminals is bridged with the terminal's pluggable jumpers (CW-TB pp. 12–14) using both jumper rows (p.10) so that consecutive pieces overlap by one terminal: fewest pieces with Σ poles − (pieces − 1) = n. Jumper Imax is reported, not checked (group current not an input)."}
+  R-CTL-18: {authority: RULE, text: "Rittal: one door-operated switch SZ 4127.010 and one LED system light SZ 4140.820 (24 V DC, 0.08 A) per door (owner decision C-7). MFR checks: the light may be connected to a door-operated switch (p.2); switch rated 24 V DC / 6 A ≥ light current; a through-wired row of lights ≤ 2 A (p.3) → at most 25 lights per row."}
+  R-CTL-19: {authority: RULE, text: "Article numbers come from the catalogue editions downloaded 2026-10-11: confirm them with the supplier before ordering (owner decision C-9). Not covered: tower lamp (Schneider), contactor coil suppressors, distribution blocks, earth (PE) terminals, Phoenix Contact parts."}
+
+params:
+  relay_make_default: finder
+  terminal_make_default: connectwell
+  finder_series_default: "38"
+  relay_connection_default: screwless
+  finder_38_coil: "7.024"          # sensitive 24 V DC coil (lower consumption than 0.024 AC/DC)
+  coil_v_dc_supported: [24]
+  spare_pct_default: 0
+  relay_groups_default: 1
+  jumpered_rows: 1                 # A2 (0 V) only
+  conductor_type_default: ferrule  # flex | solid | ferrule
+  terminal_order: ["CP1.5", "CP2.5", "CP4", "CP6/10", "CP16"]
+  end_clamp: CA103
+  ac15_reference_v: 230
+  switches_per_door: 1
+  lights_per_door: 1

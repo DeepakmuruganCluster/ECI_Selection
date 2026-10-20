@@ -1,0 +1,15 @@
+# Heat transfer coefficient k of the enclosure surface and the basis it applies to.
+# Rittal TSC 3124300 EN: p. 13 "Calculation basis for enclosure climate control" — "k = Heat transfer
+# coefficient [W/m²K] for sheet steel k = 5.5 W/m²K"; repeated on p. 26 (air/air heat exchangers) and
+# p. 52 (enclosure heaters), where the basis is stated: "Based on: Indoor siting, static air, heat transfer
+# coefficient k = 5.5 W/m² K. For outdoor siting (moving air): double the determined thermal output."
+# The catalogue gives k for sheet steel only (no stainless steel, aluminium or plastic values) → other
+# materials are refused (R-ENC-04). Read from the page text and checked on the page images.
+
+source:
+  ref: RITTAL-TSC-3124300
+  section: "Calculation basis for enclosure climate control (p. 13); k basis 'indoor siting, static air' (p. 52)"
+
+rows:
+  - {material: sheet_steel, k_w_m2k: 5.5, siting: indoor, air: static, page: 13, repeated_on: [26, 52]}
+  - {material: sheet_steel, k_w_m2k: 5.5, siting: indoor, air: static, basis: "Indoor siting, static air", page: 52}

@@ -1,0 +1,34 @@
+# VFD rules. Authority: MFR = manufacturer document, RULE = our decision (SIGNOFF.md).
+
+component: vfd
+
+rules:
+  R-VFD-01: {authority: MFR,  text: "Scope: 3-phase supply 380 … 480 V (p.97), altitude ≤ 1000 m (derating tables, first row), factory pulse frequency, PM240-2 IP20 FSA … FSF."}
+  R-VFD-02: {authority: MFR,  text: "Normal duty uses the LO (low overload) base-load rating, heavy duty the HO (high overload) rating."}
+  R-VFD-03: {authority: RULE, text: "Output-current derating from Tables 6-37 … 6-40 at the next table temperature at or above the ambient (no interpolation); above 60 °C: cannot select."}
+  R-VFD-04: {authority: MFR,  text: "Smallest power module whose LO/HO power ≥ motor kW and whose derated LO/HO output current ≥ motor FLC. A larger module than the kW alone needs → warning (upsized)."}
+  R-VFD-05: {authority: MFR,  text: "Motor power must be 25 … 150 % of the converter power (p.96)."}
+  R-VFD-06: {authority: MFR,  text: "Prospective short-circuit current at the drive ≤ 100 kA (p.97)."}
+  R-VFD-07: {authority: MFR,  text: "Protection: only devices Siemens lists for the module (Protective Devices PM240-2, 07/2021): LV HRC fuse (p.5), motor starter protector (p.11) or circuit breaker (p.14), with ICC ≥ prospective short-circuit current and device rating ≥ drive input current. Phased-out devices (footnote 1) are not offered. None listed: cannot select."}
+  R-VFD-14: {authority: RULE, text: "Several listed devices qualify: take the first in Siemens' table order. A preferred family (e.g. client 3VM) that Siemens does not list for the module: cannot select."}
+  R-VFD-15: {authority: MFR,  text: "Motor-starter-protector ICC values are only valid for supply systems with a grounded star point (TN or TT) (p.11 note)."}
+  R-VFD-16: {authority: MFR,  text: "Minimum enclosure volume per frame size when the protection is rated above 65 kA (fuses) or for MSP / circuit breakers (pp. 5, 11, 14): passed to the enclosure component."}
+  R-VFD-08: {authority: MFR,  text: "FSA … FSC need a line impedance 1 % ≤ uk < 4 %; below 1 % a line reactor (Table 8-4); a client rule may require it up to a kW. FSD … FSF: no restriction, no line reactor."}
+  R-VFD-09: {authority: MFR,  text: "Motor cable length within Tables 4-1 … 4-3 for the filter, cable type and voltage band; fewest output reactors that allow the length (FSA … FSC: 1, FSD … FSF: 2 in series). Not listed or too long: cannot select. Voltages between 415 and 440 V only use rows that cover them."}
+  R-VFD-10: {authority: MFR,  text: "Output reactor from Tables 8-11 / 8-15; with an output reactor the pulse frequency must be ≤ 4 kHz and the output frequency ≤ 150 Hz (p.160)."}
+  R-VFD-11: {authority: MFR,  text: "Motor cable ohmic losses must stay below 5 % of the converter rating (p.62): checked by the cable component."}
+  R-VFD-12: {authority: RULE, text: "Control Unit only when its questions are answered (encoder, safety, fieldbus); otherwise not selected. Its permitted ambient is not in a held source (CU240E-2 manual in the inbox) and is reported, not checked."}
+  R-VFD-17: {authority: OWN,  text: "Control Unit from the company selection logic (ECI-VFD-Selection flowchart, version with SBC and SDI): encoder → advanced safety (SS1/SLS/SSM/SDI) → SBC → STO → fieldbus. A fieldbus outside none / Modbus / PROFIBUS / PROFINET-EtherNet/IP: no control unit (warning)."}
+  R-VFD-18: {authority: OWN,  text: "The selected Control Unit must offer every requested safety function and the fieldbus in the company database (sheet 'Control Unit'); 'License' functions need the memory-card licence."}
+  R-VFD-19: {authority: OWN,  text: "Operator panel BOP-2 6SL3255-0AA00-4CA1 for every drive (company database, sheet 'Operator panel')."}
+  R-VFD-20: {authority: OWN,  text: "Memory card from the company logic: customer preference first; CU250S-2 with advanced safety / basic positioning → licensed card (-Z F01 / E01); otherwise a card only if parameters are copied between drives."}
+  R-VFD-13: {authority: MFR,  text: "FLC basis is a guide value or not stated → warning: size on the motor's own rated current."}
+
+  R-VFD-17: {authority: MFR, text: "Owner 2026-10-20 (RFQ part 2): with fuse protection, one LV HRC fuse in each line conductor L1, L2, L3 — three per drive (SIE-PM240-2 Figure 4-5, PDF p.60). A motor starter protector or circuit breaker is one 3-pole device."}
+  R-VFD-18: {authority: MFR, text: "Owner 2026-10-20: the drive's fuses are held by a 3NP1 fuse switch disconnector of the fuse's size (fuse size: LV 10 · 2026 pp.7/46-7/48, sizes 000, 00, 1 transcribed; 3NP1 box terminals, 3-pole, floor mounting, without fuse monitoring: p.8/87), Iu ≥ the fuse's rated current. Not given → reported (the panel and the RFQ ask it); size or switch not transcribed → the drive stays selected, the holder is a warning (not selected)."}
+
+  R-VFD-19: {authority: MFR, text: "Owner 2026-10-20 (RFQ part 3): with motor starter protector protection, a 3RV of a type Siemens lists for the module (SIE-G120-PROT p.11; same type with a lower rating allowed, p.3) rated at or above the drive's input current (set at the larger of the input current and the bottom of its range) and no higher than the listed maximum, with Icu at 400 V (IC 10 pp.7/25-7/28) and the listed ICC ≥ the fault level; Siemens' listed order (smaller size first), then the smallest rating. The client's range is used when it meets all of this; otherwise the fitting one is offered and the client's range is a warning (tell the client)."}
+
+params:
+  duty_default: normal
+  altitude_default_m: 1000

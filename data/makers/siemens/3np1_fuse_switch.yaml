@@ -1,0 +1,16 @@
+# Siemens 3NP1 fuse switch disconnectors: 3-pole, floor mounting, without fuse monitoring (owner 2026-10-20, RFQ part 2:
+# "fuse switch disconnector" holds the drive fuses). Catalog LV 10 · 2026, PDF pp.712-713 (printed 8/86-8/87).
+# The catalogue: "For a complete and valid configuration … use our online configurator".
+# Scope transcribed: box terminals (NH000 exists with box terminals only; the same design is kept for every size),
+# floor mounting, without fuse monitoring, 3-pole, NH000 … NH3. Busbar mounting and fuse monitoring are not transcribed.
+
+source:
+  ref: SIE-LV10-2026
+  section: "3NP1 fuse switch disconnectors (8/86 flat terminals, 8/87 box terminals): floor mounting, without, 3-pole"
+
+rows:
+  - {size: "000", terminals: box,  iu_a: 125, article: 3NP1123-1CA20, note: "Iu 125 A (with the optional infeed terminal max. 160 A, footnote 2)", page: 713}
+  - {size: "00",  terminals: box,  iu_a: 160, article: 3NP1133-1CA20, page: 713}
+  - {size: "1",   terminals: box,  iu_a: 250, article: 3NP1143-1DA20, page: 713}
+  - {size: "2",   terminals: box,  iu_a: 400, article: 3NP1153-1DA20, page: 713}
+  - {size: "3",   terminals: box,  iu_a: 630, article: 3NP1163-1DA20, page: 713}

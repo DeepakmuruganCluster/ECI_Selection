@@ -1,0 +1,11 @@
+# ET 200SP AI 4xU/I 2-wire ST (6ES7134-6HD01-0BA1): supply data, Equipment Manual 09/2026 (A5E03572832-AG), technical
+# specifications pp.32-33, transcribed 2026-10-13 (page = PDF page). The module supplies 2-wire transmitters itself
+# (24 V encoder supply for current measurement, max. 20 mA per channel); the tool counts "Current consumption, max."
+# (117 mA), which is read as covering the module with its loops (rated value 30 mA) — owner check PLC-S7.
+source:
+  ref: SIE-ET200SP-AI4ST
+  section: "Technical specifications: Supply voltage, Input current, Encoder supply"
+rows:
+  - {article: 6ES7134-6HD01-0BA1, item: current_rated_ma, value: 30, text: "Current consumption (rated value) 30 mA", page: 32}
+  - {article: 6ES7134-6HD01-0BA1, item: current_max_ma, value: 117, text: "Current consumption, max. 117 mA", page: 32}
+  - {article: 6ES7134-6HD01-0BA1, item: encoder_supply_ma_per_channel, value: 20, text: "Output current, max. 20 mA; max. 50 mA per channel for a duration < 10 s", page: 33}

@@ -1,0 +1,69 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 19
+title: Internal panel wiring (Lapp wire size inside the panel)
+what_it_does: >
+  Picks the smallest Lapp wire for one connection inside the panel — a power circuit
+  or a control wire. It takes the wire's current rating from Lapp's basic table (at
+  30 °C), then reduces it for the hot air inside the panel, for wires bundled together
+  in a wiring duct, and for other circuits sharing the duct, all with Lapp's own
+  factor tables. The result must carry at least the protective device's rating. Where
+  Lapp gives no number — cable trays, wires touching each other in free air, a panel
+  hotter than the table — it refuses instead of guessing. It does not check voltage
+  drop, short-circuit strength or how many metres of wire to buy.
+
+how_to_check:
+  - "Basic rating: open Lapp PDF page 1, left half (printed page 144), column A 'Single core cable'. 4 mm² is 42 A, 70 mm² is 245 A."
+  - "Hot panel: open PDF page 3, left (printed 148), Table 12-2. For a 70 °C wire (normal PVC) at 55 °C the factor is 0.61; at 35 °C it is 0.94. Between two rows the tool takes the hotter row."
+  - "Wires bundled in a duct: PDF page 2 (printed 146), footnote 3 — single cores touching each other on surfaces: 0.67 for a 3-phase circuit, 0.76 for single-phase or DC. Then PDF page 4 (printed 150), Table 12-6, first row (the drawing shows a duct): 1 circuit 1.00, 2 → 0.80, 3 → 0.70."
+  - "Press 'Try it: 7.5 kW motor, 55 °C': 2.5 mm² gives 32 × 0.61 × 0.67 = 13.1 A, less than the 16 A starter, so it must pick 4 mm² (42 × 0.61 × 0.67 = 17.2 A)."
+  - "Press 'Try it: 37 kW drive, 100 A fuse, 55 °C': 50 mm² gives 198 × 0.41 = 80.9 A (too small), 70 mm² gives 245 × 0.41 = 100.1 A — just enough."
+  - "Page numbers: each PDF page shows two printed pages; printed page = 2 × PDF page + 142 (left) or + 143 (right)."
+
+spot_checks:
+  - {label: "7.5 kW motor, 16 A starter, 55 °C in a duct (pages 1/2/3: 4 mm²)", tab: internal_wiring, inputs: {ib_a: 15.5, in_a: 16, ambient_c: 55, insulation: "70", conductor_type: single, installation: duct, circuit: 3ac, circuits: 1}}
+  - {label: "37 kW drive, 100 A fuse, 55 °C in a duct (page 1: 70 mm²)", tab: internal_wiring, inputs: {ib_a: 70, in_a: 100, ambient_c: 55, insulation: "70", conductor_type: single, installation: duct, circuit: 3ac, circuits: 1}}
+  - {label: "Wires on a cable tray (must refuse: not panel wiring)", tab: internal_wiring, inputs: {ib_a: 20, in_a: 20, ambient_c: 35, insulation: "70", conductor_type: single, installation: tray, circuit: 3ac, circuits: 1}}
+
+decisions:
+  - id: W-1
+    question: "Lapp's basic table is for single wires spaced apart. For wires bundled in a wiring duct the tool uses Lapp's footnote 3 (× 0.67 for 3-phase, × 0.76 for single-phase / DC) and then Lapp's Table 12-6 row that shows a duct. Lapp also says single wires in conduits in BUILDINGS should use DIN VDE 0298-4 Tables 3 / 5, which we do not hold. Use the Lapp footnote route for panel ducts until IEC 60364-5-52 or IEC 61439-1 is bought?"
+    options: {"yes": "Yes, use Lapp's footnote 3 + Table 12-6 (check again when the standard is held)", "no": "No, refuse wires in ducts until the standard is held"}
+    recommended: "yes"
+  - id: W-2
+    question: "The client only says 'LAP Cable'. Which Lapp wire should WNS2503 use for power wiring? This sets the temperature column: normal PVC H07V-K is a 70 °C wire (0.61 at 55 °C); heat-resistant H07V2-K uses Lapp Table 12-4 (0.94 at 55 °C) and gives smaller sizes in a hot panel."
+    options: {h07v-k: "H07V-K (PVC, 70 °C) — confirm on the Lapp product page", h07v2-k: "H07V2-K (heat resistant, 90 °C)", ask: "Ask the client"}
+    recommended: ask
+  - id: W-3
+    question: "Lapp's tables only give current ratings; they say nothing about the smallest wire that is strong enough mechanically (e.g. 1.5 mm² for power, 0.5 or 0.75 mm² for control). The tool offers 0.5 mm² and up, and the designer may type a project minimum. Should the tool add its own minimum?"
+    options: {"none": "No built-in minimum: the designer types the client's / project minimum", "1": "1 mm² for every wire", "1.5": "1.5 mm² power, 0.75 mm² control"}
+    recommended: "none"
+  - id: W-4
+    question: "For a motor protected by an adjustable starter (e.g. MPCB 13–16 A), which current must the wire carry: the top of the setting range (16 A — safe if someone turns it up) or the setting (15.5 A)? The tool uses whatever In it is given; this decides what the panel feeds it."
+    options: {top: "Top of the setting range (safe)", setting: "The set current"}
+    recommended: top
+  - id: W-5
+    question: "Metres of wire to buy are not in any source we hold. Leave the quantity of internal wire to the designer / estimator for now?"
+    options: {"yes": "Yes, quantity is not calculated", "no": "No, add an allowance rule (needs a rule written and signed)"}
+    recommended: "yes"
+  - id: W-6
+    question: "The wire must carry the protective device's rating: Ib ≤ In ≤ Iz (from IEC 60364-4-43, not held). When the device does not protect the wire against overload (aR fuse, drive output), only Iz ≥ Ib. Keep this rule?"
+    options: {"yes": "Yes", "no": "No"}
+    recommended: "yes"
+
+# labels for the web form (built automatically from select())
+fields:
+  ib_a: "Design current Ib (A)"
+  in_a: "Protective device rating In (A)"
+  overload_device: {label: "Protective device gives overload protection", options: [true, false], help: "No for aR fuses or drive output wiring"}
+  ambient_c: "Air temperature inside the panel (°C)"
+  insulation: {label: "Wire temperature class", options: ["70", "60", "80", "85", "90", "heat_90", "heat_110", "heat_145", "heat_180"], help: "From the Lapp product page: H07V-K = 70; H07V2-K = heat_90"}
+  conductor_type: {label: "Wire type", options: ["single", "multi"]}
+  installation: {label: "Installed", options: ["duct", "surface", "air_spaced", "tray"], help: "tray is refused (not panel wiring)"}
+  circuit: {label: "Circuit", options: ["3ac", "1ac", "dc"]}
+  circuits: "Circuits (or cables) in the same duct, incl. this one"
+  loaded_cores: "Loaded cores in a multicore cable"
+  min_size_mm2: "Project minimum size (mm²)"
+
+# the data tables this component reads (data/makers, data/company, projects/*/data)
+data_files: [data/makers/lapp/lapp_t12_1_ratings.yaml, data/makers/lapp/lapp_t12_factors.yaml]

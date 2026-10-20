@@ -1,0 +1,25 @@
+# Golden cases for client_items — written BEFORE the code (G4).
+# Oracle: ECI Automation_Rittal spec Rev02, page 1/2 (rendered images), counted by hand.
+# Rows: BIO_UF 16, RO 13, plant 15 (44 in all).
+
+cases:
+  - id: C01
+    in: {panel: BIO_UF}
+    expect: {status: warning, n_items: 31, n_qty_missing: 9, n_interpreted: 4, warnings: [R-CLI-01, R-CLI-02]}
+    oracle: "16 BIO_UF + 15 plant rows; no quantity: HMI, fans, door switch/light (BIO) + display, CTs, internal PROFINET cable, relays, terminals, wiring (plant); interpreted: memory card, incomer SPD (BIO) + UPS SPD, UPS (plant); BIO sections 600 + 6 × 1200 = 7800 = stated length"
+  - id: C02
+    in: {panel: RO}
+    expect: {status: warning, n_items: 28, n_qty_missing: 9, n_interpreted: 3, warnings: [R-CLI-01, R-CLI-02, R-CLI-04]}
+    oracle: "13 RO + 15 plant rows; RO sections 600 + 4 × 1200 + 2 × 1000 = 7400 ≠ 7800 stated (page 1)"
+  - id: C03
+    in: {panel: all}
+    expect: {status: warning, n_items: 44, warnings: [R-CLI-01, R-CLI-02, R-CLI-04]}
+    oracle: "all 44 rows; RO section sum differs"
+  - id: C04
+    in: {panel: BIO_UF, include_plant: false}
+    expect: {status: warning, n_items: 16, n_qty_missing: 3, n_interpreted: 2, warnings: [R-CLI-01, R-CLI-02]}
+    oracle: "BIO_UF rows only"
+  - id: C05
+    in: {panel: XYZ}
+    expect: {status: invalid}
+    oracle: "panel must be BIO_UF, RO or all"

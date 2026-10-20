@@ -1,0 +1,495 @@
+# Golden cases for requirement — written BEFORE the code (G4).
+# Oracles: the reading rules (rules.yaml) by hand, and the verified components:
+#   75 kW, 400 V: motor FLC 132 A (component 1, guide table).
+#   VFD heavy duty at 40 °C, 132 A: HO 75 kW 6SL3210-1PE31-8UL0, 145 A ≥ 132 A (SIE-PM240-2 p.105); fuse 3NA3142 (p.105).
+#   CU: no encoder, STO, PROFINET → CU240E-2 PN 6SL3244-0BB12-1FA0 (component 4, OWN-CU-LOGIC-ALT).
+#   11 kW, 400 V: FLC 22 A → 3RV2021-4DA10 (18 … 23 A) + 3RT2027-1AP00 (component 2).
+
+cases:
+  - id: Q01
+    in: {text: "I need a control panel for a 75kW special purpose conveyor system, IP54, outdoor installation in Germany, budget under €8,000."}
+    expect: {status: warning, kw: 75, qty: 1, application: conveyor, duty: heavy, ip_rating: IP54, siting: outdoor,
+             country: Germany, budget: "under €8,000", n_questions: 20, ready: 0, selected: 0}
+    oracle: "R-REQ-01 reads kW, application, IP, siting, country, budget; R-REQ-05 conveyor → heavy; R-REQ-04 asks starter, voltage, fault, panel temp, cable temp, cable length = 6 (power factor no longer asked: R-REQ-20, owner 2026-10-14; was 10), R-REQ-14 PLC, surge arrester, phase monitoring relay = 3 (duty and CU only once the starter is a VFD) + control supply (CC-1: asked every time, owner 2026-10-17) + R-REQ-32 (audit 2026-10-17, owner: ask each one): E-stop, reset, phase lamps, lamp VA, wire insulation, circuits per duct, other cables, incomer trip unit and breaking basis (+ EMC filter with a VFD, meter communication with a meter, coil VA / line contactor / thermistor with a soft starter) (owner 2026-10-20, R-REQ-34: + the incomer series → 20)"
+  - id: Q02
+    in: {text: "I need a control panel for a 75kW special purpose conveyor system, IP54, outdoor installation in Germany, budget under €8,000.",
+         starter: VFD, voltage_v: 400, fault_ka: 25, panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.86, cable_m: 50}
+    expect: {status: warning, starter: VFD, voltage_v: 400, n_questions: 20, ready: 0}
+    oracle: "R-REQ-04: VFD adds encoder, safety, fieldbus, memory card (duty is read from 'conveyor') + R-REQ-14 three = 7 + control supply (CC-1: asked every time, owner 2026-10-17) + R-REQ-32 (audit 2026-10-17, owner: ask each one): E-stop, reset, phase lamps, lamp VA, wire insulation, circuits per duct, other cables, incomer trip unit and breaking basis (+ EMC filter with a VFD, meter communication with a meter, coil VA / line contactor / thermistor with a soft starter) (owner 2026-10-20, R-REQ-34: + the incomer series → 19) (owner 2026-10-20, R-VFD-18: + what holds the drive fuses → 20)"
+  - id: Q03
+    in: {fuse_holder: switch_disconnector, text: "I need a control panel for a 75kW special purpose conveyor system, IP54, outdoor installation in Germany, budget under €8,000.",
+         starter: VFD, voltage_v: 400, fault_ka: 25, panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.86, cable_m: 50,
+         cu_encoder: false, cu_safety: sto, cu_fieldbus: profinet, mc_copy_parameters: true, plc_make: other, plc_24v_a: 2, spd: false, pmr: false, control_supply: transformer,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", emc_filter: none}
+    expect: {status: warning, n_questions: 0, ready: 1, selected: 0, power_module: null}
+    oracle: "R-REQ-07: nothing left to ask, but not confirmed → no selection"
+  - id: Q04
+    in: {fuse_holder: switch_disconnector, text: "I need a control panel for a 75kW special purpose conveyor system, IP54, outdoor installation in Germany, budget under €8,000.",
+         starter: VFD, voltage_v: 400, fault_ka: 25, panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.86, cable_m: 50,
+         cu_encoder: false, cu_safety: sto, cu_fieldbus: profinet, mc_copy_parameters: true, plc_make: other, plc_24v_a: 2, spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", emc_filter: none}
+    expect: {status: warning, ready: 1, selected: 1, flc_a: 132, power_module: 6SL3210-1PE31-8UL0, protection_device: 3NA3142,
+             control_unit: 6SL3244-0BB12-1FA0, memory_card: 6SL3054-4AG00-2AA0, operator_panel: 6SL3255-0AA00-4CA1,
+             io_di: 2, io_do: 2, io_pn: 1, io_safety: 1}
+    oracle: "(owner 2026-10-16, R-IO-10: + the panel signals of company drawing sheet 12 — I_EmergencyStop, I_Reset, I_PhaseFailure with a PMR / O_GeneralTrip, O_GeneralWarning) 2 DI + 2 DO; the drive stays on the bus. heavy duty 75 kW → HO 75 kW FSF (p.105, 145 A ≥ 132 A at 40 °C); CU240E-2 PN; memory card; BOP-2; I/O: one PROFINET drive, STO = 1 safety signal (component 23)"
+  - id: Q05
+    in: {contactor_suppressor: none, text: "11 kW pump, DOL, 400 V, 25 kA, 30 m cable", panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.85, plc_make: other, plc_24v_a: 2, spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", kit: KIT-3fa02dc5}
+    expect: {status: warning, starter: DOL, duty: normal, selected: 1, flc_a: 22, mpcb: 3RV2021-4DA10, contactor: 3RT2027-1AP00,
+             io_di: 4, io_do: 3, io_pn: 0}
+    oracle: "(owner 2026-10-16, R-IO-10: + the panel signals of company drawing sheet 12 — I_EmergencyStop, I_Reset, I_PhaseFailure with a PMR / O_GeneralTrip, O_GeneralWarning) 2 + 2 DI, 1 + 2 DO. component 2 for 22 A; I/O for one DOL: running + tripped DI, one run DO (slim relay default, component 23)"
+  - id: Q06
+    in: {text: "A 75 kW conveyor and a 90 kW pump"}
+    expect: {status: warning, n_motors: 2, kw: null, ready: 0}
+    oracle: "R-REQ-09: split at 'and' → two motors (M1 75 kW conveyor, M2 90 kW pump); general kW fields stay empty"
+  - id: Q07
+    in: {text: "   "}
+    expect: {status: invalid}
+    oracle: "nothing to read"
+  - id: Q08
+    in: {text: "100 hp conveyor with VFD"}
+    expect: {status: warning, kw: null, starter: VFD, ready: 0}
+    oracle: "R-REQ-02: hp is not used; kW asked"
+  - id: Q09
+    in: {text: "75 kW conveyor VFD, 460 V 60 Hz, 25 kA, 50 m cable"}
+    expect: {status: warning, voltage_v: 460, frequency_hz: 60, n_questions: 23}
+    oracle: "(was 11 with the power factor, asked until 2026-10-14, R-REQ-20) R-REQ-04: panel temp, cable temp, FLC (60 Hz), encoder, safety, fieldbus, memory card = 8 + control supply (CC-1: asked every time, owner 2026-10-17) + R-REQ-32 (audit 2026-10-17, owner: ask each one): E-stop, reset, phase lamps, lamp VA, wire insulation, circuits per duct, other cables, incomer trip unit and breaking basis (+ EMC filter with a VFD, meter communication with a meter, coil VA / line contactor / thermistor with a soft starter) (owner 2026-10-20, R-REQ-34: + the incomer series → 22) (owner 2026-10-20, R-VFD-18: + what holds the drive fuses → 23)"
+  - id: Q10
+    in: {text: "15 kW pump with VFD at 415 V", voltage_v: 400}
+    expect: {status: warning, voltage_v: 400}
+    oracle: "R-REQ-03: the answer wins over the text"
+  - id: Q11
+    in: {text: "2 x 15 kW pumps with VFD, PROFINET, STO"}
+    expect: {status: warning, qty: 2, kw: 15, starter: VFD, cu_safety: sto, cu_fieldbus: profinet, duty: normal}
+    oracle: "R-REQ-01 'n x kW' quantity; STO and PROFINET read; pump → normal (R-REQ-05)"
+  - id: Q12
+    in: {ss_comm: none, ss_hmi: none, text: "37 kW fan with soft starter, 400 V, 25 kA, 40 m cable", panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.85, plc_make: other, plc_24v_a: 2, spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, coil_va: 10, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", ss_line_contactor: false, ss_thermistor: false}
+    expect: {status: warning, starter: SS, selected: 1, power_module: null, mpcb: null, soft_starter: 3RW5226-1AC14}
+    oracle: "(until 2026-10-14 an open point) soft starter (5): 37 kW guide FLC 66 A; fan → normal → Class 10A (SS-1); 40 °C: 3RW5225 63 < 66, 3RW5226 77 (range 32–77, IC 10 p. 6/60); 3VA2110-7MN32-0AA0 Iq 65 ≥ 25 (p. 6/63); 230 V control → ..14 (p. 6/67)"
+  - id: Q13
+    in: {text: "15 kW pump DOL 400 V, supply 415 V"}
+    expect: {status: warning, voltage_v: null}
+    oracle: "R-REQ-02: two voltages → asked"
+  - id: Q14
+    in: {text: "37 kW mixer, normal duty, VFD"}
+    expect: {status: warning, duty: normal}
+    oracle: "R-REQ-05: duty stated in the text wins over the application word (mixer → heavy)"
+  - id: Q15
+    in: {contactor_suppressor: none, fuse_holder: switch_disconnector, text: "75 kW conveyor with VFD, 50 m cable; 2 x 11 kW pumps DOL, 30 m cable. 400 V, 25 kA, PROFINET, STO, energy meter",
+         panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.86, cu_encoder: false, mc_copy_parameters: true, ct_make: rishabh,
+         plc_make: other, plc_24v_a: 2, spd: true, spd_make: Phoenix, pmr: true, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", meter_comm: profinet, meter_supply: ac_dc, spd_config: "3Ph+N+PE", spd_signalling: true, emc_filter: none, motors: [{}, {kit: KIT-3fa02dc5}]}
+    expect: {status: warning, n_motors: 2, selected: 1, incomer_ib_a: 198.26, incomer: 3VM1332-4ED32-0AA0, incomer_in_a: 320,
+             ct: "RISH LTRP 4, 400/5 A, 5 VA, class 0.5", io_di: 7, io_do: 4, io_pn: 1, io_safety: 1, qty_relays: 4,
+             qty_io_terminals: 11, smps: S8VK-S12024, spd_article: "VAL-MS 320/3+1/FM", pmr_article: "7UG0 753 1AA20"}
+    oracle: "(owner 2026-10-16, R-IO-10: + the panel signals of company drawing sheet 12 — I_EmergencyStop, I_Reset, I_PhaseFailure with a PMR / O_GeneralTrip, O_GeneralWarning) DI 3 + 4 = 7, DO 2 + 2 = 4 → 4 relays, 11 I/O terminals; the 24 V supply input rises by the extra inputs and relay coils → Ib 198.26 A (largest phase). (owner 2026-10-16, decision M-1: incomer In ≥ design current × 1.5, the template FOS (OWN-SWG-CALC L27): 198.25 × 1.5 = 297.4 A → 3VM13 In 320 A (SIE-3VM-LV31 p.11); the meter CT follows the incomer: smallest primary ≥ 320 A = 400/5 A, RISH-LTRP) (QA 2026-10-16 L6: Ib is the largest phase incl. the control transformer on L1–L2 and the 24 V supply — 198 A → 198.25 A, same 200 A breaker) R-REQ-09 two motors; R-REQ-10 Ib = 154 A (HO 75 kW input, SIE-PM240-2 p.105) + 2 × 22 A (FLC) = 198 A → 3VM12 In 200 A class S Icu 36 kA ≥ 25 (SIE-3VM-LV31 pp.11, 29); R-REQ-12 CT on 200 A → TW-4 200/5 A (component 15); I/O 2 DOL slim + 1 drive with STO; 2 slim relays; 6 terminals; R-REQ-14 24 V: 4 DI × 0.03 + 2 relays × 10.4 mA (FINDER-S38 p.13) + 2 A = 2.141 A × 1.25 = 2.676 A → S8VK-S12024 5 A (SMPS.csv line 4; 2.5 A line 3 too small); sa.csv line 4; pmr.csv line 3"
+  - id: Q16
+    in: {contactor_suppressor: none, fuse_holder: switch_disconnector, text: "75 kW conveyor with VFD, 50 m cable; 2 x 11 kW pumps DOL, 30 m cable. 400 V, 25 kA, PROFINET, STO",
+         panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.86, cu_encoder: false, mc_copy_parameters: true, plc_make: other, plc_24v_a: 2,
+         spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", emc_filter: none, motors: [{}, {kit: KIT-3fa02dc5}]}
+    expect: {status: warning, selected: 1, incomer: 3VM1332-4ED32-0AA0, ct: null}
+    oracle: "(owner 2026-10-16, M-1: × 1.5 → In 320 A) R-REQ-12: no meter asked for → no metering, no CT question"
+  - id: Q17
+    in: {text: "75 kW conveyor with VFD; 2 x 11 kW pumps DOL. 400 V, 25 kA, energy meter"}
+    expect: {status: warning, n_motors: 2, ready: 0, n_questions: 28}
+    oracle: "(was 13 with the power factor, asked until 2026-10-14, R-REQ-20) general: panel temp, cable temp, CT make (meter asked) = 3; drives: encoder, safety, fieldbus, memory card = 4; per motor: M1 cable, M2 cable = 2 (M1 duty read from 'conveyor'); R-REQ-14: PLC current, surge arrester, PMR = 3; total 12 + control supply (CC-1: asked every time, owner 2026-10-17) + R-REQ-32 (audit 2026-10-17, owner: ask each one): E-stop, reset, phase lamps, lamp VA, wire insulation, circuits per duct, other cables, incomer trip unit and breaking basis (+ EMC filter with a VFD, meter communication with a meter, coil VA / line contactor / thermistor with a soft starter) (owner 2026-10-20, R-MTR-15: + the meter's supply → 25) (owner 2026-10-20, R-REQ-34: + the incomer series → 26) (owner 2026-10-20, R-VFD-18: + what holds the drive fuses → 27) (owner 2026-10-20, R-DOL-15: + the DOL contactor surge suppressor → 28)"
+  - id: Q18
+    in: {ss_comm: none, ss_hmi: none, text: "37 kW fan with soft starter, 400 V, 25 kA, 40 m cable", panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.85, plc_make: other, plc_24v_a: 2, spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, coil_va: 10, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", ss_line_contactor: false, ss_thermistor: false}
+    expect: {status: warning, selected: 1, incomer_ib_a: 66.25}
+    oracle: "(owner 2026-10-16, R-IO-10: + the panel signals of company drawing sheet 12 — I_EmergencyStop, I_Reset, I_PhaseFailure with a PMR / O_GeneralTrip, O_GeneralWarning) extra inputs and relay coils on the 24 V supply → 66.25 A. (QA 2026-10-16 L6: + control circuit on the largest phase, 66 → 66.24 A) (until 2026-10-14 no incomer: soft starter blocked) R-REQ-10: Σ running = the soft starter feeder's FLC 66 A (37 kW guide value)"
+  - id: Q19
+    in: {contactor_suppressor: none, text: "2 x 11 kW pumps DOL, 30 m cable, 400 V, 25 kA", panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.85,
+         plc_make: omron, spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", plc_spare_pct: 40, kit: KIT-3fa02dc5}
+    expect: {status: warning, selected: 1, io_di: 6, io_do: 4, plc_cpu: CP2E-N20DT1-D, plc_24v_calc_a: 0.0974, smps: S8VK-G01524}
+    oracle: "(owner 2026-10-16, R-IO-10: + the panel signals of company drawing sheet 12 — I_EmergencyStop, I_Reset, I_PhaseFailure with a PMR / O_GeneralTrip, O_GeneralWarning) 6 / 4 × 1.4 = 9 / 6 → CP2E-N20DT1-D (12 / 8, company PLC db row 13): 0.02 + 0.26 × 5 / (24 × 0.7) = 0.0974 A. I/O 4 DI / 2 DO → ×1.4 = 6 / 3 → CP2E-N14DT1-D (PLC db row 10), 0.02 + 0.22 × 5/16.8 = 0.0855 A; 24 V load 4 × 0.03 + 2 × 0.0104 + 0.0855 = 0.2263 A × 1.25 = 0.283 A → smallest Omron 1P+N: S8VK-G01524 0.6 A (SMPS db sheet Omron row 2)"
+  - id: Q20
+    in: {fuse_holder: switch_disconnector, text: "15 kW pump VFD, 40 m cable, 400 V, 25 kA, PROFINET, STO", panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.85,
+         cu_encoder: false, mc_copy_parameters: true, plc_make: omron, spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", plc_spare_pct: 40, emc_filter: none}
+    expect: {status: warning, selected: 1, plc_cpu: null, smps: null}
+    oracle: "R-PLC-06: no Omron CPU in the database records PROFINET → no PLC, so the 24 V supply cannot be sized (open points)"
+  - id: Q21
+    in: {fuse_holder: switch_disconnector, text: "I need a control panel for a 75kW special purpose conveyor system, IP54, outdoor installation in Germany, budget under €8,000.",
+         starter: VFD, voltage_v: 400, fault_ka: 25, panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.86, cable_m: 50,
+         cu_encoder: false, cu_safety: sto, cu_fieldbus: profinet, mc_copy_parameters: true, plc_make: other, plc_24v_a: 2,
+         spd: false, pmr: false, control_supply: transformer, cable_make: kei, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", emc_filter: none}
+    expect: {status: warning, selected: 1, cable_make: kei, power_module: 6SL3210-1PE31-8UL0}
+    oracle: "R-REQ-15: experienced designer changes the cable make; the drive is unchanged (component 4)"
+  - id: Q22
+    in: {text: "15 kW pump DOL", cable_make: brass}
+    expect: {status: invalid}
+    oracle: "cable make must be polycab or kei"
+  - id: Q23
+    in: {text: "160 kW crusher with star delta starter, 50 m cable, 400 V, 25 kA", panel_internal_c: 40, cable_ambient_c: 30,
+         motor_pf: 0.86, plc_make: other, plc_24v_a: 2, spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, coil_va: 10, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", kit: KIT-45343a8c}
+    expect: {status: warning, starter: SD, selected: 1, flc_a: 280}
+    oracle: "R-REQ-16 / R-PNL-12: 'star delta' read; company kit 160/187 kW (feeder_kit K08), motor 280 A (guide); cables open"
+  - id: Q24
+    in: {contactor_suppressor: none, text: "11 kW conveyor DOL, 30 m cable, 400 V, 25 kA", panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.85,
+         plc_make: other, plc_24v_a: 2, spd: false, pmr: false, control_supply: transformer, dol_source: company, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, coil_va: 10, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N"}
+    expect: {status: warning, selected: 1, mpcb: GZ1E21, flc_a: 22}
+    oracle: "R-REQ-15 company DOL source: kit BELT CONVEYOR 11KW DOL row 89: GZ1E21 17–23 A ∋ 22 A"
+  # --- Siemens PLC choices (R-REQ-14, 2026-10-14), written before the code; PLC figures by hand from the PLC golden oracles
+  - id: Q30
+    in: {contactor_suppressor: none, text: "2 x 11 kW pumps DOL, 30 m cable, 400 V, 25 kA", panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.85,
+         plc_make: siemens_s7200smart, spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", plc_spare_pct: 40, kit: KIT-3fa02dc5}
+    expect: {status: warning, selected: 1, io_di: 6, io_do: 4, plc_cpu: CPU ST20, plc_24v_calc_a: 0.72}
+    oracle: "(owner 2026-10-16, R-IO-10: + the panel signals of company drawing sheet 12 — I_EmergencyStop, I_Reset, I_PhaseFailure with a PMR / O_GeneralTrip, O_GeneralWarning) 6 / 4 × 1.4 = 9 / 6 still fits ST20's 12 / 8. as Q19: 4 / 2 → 6 / 3 → S7-200 SMART ST20 (12 / 8 built in, no modules); sensor load 12 × 4 = 48 mA ≤ 300; supply 720 mA (SIE-S7-200SMART-SYS p.804)"
+  - id: Q31
+    in: {contactor_suppressor: none, text: "2 x 11 kW pumps DOL, 30 m cable, 400 V, 25 kA", panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.85,
+         plc_make: siemens_s71200g2, spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", plc_spare_pct: 40, kit: KIT-3fa02dc5}
+    expect: {status: warning, selected: 1, plc_cpu: CPU 1212C DC/DC/DC, plc_24v_calc_a: 0.7656}
+    oracle: "(owner 2026-10-16, R-IO-10: + the panel signals of company drawing sheet 12 — I_EmergencyStop, I_Reset, I_PhaseFailure with a PMR / O_GeneralTrip, O_GeneralWarning) 9 DI > the 1212C's 8 → + SM 1221 DI 16 (R-PLC-14): 700 mA + 65.6 mA = 0.7656 A. 6 / 3 → 1212C DC/DC/DC (8 / 6); supply 700 mA with all accessories (SIE-S71200G2-SYS p.375), no modules"
+  - id: Q32
+    in: {contactor_suppressor: none, text: "2 x 11 kW pumps DOL, 30 m cable, 400 V, 25 kA", panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.85,
+         plc_make: siemens_s71500, spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", plc_spare_pct: 40, plc_cpu: "CPU 1513-1 PN", plc_mc_mb: 24, kit: KIT-3fa02dc5}
+    expect: {status: warning, selected: 1, plc_cpu: CPU 1513-1 PN, plc_24v_calc_a: 1.03}
+    oracle: "6 / 3 → DI16 + DQ16 on one IM 155-6 PN ST; CPU 1513-1 PN default; 0.56 + 0.35 + 0.09 + 0.03 = 1.03 A"
+  - id: Q33
+    in: {fuse_holder: switch_disconnector, text: "15 kW pump VFD, 40 m cable, 400 V, 25 kA, PROFINET, STO", panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.85,
+         cu_encoder: false, mc_copy_parameters: true, plc_make: siemens_s7200smart, spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", plc_spare_pct: 40, emc_filter: none}
+    expect: {status: warning, selected: 1, plc_cpu: CPU ST20, plc_24v_calc_a: 0.72}
+    oracle: "no wired I/O, one drive on PROFINET → ST20 (PLC P45); supply 0.72 A — unlike Omron (Q20), which has no PROFINET"
+  - id: Q34
+    in: {text: "2 x 11 kW pumps DOL, 30 m cable, 400 V, 25 kA", panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.85,
+         plc_make: mitsubishi, spd: false, pmr: false, control_supply: transformer, confirmed: true}
+    expect: {status: invalid}
+    oracle: "plc_make must be omron, siemens_s7200smart, siemens_s71200g2, siemens_s71500 or other"
+  # --- inputs the tool works out instead of asking (R-REQ-20, owner 2026-10-14), written before the code
+  - id: Q35
+    in: {text: "11 kW pump, DOL, 400 V, 25 kA, 30 m cable, site 45 °C"}
+    expect: {status: warning, site_ambient_c: 45, cable_ambient_c: 45, motor_pf: null, n_questions: 16, ready: 0}
+    oracle: "R-REQ-20: the cable route temperature is the stated site temperature (cables in air); power factor not asked. Left to ask: panel temperature, PLC, surge arrester, phase monitoring relay = 4 + control supply (CC-1: asked every time, owner 2026-10-17) + R-REQ-32 (audit 2026-10-17, owner: ask each one): E-stop, reset, phase lamps, lamp VA, wire insulation, circuits per duct, other cables, incomer trip unit and breaking basis (+ EMC filter with a VFD, meter communication with a meter, coil VA / line contactor / thermistor with a soft starter) (owner 2026-10-20, R-REQ-34: + the incomer series → 15) (owner 2026-10-20, R-DOL-15: + the DOL contactor surge suppressor → 16)"
+  - id: Q36
+    in: {contactor_suppressor: none, text: "11 kW pump, DOL, 400 V, 25 kA, 30 m cable, site 45 °C", panel_internal_c: 50, plc_make: other, plc_24v_a: 2,
+         spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", kit: KIT-3fa02dc5}
+    expect: {status: warning, selected: 1, cable_ambient_c: 45, motor_pf: null, flc_a: 22, mpcb: 3RV2021-4DA10}
+    oracle: "as Q05 at 50 °C in the panel; cable 22 A, 30 m at 45 °C (Polycab 50 °C column 0.89: 4 mm² 36.5 A ≥ 22), drop by the worst-case bound √(R² + X²) (R-CAB-09)"
+  - id: Q37
+    in: {text: "11 kW pump, DOL, 400 V, 25 kA, 30 m cable, site 45 °C", cable_installation: ground}
+    expect: {status: warning, cable_ambient_c: null, n_questions: 17}
+    oracle: "R-REQ-20 only for cables in air: buried cables need the ground temperature, which the site air temperature is not → asked (5) + control supply (CC-1: asked every time, owner 2026-10-17) + R-REQ-32 (audit 2026-10-17, owner: ask each one): E-stop, reset, phase lamps, lamp VA, wire insulation, circuits per duct, other cables, incomer trip unit and breaking basis (+ EMC filter with a VFD, meter communication with a meter, coil VA / line contactor / thermistor with a soft starter) (owner 2026-10-20, R-REQ-34: + the incomer series → 16) (owner 2026-10-20, R-DOL-15: + the DOL contactor surge suppressor → 17)"
+  - id: Q38
+    in: {text: "37 kW motor with soft starter, 400 V, 25 kA, 40 m cable"}
+    expect: {status: warning, starter: SS, ready: 0, n_questions: 21}
+    oracle: "R-REQ-04 (2026-10-14): a soft starter needs the duty (it decides the starting class, R-SS-06); no application word → duty is asked: panel temp, cable temp, PLC, surge arrester, phase monitoring + duty = 6 + control supply (CC-1: asked every time, owner 2026-10-17) + R-REQ-32 (audit 2026-10-17, owner: ask each one): E-stop, reset, phase lamps, lamp VA, wire insulation, circuits per duct, other cables, incomer trip unit and breaking basis (+ EMC filter with a VFD, meter communication with a meter, coil VA / line contactor / thermistor with a soft starter) (owner 2026-10-20, R-REQ-34: + the incomer series → 19) (owner 2026-10-20, R-SS-15: + the soft starter's communication and display → 21)"
+  # --- test-agent findings 2026-10-14 (formula audit): reading numbers, written before the fix ---------------------
+  - id: Q39
+    in: {text: "5,5 kW pump DOL"}
+    expect: {status: warning, kw: 5.5}
+    oracle: "decimal comma (digits, comma, 1–2 digits, no space) is a decimal point: 5,5 kW = 5.5 kW (was read as 5)"
+  - id: Q40
+    in: {text: ".75 kW fan DOL"}
+    expect: {status: warning, kw: 0.75}
+    oracle: "a leading decimal point belongs to the number (was read as 75 kW)"
+  - id: Q41
+    in: {text: "1e3 kW pump DOL"}
+    expect: {status: warning, kw: null}
+    oracle: "a number glued to a letter or digit is not read (was 3 kW): kW asked"
+  - id: Q42
+    in: {text: "5.5 kW pump DOL, 5.5 kWh per day"}
+    expect: {status: warning, kw: 5.5, n_motors: 1}
+    oracle: "kWh is energy, not a motor (the motor count read 'kWh' as kW and crashed)"
+  - id: Q43
+    in: {text: "5.5 kW / 7.5 kW pump DOL"}
+    expect: {status: warning, kw: null, n_motors: 1, ready: 0}
+    oracle: "R-REQ-09: two kW values in one part → asked (crashed with IndexError)"
+  - id: Q44
+    in: {text: "5.5 kW pump DOL, 400/230 V"}
+    expect: {status: warning, voltage_v: 400}
+    oracle: "R-REQ-01 (2026-10-14): 'U/U0 V' (IEC 60038 notation 230/400 V or 400/230 V) → the line voltage, the higher of the two (was 230)"
+  - id: Q45
+    in: {text: "5.5 kW pump DOL, pf 1.5"}
+    expect: {status: warning, motor_pf: null}
+    oracle: "a power factor above 1 is impossible: not used, the cable takes the worst-case drop (was read as 1.0, which understates the drop)"
+  - id: Q46
+    in: {text: "11 kW pump DOL, 400 V, panel internal temperature 50 °C"}
+    expect: {status: warning, panel_internal_c: 50, site_ambient_c: null, cable_ambient_c: null}
+    oracle: "a °C value after 'panel / inside / internal / cabinet / enclosure' is the temperature inside the panel, not the site (R-REQ-20 derived the cable temperature from it)"
+  - id: Q47
+    in: {text: "11 kW pump DOL, 400 V, buried cable, site 30 °C"}
+    expect: {status: warning, cable_installation: ground, cable_ambient_c: null}
+    oracle: "R-REQ-01: 'buried / underground / in the ground' → cable installation ground; R-REQ-20 then does not apply (ground temperature asked)"
+  - id: Q48
+    in: {text: "11 kW pump DOL, site −10 °C"}
+    expect: {status: warning, site_ambient_c: -10}
+    oracle: "the typographic minus (U+2212) is a minus (was read as +10)"
+  - id: Q49
+    in: {text: "2 * 5.5 kW pumps DOL"}
+    expect: {status: warning, qty: 2, kw: 5.5}
+    oracle: "'n * kW' is a quantity like 'n x kW'"
+  - id: Q50
+    in: {text: "11 kW pumps x2, DOL"}
+    expect: {status: warning, qty: 2, kw: 11}
+    oracle: "'kW … x n' after the power is a quantity"
+  - id: Q51
+    in: {text: "11 kW pump DOL, 2 nos"}
+    expect: {status: warning, qty: 2}
+    oracle: "'n nos / units / pcs' is a quantity"
+  - id: Q52
+    in: {ss_comm: none, ss_hmi: none, text: "37 kW crusher with soft starter, heavy duty, 400 V, 25 kA, 40 m cable", panel_internal_c: 40, cable_ambient_c: 30,
+         plc_make: other, plc_24v_a: 2, spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, coil_va: 10, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", ss_line_contactor: true, ss_thermistor: false}
+    expect: {status: warning, starter: SS, duty: heavy, soft_starter: 3RW5227-1AC14}
+    oracle: "found in the browser walk-through 2026-10-14: the load list passed duty= only for drives, so heavy starting was lost. Heavy → Class 20E: 3RW5226 20E 65 A < 66 A (IC 10 p. 6/60, image-checked); 3RW5227 93 A"
+  # --- regression round 2026-10-14 (adversarial texts), written before the fix ----------------------------------
+  - id: Q53
+    in: {text: "5.5 kW pump DOL, 400 V, 25 kA, site 40 °C, not buried, 30 m cable"}
+    expect: {status: warning, cable_installation: null, cable_ambient_c: 40}
+    oracle: "a negated phrase ('not buried', 'no duct', 'non-buried') is not read (it set the cable as buried)"
+  - id: Q54
+    in: {text: "5.5 kW pump DOL, 400 V, 25 kA, 30 m cable, water 80 °C"}
+    expect: {status: warning, site_ambient_c: null, cable_ambient_c: null}
+    oracle: "R-REQ-20 / R-REQ-01: a °C is the site temperature only when its phrase names the site / ambient / outdoor / indoor / room / air (water 80 °C became the cable route temperature)"
+  - id: Q55
+    in: {text: "5.5 kW pump DOL, 400 V, 25 kA, 30 m cable, motor winding 155 °C"}
+    expect: {status: warning, site_ambient_c: null, cable_ambient_c: null}
+    oracle: "as Q54"
+  - id: Q56
+    in: {text: "5.5 kW pump DOL, 25 kA, 30 m cable, 380-415 V"}
+    expect: {status: warning, voltage_v: null}
+    oracle: "a voltage range is two values: asked (R-REQ-02); it read 415 V"
+  - id: Q57
+    in: {text: "5.5 kW pump DOL, 400 V, 25 kA, cable 30 m and 40 m"}
+    expect: {status: warning, cable_m: null}
+    oracle: "two cable lengths: asked (it read 30 m)"
+  - id: Q58
+    in: {text: "3 no. 5.5 kW pumps DOL"}
+    expect: {status: warning, qty: 3, kw: 5.5}
+    oracle: "'n no.' is a quantity"
+  - id: Q59
+    in: {text: "5.5 kW pumps DOL, qty 3"}
+    expect: {status: warning, qty: 3}
+    oracle: "'qty n' / 'quantity: n' is a quantity"
+  - id: Q60
+    in: {text: "twelve 5.5 kW pumps DOL"}
+    expect: {status: warning, qty: 12}
+    oracle: "number words up to twenty"
+  - id: Q61
+    in: {text: "5.5 kW pumps DOL, 2+1"}
+    expect: {status: warning, qty: null, ready: 0}
+    oracle: "duty / standby notation (2+1, 2W+1S, 1 duty 1 standby): the quantity is asked, not assumed 1"
+  - id: Q62
+    in: {text: "5.5 kW pump DOL, 400 V, 25 kA, 0 m cable"}
+    expect: {status: warning, cable_m: null}
+    oracle: "a zero length / power is not a value: asked (it read 0 m, then failed at confirm)"
+  - id: Q63
+    in: {text: "5.5 kW pump DOL, pf 0,85"}
+    expect: {status: warning, motor_pf: 0.85}
+    oracle: "decimal comma in the power factor"
+  - id: Q64
+    in: {text: "1.500 kW pump DOL"}
+    expect: {status: warning, kw: null}
+    oracle: "'1.500' is 1.5 or 1500 depending on the country: asked"
+  - id: Q65
+    in: {text: "37 kW fan with soft start, 400 V"}
+    expect: {status: warning, starter: SS}
+    oracle: "'soft start' = soft starter"
+  - id: Q66
+    in: {text: "160 kW crusher Y-D starter, 400 V"}
+    expect: {status: warning, starter: SD}
+    oracle: "'Y-D', 'Y/D', 'star/delta' = star-delta"
+  - id: Q67
+    in: {text: "5.5 kW pump DOL 30 m cable and fan 7.5 kW VFD 50 m cable"}
+    expect: {status: warning, n_motors: 2}
+    oracle: "R-REQ-09: 'and' splits when a new kW follows within a few words ('and fan 7.5 kW')"
+  # --- final confirmation round 2026-10-14, written before the fix ------------------------------------------------
+  - id: Q68
+    in: {text: "1 500 kW pump DOL"}
+    expect: {status: warning, kw: null}
+    oracle: "a space / apostrophe thousands separator (1 500, 1'500): asked (read 500 kW)"
+  - id: Q69
+    in: {text: "0 x 5.5 kW pumps DOL, 30 m cable"}
+    expect: {status: warning, qty: null, ready: 0}
+    oracle: "quantity 0 is not a quantity: asked (it became 1 in the load list)"
+  - id: Q70
+    in: {text: "2 + 1 kW pump DOL"}
+    expect: {status: warning, kw: null}
+    oracle: "'2 + 1 kW': asked (read 1 kW)"
+  - id: Q71
+    in: {text: "5.5 kW pump DOL, 25 kA, 30 m cable, 400 V-415 V"}
+    expect: {status: warning, voltage_v: null}
+    oracle: "voltage range with units on both ends: asked (read 400 V)"
+  - id: Q72
+    in: {text: "5.5 kW pump DOL, 25 kA, 30 m cable, 400/415 V"}
+    expect: {status: warning, voltage_v: null}
+    oracle: "R-REQ-01: 'U0/U' only when U/U0 ≈ √3 (230/400, 240/415, 277/480, 400/690 …); 400/415 is a range: asked (read 415)"
+  - id: Q73
+    in: {text: "5.5 kW pump DOL, 400 V, 25 kA, cable 30 m to motor 1 and 40 m to motor 2"}
+    expect: {status: warning, cable_m: null}
+    oracle: "two lengths in one cable phrase: asked (read 30 m)"
+  - id: Q74
+    in: {text: "5.5 kW pump DOL, pf 0.8 to 0.85"}
+    expect: {status: warning, motor_pf: null}
+    oracle: "a power-factor range is not one value (read 0.8; the cable then takes the worst case)"
+  - id: Q75
+    in: {text: "5.5 kW pump DOL, 400 V, 25 kA, 30 m cable, site not 40 °C"}
+    expect: {status: warning, site_ambient_c: null, cable_ambient_c: null}
+    oracle: "negated temperature phrase: not read"
+  - id: Q76
+    in: {text: "5.5 kW pump DOL, 400 V, 25 kA, 30 m cable, ambient water 30 °C"}
+    expect: {status: warning, site_ambient_c: null, cable_ambient_c: null}
+    oracle: "a medium (water, oil, process, winding …) in the phrase: not the site temperature"
+  - id: Q77
+    in: {text: "5.5 kW pump DOL, 400 V, 25 kA, site 30 °C, 30 m cable not buried in ground"}
+    expect: {status: warning, cable_installation: null, cable_ambient_c: 30}
+    oracle: "negation anywhere shortly before the installation words: not read (read ground)"
+  - id: Q78
+    in: {text: "160 kW crusher Y-Delta starter, 400 V"}
+    expect: {status: warning, starter: SD}
+    oracle: "'Y-Delta', 'wye-delta' = star-delta"
+  - id: Q79
+    in: {text: "5.5 kW pump DOL", qty: 0}
+    expect: {status: invalid}
+    oracle: "an answered quantity must be ≥ 1 (0 became 1 in the load list)"
+  # --- designer edits on the machine BOM (R-REQ-21, 2026-10-15), written before the code ---------------------------
+  - id: Q80
+    in: {contactor_suppressor: none, text: "11 kW pump DOL, 400 V, 25 kA, 30 m cable", panel_internal_c: 40, cable_ambient_c: 30, plc_make: other, plc_24v_a: 2,
+         spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         edits: [{action: add, article: 3RT2027-1AP00, qty: 1, group: Added by designer},
+                 {action: qty, line: {group: Feeders, article: 3RV2021-4DA10, description: "MPCB 18 … 23 A"}, qty: 2}],
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", kit: KIT-3fa02dc5}
+    expect: {status: warning, selected: 1, n_edits: 2}
+    oracle: "R-REQ-21: edits checked against the parts catalog (3RT2027-1AP00 is in IC 10 / SIRIUS tables) and applied with the original kept; listed (info)"
+  - id: Q81
+    in: {contactor_suppressor: none, text: "11 kW pump DOL, 400 V, 25 kA, 30 m cable", panel_internal_c: 40, cable_ambient_c: 30, plc_make: other, plc_24v_a: 2,
+         spd: false, pmr: false, control_supply: transformer, confirmed: true, edits: [{action: qty, line: {group: Feeders, article: 3RV2021-4DA10}, qty: -1}],
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", kit: KIT-3fa02dc5}
+    expect: {status: invalid}
+    oracle: "R-REQ-21: an edit that fails the check (quantity < 0) makes the request invalid — nothing silently dropped"
+  - id: Q82
+    in: {ss_comm: none, ss_hmi: none, text: "45 kW fan with soft starter, 40 m cable, 400 V, 25 kA, site 40 °C", panel_internal_c: 40, cable_ambient_c: 40,
+         plc_make: other, plc_24v_a: 2, spd: false, pmr: false, control_supply: transformer, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, coil_va: 10, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", ss_line_contactor: false, ss_thermistor: false}
+    expect: {status: warning, selected: 0, ready: 0, n_questions: 1}
+    oracle: "R-REQ-24 (QA 2026-10-16 H2): 45 kW → 3RW5227; its tested breaker 3VA2216 is printed for Iq 15 kA < 25 kA (IC10 p.6/63) → the protection is asked, not chosen"
+  - id: Q83
+    in: {ss_comm: none, ss_hmi: none, text: "45 kW fan with soft starter, 40 m cable, 400 V, 25 kA, site 40 °C", panel_internal_c: 40, cable_ambient_c: 40,
+         plc_make: other, plc_24v_a: 2, spd: false, pmr: false, control_supply: transformer, ss_protection: fuse_gg, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, coil_va: 10, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", ss_line_contactor: false, ss_thermistor: false}
+    expect: {status: warning, selected: 1, soft_starter: 3RW5227-1AC14}
+    oracle: "R-REQ-24: gG fuses answered → type 1 with 3NA3 fuses, Iq 65 kA ≥ 25 kA (IC10 p.6/64) → selected"
+  - id: Q84
+    in: {text: "45 kW fan with soft starter, 40 m cable, 400 V, 25 kA, site 40 °C", panel_internal_c: 40, cable_ambient_c: 40,
+         plc_make: other, plc_24v_a: 2, spd: false, pmr: false, control_supply: transformer, ss_protection: maybe, confirmed: true}
+    expect: {status: invalid}
+    oracle: "R-REQ-24: ss_protection must be mpcb, fuse_gg or fuse_semi"
+  - id: Q85
+    in: {contactor_suppressor: none, fuse_holder: switch_disconnector, text: "75 kW conveyor with VFD, 50 m cable; 2 x 11 kW pumps DOL, 30 m cable. 400 V, 25 kA, PROFINET, STO",
+         panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.86, cu_encoder: false, mc_copy_parameters: true, plc_make: other, plc_24v_a: 2,
+         spd: false, pmr: false, control_supply: transformer, incomer_factor: 1, confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", emc_filter: none, motors: [{}, {kit: KIT-3fa02dc5}]}
+    expect: {status: warning, selected: 1, incomer: 3VM1220-4ED32-0AA0, incomer_in_a: 200}
+    oracle: "R-REQ-10 with the designer's factor 1.0: 198.25 A → In 200 A (3VM12), and R-REQ-25 warns: M1's 224 A fuse ≥ the 200 A incomer"
+  - id: Q86
+    in: {text: "11 kW pump DOL, 400 V, 25 kA, 30 m cable", incomer_factor: 0.8, confirmed: true}
+    expect: {status: invalid}
+    oracle: "R-REQ-10: the incomer factor must be from 1 to 3"
+  - id: Q87
+    in: {text: "11 kW pump DOL, 400 V, 25 kA, 30 m cable", min_power_wire_mm2: 0.6, confirmed: true}
+    expect: {status: invalid}
+    oracle: "R-REQ-11: the smallest power wire is one of the offered sizes 0.5, 0.75, 1, 1.5, 2.5 mm² (decision RQ-9)"
+  - id: Q88
+    in: {contactor_suppressor: none, text: "75 kW conveyor with VFD, 50 m cable; 2 x 11 kW pumps DOL, 30 m cable. 400 V, 25 kA, PROFINET, STO",
+         panel_internal_c: 40, cable_ambient_c: 30, motor_pf: 0.86, cu_encoder: false, mc_copy_parameters: true, plc_make: other, plc_24v_a: 2,
+         spd: false, pmr: false, control_supply: transformer, motors: [{removed: true}], confirmed: true,
+         estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, panel_signals: true, relay_make: finder, terminal_make: connectwell, io_conductor_mm2: 1.5, smps_input: "1P+N", kit: KIT-3fa02dc5}
+    expect: {status: warning, selected: 1, n_motors: 2, io_pn: 0, io_safety: 0, io_di: 6, io_do: 4}
+    oracle: "R-REQ-28 (owner 2026-10-16, delete): M1 removed by the designer — its drive, bus device and STO leave the design; M2 keeps its tag. I/O: 2 panel inputs + 2 units × 2 DI = 6 DI; 2 panel outputs + 2 × 1 DO = 4 DO"
+  - id: Q89
+    in: {text: "11 kW pump DOL, 400 V, 25 kA, 30 m cable", panel_internal_c: 40, cable_ambient_c: 30, plc_make: other, plc_24v_a: 2,
+         spd: false, pmr: false, control_supply: transformer, removed: true, confirmed: true}
+    expect: {status: invalid}
+    oracle: "R-REQ-28: every motor removed → nothing to select"
+  - id: Q90
+    in: {text: "75 kW motor with star delta starter, 50 m cable, 400 V, 25 kA", template: "OWN-PROPEL-COST|75KW SD|1",
+         panel_internal_c: 40, cable_ambient_c: 30, plc_make: other, plc_24v_a: 0.2, spd: false, pmr: false, confirmed: true}
+    expect: {status: warning, selected: 1, template_lines: 44, template_incomer_a: 250, template_fails: 0}
+    oracle: "R-REQ-29 (owner 2026-10-16, ECI templates: template BOM, engine checks it): the 44 lines of OWN-PROPEL-COST sheet '75KW SD' are the BOM; its MCCB 250 A ≥ the incomer the rules need (132 A FLC + control circuit on the largest phase, × 1.5 ≈ 199 A)"
+  - id: Q91
+    in: {text: "75 kW motor with star delta starter, 50 m cable, 400 V, 25 kA", template: "OWN-PROPEL-COST|75KW SD|1", incomer_factor: 2,
+         panel_internal_c: 40, cable_ambient_c: 30, plc_make: other, plc_24v_a: 0.2, spd: false, pmr: false, confirmed: true}
+    expect: {status: warning, selected: 1, template_incomer_a: 250, template_fails: 1}
+    oracle: "R-REQ-29: × 2.0 → about 264 A needed > the template's 250 A MCCB → flagged"
+  - id: Q92
+    in: {text: "75 kW motor with star delta starter, 50 m cable, 400 V, 25 kA", template: "NOPE|x|1", confirmed: true}
+    expect: {status: invalid}
+    oracle: "R-REQ-29: an unknown template → invalid"
+  - id: Q93
+    in: {text: "55 kW motor with star delta starter", template: "OWN-PROPEL-COST|55KW SD|1", confirmed: true}
+    expect: {status: warning, selected: 1, n_questions: 0, template_lines: 44, voltage_v: 415, fault_ka: 25, cable_m: 50}
+    oracle: "R-REQ-30 (owner 2026-10-16: a template is a finished order — results at once, nothing asked): voltage 415 V from the template's own control transformer line (415/230VAC); fault level 25 kA, panel and cable route 40 °C, motor cable 50 m are the template defaults (shown as 'template', editable)"
+  - id: Q94
+    in: {text: "Prowash 100 Starter Panel (prowash)", template: "OWN-PROPEL-COST|PROWASH 100|1", confirmed: true}
+    expect: {status: warning, selected: 1, n_questions: 0, template_lines: 41}
+    oracle: "R-REQ-30: PROWASH 100 = a 100 TPH client order; the name gives no motor kW, so the result is the template's 41 lines and cost; power, I/O and the diagram wait for motors the designer adds (nothing asked)"
+  - id: Q95
+    in: {text: "55 kW motor with star delta starter", template: "OWN-PROPEL-COST|55KW SD|1", confirmed: true}
+    expect: {status: warning, selected: 1, io_di: 0, io_do: 0, qty_relays: 0, qty_io_terminals: 0, plc_cpu: null, scope_plc: 0, scope_smps: 1}
+    oracle: "R-REQ-31 (owner 2026-10-16: what the template does not list is not selected): sheet '55KW SD' lists no PLC → no PLC I/O, interface relays, I/O terminals or PLC; it lists a 24 V supply and an incomer, which stay"
+  - id: Q96
+    in: {text: "2.2 kW belt conveyor DOL", template: "OWN-PROPEL-DOL|BELT CONVEYOR|3", confirmed: true}
+    expect: {status: warning, selected: 1, incomer: null, transformer_va: null, io_di: 0, smps: null, scope_incomer: 0}
+    oracle: "R-REQ-31: the DOL kit 'BELT CONVEYOR 2.2KW DOL' is one feeder (fed from a main panel): no incomer, control transformer, 24 V supply or PLC listed → none selected"
+  - id: Q97
+    in: {contactor_suppressor: none, text: "11 kW pump, DOL, 400 V, 25 kA, 30 m cable", panel_internal_c: 40, cable_ambient_c: 30, plc_make: none, spd: false, pmr: false,
+         control_supply: phase_neutral, estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1,
+         cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, confirmed: true}
+    expect: {status: warning, selected: 0, ready: 0, n_questions: 1}
+    oracle: "R-REQ-32 / R-KIT-06 (owner 2026-10-17, audit #17): no company kit is named after 'pump' — the 11 kW DOL kits (BELT CONVEYOR, SCREEN FEEDER) are offered as a question, never the first taken silently"
+  # --- 2026-10-18 (owner, RFQ import stage 3): the client's tag, running units and MPCB range per motor, R-REQ-33
+  - id: Q98
+    in: {contactor_suppressor: none, text: "2 x 11 kW pumps DOL, 30 m cable. 400 V, 25 kA", panel_internal_c: 40, cable_ambient_c: 30, plc_make: none, spd: false, pmr: false,
+         control_supply: phase_neutral, estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1,
+         cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, dol_source: siemens, kit_accessories: false, confirmed: true,
+         motors: [{tag: P101A/B, running: 1, mpcb_range: "18-25"}]}
+    expect: {status: warning, selected: 1, load_list: "P101A/B 11 DOL cable=30 qty=2 standby=1 mpcb=18-25 app=pump", incomer_ib_a: 22.39,
+             incomer: 3VM1040-3ED32-0AA0}
+    oracle: "R-REQ-33: the client's tag P101A/B; 1 of 2 running → the incomer carries one 22.39 A (with both running it is 44.39 A → 3VM1080); the client's 18 … 25 A MPCB is the 3RV2021-4DA10 row (SIE-SIRIUS-CM p.28), the same as the engine's for 11 kW"
+  - id: Q99
+    in: {text: "2 x 11 kW pumps DOL, 30 m cable. 400 V, 25 kA", confirmed: true, motors: [{running: 3}]}
+    expect: {status: invalid}
+    oracle: "R-REQ-33: 3 running of 2 motors"
+  - id: Q100
+    in: {text: "11 kW pump DOL, 30 m cable", confirmed: true, motors: [{tag: "P 101"}]}
+    expect: {status: invalid}
+    oracle: "R-REQ-33: a tag has no spaces"
+  - id: Q101
+    in: {contactor_suppressor: none, text: "11 kW pump DOL, 30 m cable. 400 V, 25 kA", panel_internal_c: 40, cable_ambient_c: 30, plc_make: none, spd: false, pmr: false,
+         control_supply: phase_neutral, estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1,
+         cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, dol_source: siemens, kit_accessories: false, confirmed: true,
+         motors: [{tag: P1, mpcb_range: "14-20"}]}
+    expect: {status: warning, selected: 1, incomer: null}
+    oracle: "R-DOL-14: no 3RV2 with 14 … 20 A in the held Type 2 table → the feeder is not selected (open point), nothing invented; no incomer without its feeder"
+  # --- 2026-10-20 (owner, RFQ part 1): the incomer series, R-REQ-34
+  - id: Q102
+    in: {contactor_suppressor: none, text: "2 x 11 kW pumps DOL, 30 m cable. 400 V, 55 kA", panel_internal_c: 40, cable_ambient_c: 30, plc_make: none, spd: false, pmr: false,
+         control_supply: phase_neutral, estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1,
+         cable_other: 0, incomer_series: 3VA, breaking_basis: icu, dol_source: siemens, kit_accessories: false, confirmed: true}
+    expect: {status: warning, selected: 1, incomer: 3VA1180-5EF32-0AA0, incomer_in_a: 80, n_questions: 0}
+    oracle: "R-REQ-34: 3VA asked → component mccb_3va; the TM210 / TM220 question is not asked. Ib 44.39 A × 1.5 = 66.6 A > 63 → 80 A on 3VA11, code 80 (LV 10 · 2026 p.2/26), 55 kA class M code 5 (pp.2/9, 2/27)"
+  - id: Q103
+    in: {contactor_suppressor: varistor, text: "11 kW pump DOL, 400 V, 25 kA, 30 m cable", panel_internal_c: 40, cable_ambient_c: 30, plc_make: none, spd: false, pmr: false,
+         control_supply: phase_neutral, estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1, wire_insulation: "70", wire_circuits: 1,
+         cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, dol_source: siemens, kit_accessories: false, confirmed: true}
+    expect: {status: warning, selected: 1, mpcb: 3RV2021-4DA10, contactor: 3RT2027-1AP00}
+    oracle: "R-DOL-15 (owner 2026-10-20): the suppressor asked → the S0 contactor 3RT2027 gets its 127 … 240 V AC varistor 3RT2926-1JL00 (IC 10 p.3/96), one per unit"
+  - id: Q104
+    in: {contactor_suppressor: none, ss_comm: profinet, ss_hmi: standard, ss_hmi_mounting: door, ss_hmi_cable_m: 2.5, ss_line_contactor: false, ss_thermistor: false,
+         ss_protection: mpcb, text: "7.5 kW cooling tower fan with soft starter, 400 V, 55 kA, 50 m cable", panel_internal_c: 40, cable_ambient_c: 30,
+         plc_make: none, spd: false, pmr: false, control_supply: phase_neutral, estop: true, reset_pb: true, phase_lamps: true, lamp_va: 1,
+         wire_insulation: "70", wire_circuits: 1, cable_other: 0, incomer_release: TM210, incomer_series: 3VM, breaking_basis: icu, confirmed: true}
+    expect: {status: warning, selected: 1, soft_starter: 3RW5214-1AC14}
+    oracle: "R-SS-15 (owner 2026-10-20, RFQ part 4): 15.5 A → 3RW5214 + tested 3RV2032-4DA10 (55 kA); PROFINET 3RW5980-0CS00, HMI Standard 3RW5980-0HS00, IP65 door kit 3RW5980-0HD00, 2.5 m cable 3UF7933-0BA00-0 (IC 10 6/75-6/76)"

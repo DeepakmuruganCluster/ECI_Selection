@@ -1,0 +1,50 @@
+# Motor current guide values, standard three-phase motors, 4-pole, 400 V AC, 50 Hz.
+#
+# Transcribed 2026-10-10 from the column "Motor current I (guide value)" of the
+# selection tables in section 3.1 (CLASS 10, type of coordination 2), pp. 28–29.
+# Footnote 1 (p. 29): "Guide value for 4-pole standard motors at 400 V AC, 50 Hz.
+# Selection depends on the concrete startup and rated data of the protected motor."
+# → a guide value is not the motor's rated current; the result says so (basis: guide).
+#
+# Where a kW appears on several rows (one per MPCB range) the current is the same;
+# `page` is the first page it appears on.
+
+source:
+  ref: SIE-SIRIUS-CM
+  section: "3.1 Selection tables 400 V AC — Motor starter protector + contactor"
+  column: "Motor current I (guide value)"
+
+conditions: {phases: 3, voltage_v: 400, frequency_hz: 50, poles: 4}
+
+rows:
+  - {kw: 0.04, flc_a: 0.16, page: 28}
+  - {kw: 0.06, flc_a: 0.2,  page: 28}
+  - {kw: 0.09, flc_a: 0.3,  page: 28}
+  - {kw: 0.12, flc_a: 0.4,  page: 28}
+  - {kw: 0.18, flc_a: 0.6,  page: 28}
+  - {kw: 0.25, flc_a: 0.85, page: 28}
+  - {kw: 0.37, flc_a: 1.1,  page: 28}
+  - {kw: 0.55, flc_a: 1.5,  page: 28}
+  - {kw: 0.75, flc_a: 1.9,  page: 28}
+  - {kw: 1.1,  flc_a: 2.7,  page: 28}
+  - {kw: 1.5,  flc_a: 3.6,  page: 28}
+  - {kw: 2.2,  flc_a: 5,    page: 28}
+  - {kw: 3,    flc_a: 6.5,  page: 28}
+  - {kw: 4,    flc_a: 8.5,  page: 28}
+  - {kw: 5.5,  flc_a: 11.5, page: 28}
+  - {kw: 7.5,  flc_a: 15.5, page: 28}
+  - {kw: 11,   flc_a: 22,   page: 28}
+  - {kw: 15,   flc_a: 29,   page: 28}
+  - {kw: 18.5, flc_a: 35,   page: 29}
+  - {kw: 22,   flc_a: 41,   page: 29}
+  - {kw: 30,   flc_a: 55,   page: 29}
+  - {kw: 37,   flc_a: 66,   page: 29}
+  - {kw: 45,   flc_a: 80,   page: 29}
+  - {kw: 55,   flc_a: 97,   page: 29}
+  - {kw: 75,   flc_a: 132,  page: 29}
+  - {kw: 90,   flc_a: 160,  page: 29}
+  - {kw: 110,  flc_a: 195,  page: 29}
+  - {kw: 132,  flc_a: 230,  page: 29}
+  - {kw: 160,  flc_a: 280,  page: 29}
+  - {kw: 200,  flc_a: 350,  page: 29}
+  - {kw: 250,  flc_a: 430,  page: 29}

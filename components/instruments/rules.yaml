@@ -1,0 +1,16 @@
+# Field devices (instruments, switches, valves) — their panel-side needs.
+# Authority: CLIENT = the project's client documents (project.yaml); RULE = our decision (owner decisions INS-1 … INS-5); OWN = company costing sheet.
+
+component: instruments
+
+rules:
+  R-INS-01: {authority: CLIENT, text: "Field devices are read from the project's field-device table (equipment document, page), each with its kind from the operating-voltage column (from the row text where cells are merged): 24 V DC switch, 4-20 mA loop-powered transmitter, 230 V instrument with 4-20 mA output, 230 V AC valve, 24 V DC pneumatic panel, tower lamp. A device with no stated supply → warning."}
+  R-INS-02: {authority: CLIENT, text: "The specification's own arithmetic: motor I/O + field-device I/O must equal the client's required I/O for each signal type, and a tag range ('PV301 to PV360') must match the quantity. Differences → warning."}
+  R-INS-03: {authority: RULE,   text: "24 V DC load of the field devices: each loop-powered transmitter draws up to the loop current (0.022 A: 20 mA full scale + alarm over-range, INS-1); pneumatic panels and tower lamps draw the current given by the designer (data sheets); switch inputs are counted with the PLC inputs (control power). An unknown current → warning, the load is partial."}
+  R-INS-04: {authority: RULE,   text: "230 V AC feeds: one 2-pole C-curve MCB per 230 V instrument, rated from its current (INS-2); the solenoid valves of a panel on one 2-pole C-curve MCB rated from n × VA / 230 V (INS-4). MCBs from the own switchgear database (component 11). Current not given → not selected (warning)."}
+  R-INS-05: {authority: OWN,    text: "Every analog loop (4-20 mA and 0-10 V input) gets a fused terminal block with its glass fuse, as in the company costing sheet (Elmex KUDF 4, INS-3)."}
+  R-INS-06: {authority: RULE,   text: "Surge protection for field signals (4-20 mA loops) and the 24 V DC field supply is not in the held data: listed as not selected (warning)."}
+
+params:
+  loop_current_a: 0.022
+  kit_articles: {fused_terminal: "KUDF 4", glass_fuse: "GLASS FUSE"}

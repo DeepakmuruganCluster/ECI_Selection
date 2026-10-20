@@ -1,0 +1,28 @@
+# Enclosure accessories rules. Authority: MFR = Rittal data sheet / catalogue, CLIENT = the project's client requirements (client_requirements; e.g. ECI WNS2503),
+# RULE = our decision (SIGNOFF.md, decisions A-1 … A-6). Pages are PDF pages (= printed page on every Rittal sheet).
+
+component: enclosure_accessories
+
+rules:
+  R-ACC-01: {authority: MFR,    text: "Fans held are rated 230 V, 1~, 50 Hz/60 Hz (SK 3239.100 / SK 3240.100 p.2). Any other supply voltage or frequency: cannot select (other voltage variants not held)."}
+  R-ACC-02: {authority: RULE,   text: "Fan size in inches = outer frame width ÷ 25.4, rounded: SK 3239.100 is 204 × 204 mm = 8 inch, SK 3240.100 is 255 × 255 mm = 10 inch (p.3). Other sizes: cannot select (decision A-1)."}
+  R-ACC-03: {authority: MFR,    text: "Outlet filter matched to the fan: SK 3239.200 'to fit SK 3239.1xx' (cut-out 177 × 177 mm), SK 3240.200 'to fit 3240.1xx …' (224 × 224 mm), p.2 of each outlet-filter data sheet."}
+  R-ACC-04: {authority: MFR,    text: "Airflow per fan = the data sheet's 'air throughput with outlet filter including chopped-fibre filter mat' (p.2) for the number of outlet filters and the supply frequency; never the free-blowing figure, and no further derating is added (Rittal TSC p.12 shows the outlet-filter curve separately)."}
+  R-ACC-05: {authority: RULE,   text: "Outlet filters per fan: 1 (default, decision A-2) or 2 — the only quantities with a printed airflow (p.2). Other quantities: cannot select."}
+  R-ACC-06: {authority: MFR,    text: "Number of fans n = ceil(required airflow ÷ airflow per fan): Rittal TSC p.12, 'the correct fan-and-filter unit has been chosen if the specified heat loss is dissipated'. Outlet filters = n × outlet filters per fan. Required airflow comes from the enclosure component (R-ENC-09)."}
+  R-ACC-07: {authority: CLIENT, text: "Fan positions = doors × fans per door (client requirement 'cooling_fans_per_door', e.g. ECI WNS2503 'cooling fan 8 inch each door' → 1 per door). If n is more than the positions, warning: the airflow at the positions and the shortfall are shown."}
+  R-ACC-08: {authority: RULE,   text: "No fan size given: the smaller held fan if its n fits the positions, else the larger; if neither fits, the larger with the R-ACC-07 warning."}
+  R-ACC-09: {authority: MFR,    text: "The fan draws in site air: the site ambient must be within the fan's operating temperature range (SK 3239.100 -15 … 55 °C, SK 3240.100 -30 … 55 °C, p.3). Outside: cannot select."}
+  R-ACC-10: {authority: RULE,   text: "Fan load for the auxiliary / UPS supply = n × power, n × current at the supply frequency. Where the data sheet prints two values (SK 3239.100 at 50 Hz: 16.5 W in the features p.2, 19 W in the tender text p.5; the current is 0.12 A in both — 0.09 / 0.11 A are the 60 Hz values), the higher is used (decision A-3)."}
+  R-ACC-11: {authority: MFR,    text: "Fan and outlet filter with chopped-fibre filter: IP 54 (p.3 / p.2). IP 55 / IP 56 need an absorber mat or hose-proof hood — not selected."}
+  R-ACC-12: {authority: MFR,    text: "Plinth side trim panels held: 100 mm (TS 8601.060) and 200 mm (TS 8602.060); p.2: 'At 200 mm height, two 100 mm … may be used'. No other height is named: e.g. ECI's 1 ft (≈ 300 mm) stand → no plinth article, warning (decision A-5)."}
+  R-ACC-13: {authority: RULE,   text: "The side trims fit 'TS: = 600 mm' (p.2) / 'for W: 600 mm' (p.3), read as enclosure depth 600 mm. One pack (2 pieces: left and right end) per free-standing suite. Other depth: no article, warning."}
+  R-ACC-14: {authority: MFR,    text: "Plinth corner pieces and front / rear trim panels per section width: no data sheet held → not selected, warning whenever a plinth is asked for. Section widths are recorded only."}
+  R-ACC-15: {authority: CLIENT, text: "Client requirement 'door_switch_light' (e.g. ECI WNS2503 'Rittal door limit switch and light'): one door-operated switch SZ 4127.010 and one LED system light SZ 4140.820 per door (quantity per door is our rule, decision A-4)."}
+  R-ACC-16: {authority: MFR,    text: "SZ 4140.820: 24 V DC, 0.08 A each (p.3/p.4) → 24 V DC load = lights × 0.08 A, handed to control power; row of lights ≤ 2 A (p.3): lights are split into rows of ≤ 25. SZ 4127.010 switches 24 V DC / 6 A (p.2) ≥ one light."}
+  R-ACC-17: {authority: MFR,    text: "SZ 4127.010 is supplied without connection cable (p.2) — the cable is not selected. SZ 4140.820 also has an integral on/off/door-operated switch (p.3)."}
+
+params:
+  default_outlet_filters_per_fan: 1
+  default_fans_per_door: 1
+  power_when_two_values: higher

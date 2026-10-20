@@ -1,0 +1,19 @@
+# Compensating factor f in the fan-and-filter airflow formula  V̇ = f · Q̇v / ΔT  (V̇ in m³/h, Q̇v in W, ΔT in K).
+# Rittal TSC "Cooling with ambient air" (3124300 EN), "Blue e+ fan-and-filter unit — Project management", p. 12.
+# Page numbers are PDF pages; the number printed on each Rittal page is the same (no offset).
+# The f lines are text on the page and were also read on the rendered page image (r_p012.png).
+# The bands share their end points as printed ("0 to 100", "100 to 250", …): which f applies AT 100 / 250 /
+# 500 / 750 m is not stated — R-ENC-10 (our rule) takes the higher f. Above 1000 m Rittal gives no f.
+
+source:
+  ref: RITTAL-TSC-3124300
+  section: "Blue e+ fan-and-filter unit — Project management: V̇ = f · Q̇v / ΔT, compensating factor f by height above sea level (p. 12)"
+
+formula: {printed: "V̇ = f · Q̇v / ΔT", unit_v: "m³/h", unit_f: "m³ · K/Wh", page: 12}
+
+rows:
+  - {h_min_m: 0,   h_max_m: 100,  f: 3.1, page: 12}
+  - {h_min_m: 100, h_max_m: 250,  f: 3.2, page: 12}
+  - {h_min_m: 250, h_max_m: 500,  f: 3.3, page: 12}
+  - {h_min_m: 500, h_max_m: 750,  f: 3.4, page: 12}
+  - {h_min_m: 750, h_max_m: 1000, f: 3.5, page: 12}

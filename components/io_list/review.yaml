@@ -1,0 +1,47 @@
+# Plain-language review page for the sign-off owner (shown in the web app).
+
+order: 22
+title: I/O list (PLC signals per motor)
+what_it_does: >
+  Lists the PLC signals every motor feeder needs, one row per signal, for every installed motor
+  (standby included). DOL: running and tripped inputs, and one run output (two with a latching
+  relay). Soft starter: running and fault inputs, one run output. Drive on PROFINET: no wires, the
+  drive is one device on the network; hardwired drives get run, running, fault, speed setpoint and
+  actual speed. A drive with STO gets one safety signal. If you give the client's available
+  channels, it checks that the motor signals fit. Instruments are not counted.
+
+how_to_check:
+  - "Press 'Try it: one of each'. One DOL (latching) gives 2 DI + 2 DO, one soft starter 2 DI + 1 DO, two drives on PROFINET with STO 2 network devices + 2 safety signals: 4 DI, 3 DO in total."
+  - "Press 'Try it: three DOL, 2 outputs available'. 3 DO are needed but only 2 are available, so it must show a caution."
+  - "On the Project tab, BIO_UF has 36 DOL, 1 soft starter and 22 drives: with latching relays that is 74 DI and 73 DO for motors, inside ECI's 272 DI and 80 DO."
+
+spot_checks:
+  - {label: "one of each", tab: io_list, inputs: {load_list: "K1 11 DOL\nP1 7.5 VFD qty=2\nE1 7.5 SS", dol_relays: latching, vfd_sto: true, di_available: 10, do_available: 10}}
+  - {label: "three DOL, 2 outputs available", tab: io_list, inputs: {load_list: "K1 11 DOL qty=3", do_available: 2}}
+
+decisions:
+  - id: IO-1
+    question: "A DOL starter gives the PLC two inputs: 'running' (contactor contact) and 'tripped' (MPCB contact). Is that your standard, or do you also want a local/remote input per motor?"
+    options: {two: "Running + tripped", three: "Running + tripped + local/remote"}
+    recommended: two
+  - id: IO-2
+    question: "Drives on PROFINET need no wired I/O. Should the I/O list still reserve wired signals for drives (e.g. as a backup)?"
+    options: {"no": "No, PROFINET only", "yes": "Yes, reserve wired signals"}
+    recommended: "no"
+  - id: IO-3
+    question: "STO is counted as one safety signal per drive (from a safety relay or a fail-safe output). Is that your standard?"
+    options: {"yes": "Yes", "two": "Two signals per drive (dual channel counted separately)"}
+    recommended: "yes"
+  - id: IO-4
+    question: "Panel signals from the company drawing (sheet 12): emergency stop, reset, phase failure (with a phase monitoring relay) as inputs, general trip and general warning as outputs. A new machine gets them; a project follows the client's I/O table. Keep it so?"
+    options: {"yes": "Yes: machines get them, projects follow the client", "both": "Also add them to project panels", "no": "No panel signals"}
+    recommended: "yes"
+  - id: IO-5
+    question: "Naming (owner 2026-10-16): I_<tag>_<signal> for inputs, O_<tag>_<signal> for outputs, a unit P1.2 written P1_2; drives on the bus PN_<tag>, STO O_<tag>_STO. Channel numbers DI01 … / DO01 … are list positions, not PLC addresses. Accept?"
+    options: {"yes": "Yes", "addr": "Also give PLC addresses (I0.0 … / Q0.0 …)"}
+    recommended: "yes"
+
+fields:
+  load_list: {label: "Load list (one load per line)", textarea: true, help: "TAG kW DOL|VFD|SS|HEATER [qty=n standby=n]"}
+  dol_relays: {label: "DOL output relay", options: ["slim", "latching"]}
+  vfd_control: {label: "Drive control", options: ["fieldbus", "hardwired"]}
