@@ -44,14 +44,15 @@ def rid(tmp_path, monkeypatch):
 
 
 def test_spec_answers_between_the_standard_and_your_answer(rid):
-    s = standards.save("Std", {"spd_make": "Siemens", "relay_make": "finder"})
+    s = standards.save("Std", {"spd_make": "Siemens", "relay_make": "phoenix", "estop": "true"})
     auth.set_current({"name": "QA approver", "roles": ["approver"]})
     standards.approve(s["id"], 1)
     auth.set_current({"name": "QA designer", "roles": ["designer"]})
     rfq_answers.apply_standard(rid, s["id"], "QA designer")
     p = {x["key"]: x for x in rfq_answers.questions(rid)["project"]}
     assert p["spd_make"]["value"] == "Phoenix" and p["spd_make"]["source"] == "client spec"   # the client wins over the standard
-    assert p["relay_make"]["source"] == "standard"
+    assert p["estop"]["source"] == "standard"                                               # the spec says nothing on it
+    assert p["relay_make"]["value"] == "finder" and p["relay_make"]["source"] == "client spec"  # part 6: 'Phoneix/Finder', held
     assert p["meter_supply"]["relevant"] and p["meter_supply"]["value"] is None             # the client's meter → its supply asked
     rfq_answers.answer(rid, "project", "spd_make", "OBO", "QA designer")                    # your answer wins over both
     assert rfq_answers.for_panel(rid, "BIO/UF")[0]["spd_make"] == "OBO"
@@ -213,3 +214,24 @@ def test_plc_io_check_reports_a_shortfall():
     c = rfq_bom.client_checks(reqs, bom)[0]
     assert c["verdict"] == "deviation" and "AO 4 < 8" in c["detail"]
     assert rfq_bom.client_checks(reqs, [])[0]["verdict"] == "not built"
+
+
+def test_part6_relays_slim_finder_latch_is_a_deviation():
+    """Part 6 (owner 2026-10-20). Client (AUTO p.1) 'DOL output need to use Latch Relay and Other Outputs slim Relay -
+    Phoneix/Finder'. Finder is held → relay_make finder; the only held set/reset latching relay (Finder 13.12) needs 2 PLC
+    outputs per relay, beyond the client's DO count → slim relays everywhere, the latch listed as a deviation to clarify."""
+    u = rfq_spec._row_use("relays", "DOL output need to use Latch Relay and Other Outputs slim Relay - Phoneix/Finder")
+    assert u["answers"] == {"relay_make": "finder"}
+    assert u["require"] == {"makes": ["finder", "phoenix"], "latch_dol": True, "slim_other": True}
+    req = [{"label": "Relay", "value": "…", "page": 1, "kind": "relays", "part_name": "PLC & I/O", "require": u["require"]}]
+    slim = [{"group": "Control and signalling", "article": "38.61.7.024.0050", "description": "Slim relay (other outputs)", "qty": 70},
+            {"group": "Control and signalling", "article": "093.20", "description": "Jumper link (coil common A2)", "qty": 4}]
+    c = rfq_bom.client_checks(req, slim, feeders=[{"tag": "P1", "starter": "DOL"}, {"tag": "K1", "starter": "VFD"}])[0]
+    assert c["verdict"] == "deviation" and "1 DOL feeder(s)" in c["detail"] and "13.12" in c["detail"]
+    latch = slim + [{"group": "Control and signalling", "article": "13.12.0.024.0000",
+                     "description": "Latching relay (DOL outputs), set/reset", "qty": 1}]
+    assert rfq_bom.client_checks(req, latch, feeders=[{"tag": "P1", "starter": "DOL"}])[0]["verdict"] == "complies"
+    cw = [{"group": "Control and signalling", "article": "CSR-1", "description": "Slim relay (other outputs)", "qty": 2, "make": "Connectwell"}]
+    c = rfq_bom.client_checks(req, cw, feeders=[])[0]
+    assert c["verdict"] == "deviation" and "connectwell is not Finder / Phoenix" in c["detail"]
+    assert rfq_bom.client_checks(req, [], feeders=[])[0]["verdict"] == "not built"

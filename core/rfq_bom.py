@@ -154,6 +154,28 @@ def client_checks(reqs: list[dict], bom: list[dict], starter_of: dict | None = N
             out.append({**base, "verdict": "deviation" if diff else "complies",
                         "detail": "; ".join(diff) or ", ".join(f"{b['article']} — {b['description']}" for b in ps)})
             continue
+        if r["kind"] == "relays":                         # part 6: interface relays, make; the latching relay for DOL outputs
+            rel = [b for b in bom if "relay" in b["description"].lower() and b["group"] == "Control and signalling"
+                   and not re.search(r"jumper|separator|marker|socket|clip", b["description"], re.I)]
+            if not rel:
+                out.append({**base, "verdict": "not built", "detail": "no interface relay in this panel's BOM"})
+                continue
+            diff = []
+            makes = {"finder": "Finder", "phoenix": "Phoenix", "connectwell": "Connectwell"}
+            maker = lambda b: (b.get("make") or ("finder" if re.match(r"\d{2}\.\d{2}\.", b["article"]) else "")).lower()
+            other = sorted({maker(b) or b["article"] for b in rel if maker(b) not in q.get("makes", [])})
+            if q.get("makes") and other:
+                diff.append(f"relay make {', '.join(other)} is not {' / '.join(makes.get(m, m) for m in q['makes'])}")
+            latch = sum(b["qty"] for b in rel if "latching" in b["description"].lower())
+            n_dol = sum(1 for f in feeders or [] if f.get("starter") == "DOL")
+            if q.get("latch_dol") and n_dol and not latch:
+                diff.append(f"the {n_dol} DOL feeder(s) switch through slim relays, not latching relays: the only held relay that "
+                            "latches on a SET and releases on a RESET input (Finder 13.12) needs 2 PLC outputs per relay, more "
+                            "than the client's DO count allows (owner 2026-10-20: ask the client what 'Latch Relay' means)")
+            n = sum(b["qty"] for b in rel if isinstance(b["qty"], (int, float)))
+            out.append({**base, "verdict": "deviation" if diff else "complies",
+                        "detail": "; ".join(diff) or f"{n:g} relay(s): " + ", ".join(f"{b['article']} — {b['description']}" for b in rel)})
+            continue
         if r["kind"] == "plc_io":                         # part 6: the I/O modules' channels against the client's final counts
             have = {"di": 0, "do": 0, "ai": 0, "ao": 0}
             for b in bom:

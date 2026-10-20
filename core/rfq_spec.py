@@ -110,6 +110,12 @@ def _row_use(kind: str, value: str) -> dict:
         make = next((m for m in ("Schneider", "Siemens", "Werma", "Patlite") if m.lower() in v), "")
         return {"lines": [{"item": "Tower lamp", "description": f"Tower lamp with buzzer{', ' + make if make else ''}",
                            "qty": int(n[1]) if n else 1, "unit": "no", "section": "Control supply & control circuit"}]}
+    if kind == "relays":                             # part 6 (owner 2026-10-20): slim relays of a held make; the latch is asked
+        makes = [m for k, m in (("phoenix", "phoenix"), ("phoneix", "phoenix"), ("finder", "finder"), ("connectwell", "connectwell")) if k in v]
+        makes = sorted(set(makes))
+        pick = "finder" if "finder" in makes else makes[0] if len(makes) == 1 else None
+        return {"answers": {"relay_make": pick} if pick else {},
+                "require": {"makes": makes, "latch_dol": bool(re.search(r"dol.*latch", v)), "slim_other": "slim" in v}}
     if kind == "busbar":
         return {"lines": [{"group": "Client-specified", "item": "Busbar", "description": f"Busbar: {value}"}]}
     if kind == "earthing":
