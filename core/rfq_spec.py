@@ -35,7 +35,7 @@ ROW_KINDS = [
     (r"inverter|vfd", "vfd", 2), (r"^dol", "dol", 3), (r"soft\s*star", "soft_starter", 4), (r"^mccb", "mccb", 3),
     (r"scada|pc\s*config|display|^ups$|panel\s*requirement|panel\s*size|panel\s*stand", "out_of_scope", None),
 ]
-PARTS_DONE = {1, 2, 3, 4}          # the parts whose rows answer questions and are checked (owner 2026-10-20: part by part)
+PARTS_DONE = {1, 2, 3, 4, 5}          # the parts whose rows answer questions and are checked (owner 2026-10-20: part by part)
 PART = {1: "Incoming & distribution", 2: "VFD section", 3: "DOL / MCC section", 4: "Soft starter section",
         5: "Control supply & control circuit", 6: "PLC & I/O", 7: "Motor cables", 8: "Internal wiring"}
 MAKES = {"phoenix": "Phoenix", "phoneix": "Phoenix", "obo": "OBO", "siemens": "Siemens"}
@@ -102,6 +102,14 @@ def _row_use(kind: str, value: str) -> dict:
                                    ("modbus tcp", "modbus_tcp"), ("modbus", "modbus_rtu")) if k in v), None)
         return {"answers": {"ss_comm": com} if com else {},
                 "require": {"family": "3RW52" if "3rw-52" in v or "3rw52" in v else None, "display": "display" in v, "comm": com}}
+    if kind == "smps":                               # part 5 (owner 2026-10-20): SITOP; the ratings per panel are read below
+        return {"answers": {"smps_brand": "Siemens"} if re.search(r"sitop|siemens", v) else {},
+                "require": {"make": "Siemens" if re.search(r"sitop|siemens", v) else None}}
+    if kind == "tower_lamp":                         # part 5: a plant item — the panel holding the PLC CPU (set below)
+        n = re.search(r"(\d+)\s*no", v)
+        make = next((m for m in ("Schneider", "Siemens", "Werma", "Patlite") if m.lower() in v), "")
+        return {"lines": [{"item": "Tower lamp", "description": f"Tower lamp with buzzer{', ' + make if make else ''}",
+                           "qty": int(n[1]) if n else 1, "unit": "no", "section": "Control supply & control circuit"}]}
     if kind == "busbar":
         return {"lines": [{"group": "Client-specified", "item": "Busbar", "description": f"Busbar: {value}"}]}
     if kind == "earthing":
@@ -151,7 +159,29 @@ def read_pdf(data: bytes, filename: str, panels: list[str]) -> dict:
                                  **_row_use(kind or "", value)})
     if not rows:
         raise ValueError("no 'requirement → value' table found: is this the client's automation / panel specification?")
+    _per_panel(rows, plc, panels)
     return {"filename": filename, "rows": rows, "plc": plc}
+
+
+def _per_panel(rows: list[dict], plc: dict, panels: list[str]) -> None:
+    """Part 5 (owner 2026-10-20). The 'Power Supply' row's ratings per panel — '(BIO Panel 10A-1No, 20A-1No) (RO Panel - 20A
+    -1 NO)': two ratings → a supply for the CPU (the smaller) and one for the I/O; one rating → one supply of at least that.
+    Plant items (tower lamps) → the panel holding the PLC CPU (the client's PLC block)."""
+    cpu_panels = [p for p, b in plc.items() if p in panels and any(k.upper().startswith("CPU") and v for k, v in b["counts"].items())]
+    for r in rows:
+        if r["kind"] == "smps":
+            per = {}
+            for grp in re.findall(r"\(([^)]*)\)", r["value"]):
+                hit = [p for p in panels if re.search(rf"\b{re.escape(re.split(r'[/_ ]', p)[0])}", grp, re.I)]
+                amps = sorted(float(a) for a, n in re.findall(r"(\d+(?:\.\d+)?)\s*A\s*-?\s*(\d+)\s*no", grp, re.I) for _ in range(int(n)))
+                if len(hit) == 1 and amps:
+                    per[hit[0]] = ({"smps_split": "cpu_io", "smps_cpu_min_a": amps[0], "smps_io_min_a": amps[1]} if len(amps) == 2
+                                   else {"smps_split": "single", "smps_min_a": amps[0]} if len(amps) == 1 else {})
+                    per[hit[0]]["_ratings"] = amps
+            r["panel_answers"] = {p: {k: v for k, v in a.items() if not k.startswith("_")} for p, a in per.items()}
+            r["require"] = {**r.get("require", {}), "ratings": {p: a["_ratings"] for p, a in per.items()}}
+        if r["kind"] == "tower_lamp" and len(cpu_panels) == 1:
+            r["panels"] = cpu_panels
 
 
 def _dir(rid: str):
@@ -202,7 +232,7 @@ def answers_for(rid: str, panel: str) -> dict:
         pass
     for r in (d or {}).get("rows", []):
         if r.get("part") in PARTS_DONE and panel in r["panels"]:
-            for k, v in (r.get("answers") or {}).items():
+            for k, v in {**(r.get("answers") or {}), **((r.get("panel_answers") or {}).get(panel) or {})}.items():
                 out[k] = (v, f"client spec p.{r['page']}: {r['label']}")
     return out
 

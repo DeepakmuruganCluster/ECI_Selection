@@ -74,8 +74,8 @@ def test_part1_bom_lines_and_client_checks(rid):
     assert inc["article"] == "3VA1463-5EF32-0AA0" and "TM240" in inc["description"] and "Icu 55 kA" in inc["description"]
     assert not any(x["group"] == "Auxiliary switchgear" and "PMR" in x["description"] for x in b["bom"])
     assert any(x["article"] == "7KM3220-0BA01-1DA0" for x in b["bom"])
-    client = [x for x in b["bom"] if x["group"] == "Client-specified"]
-    assert len(client) == 3 and all(x["section"] == "Incoming & distribution" and "not engine-checked" in x["source"] for x in client)
+    client = [x for x in b["bom"] if x["group"] == "Client-specified" and x["section"] == "Incoming & distribution"]
+    assert len(client) == 3 and all("not engine-checked" in x["source"] for x in client)        # busbar, earth bar, analog earth bar
     v = {c["requirement"].split(":")[0]: c for c in b["client_checks"]}
     assert v["Main Incommer For Bio MBR Panel"]["verdict"] == "complies"
     assert {k: v[k]["verdict"] for k in ("Surge Arrester For Main Incommer", "Energy Meter", "Current Transformer")} == \
@@ -152,3 +152,29 @@ def test_part4_soft_starter_display_profinet_and_protection(rid):
     chk = next(c for c in b["client_checks"] if c["requirement"].startswith("Soft Starer"))
     assert chk["verdict"] == "deviation" and "3RV2032-4DA10" in chk["detail"] and "11 - 16A" in chk["detail"]
     assert "communication module on" not in chk["detail"] and "display" not in chk["detail"].split("E101")[0]
+
+
+def test_part5_sitop_per_panel_and_tower_lamps(rid):
+    """Part 5 (owner 2026-10-20). Client (AUTO p.1): 'Separate Power supply for PLC/ CPU and Every ET I/O's - Sitop … (BIO Panel
+    10A-1No, 20A-1No) (RO Panel - 20A -1 NO)'; owner: the client's numbers, 10 A for the CPU, 20 A for the I/O, family PSU6200.
+    BIO/UF (3-phase input): 6EP3434-7SB00-3AX0 10 A for the CPU (0.56 A × 1.25) + 6EP3436-7SB00-3AX0 20 A for the I/O (KT 10.1
+    p.3/21). Tower lamps (plant item, 3 Schneider) → the panel holding the CPU 1513 (the client's PLC block) = BIO/UF."""
+    from tests.test_rfq import ALL
+    d = rfq_spec.get(rid)
+    smps = next(r for r in d["rows"] if r["kind"] == "smps")
+    assert smps["panel_answers"] == {"BIO/UF": {"smps_split": "cpu_io", "smps_cpu_min_a": 10.0, "smps_io_min_a": 20.0},
+                                     "RO": {"smps_split": "single", "smps_min_a": 20.0}}
+    assert next(r for r in d["rows"] if r["kind"] == "tower_lamp")["panels"] == ["BIO/UF"]
+    skip = ("spd_make", "meter", "meter_comm", "incomer_release", "incomer_series", "duty", "line_reactor_up_to_kw",
+            "vfd_protection", "fuse_holder", "contactor_suppressor", "ss_protection", "ss_comm")
+    for k, v in {**{k: v for k, v in ALL.items() if k not in skip}, "fault_ka": 55, "pmr": "false", "smps_input": "3P"}.items():
+        rfq_answers.answer(rid, "project", k, v, "QA designer")
+    g = rfq_answers.questions(rid)["rule_groups"]
+    rfq_answers.set_rules(rid, {"running": {str(x): 1 for x in g}, "feed": "outside", "flc": "rfq", "units": "starters"}, "QA designer")
+    b = rfq_bom.build(rid, "BIO/UF")
+    ps = {x["article"]: x["description"] for x in b["bom"] if x["group"] == "Control power"}
+    assert set(ps) == {"Siemens 6EP3434-7SB00-3AX0", "Siemens 6EP3436-7SB00-3AX0"} and "for the CPU" in ps["Siemens 6EP3434-7SB00-3AX0"]
+    lamp = next(x for x in b["bom"] if x["description"].startswith("Tower lamp"))
+    assert lamp["qty"] == 3 and lamp["section"] == "Control supply & control circuit"
+    chk = next(c for c in b["client_checks"] if c["requirement"].startswith("Power Supply"))
+    assert chk["verdict"] == "complies"

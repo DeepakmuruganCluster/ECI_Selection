@@ -21,7 +21,7 @@ from core import rfq, rfq_answers
 from core.rfq_trial import _starter
 
 PLC_MAKE = {"s7-1500-et200sp": "siemens_s71500", "s7-1200g2": "siemens_s71200g2", "s7-200smart": "siemens_s7200smart"}
-GENERAL = ("voltage_v", "fault_ka", "panel_internal_c", "cable_ambient_c", "incomer_factor", "incomer_series", "incomer_release", "breaking_basis",
+GENERAL = ("smps_brand", "smps_split", "smps_cpu_min_a", "smps_io_min_a", "smps_min_a", "voltage_v", "fault_ka", "panel_internal_c", "cable_ambient_c", "incomer_factor", "incomer_series", "incomer_release", "breaking_basis",
            "spd", "pmr", "spd_make", "spd_config", "spd_signalling", "meter", "meter_comm", "meter_supply", "ct_make", "vfd_protection",
            "cu_fieldbus", "cu_safety", "cu_encoder", "emc_filter", "mc_copy_parameters", "fuse_holder", "line_reactor_up_to_kw", "contactor_suppressor",
            "ss_comm", "ss_hmi", "ss_hmi_mounting", "ss_hmi_cable_m", "ss_protection", "ss_line_contactor",
@@ -103,7 +103,8 @@ def _inputs(rid: str, p: dict, ans: dict, row_ans: dict) -> tuple[dict, dict, li
     return g, rows, outside, left
 
 
-def client_checks(reqs: list[dict], bom: list[dict], starter_of: dict | None = None, feeders: list | None = None) -> list[dict]:
+def client_checks(reqs: list[dict], bom: list[dict], starter_of: dict | None = None, feeders: list | None = None,
+                  panel: str | None = None) -> list[dict]:
     """Each requirement of the client's specification (part 1, incoming) against what the engine put in the BOM:
     complies / deviation (with what differs) / not built (the engine selected nothing for it)."""
     out = []
@@ -135,6 +136,23 @@ def client_checks(reqs: list[dict], bom: list[dict], starter_of: dict | None = N
             out.append({**{k: v for k, v in base.items() if k != "detail_ok"}, "verdict": "deviation" if diff else "complies",
                         "detail": "; ".join(diff) or f"{n:g} × SINAMICS G120 PM240-2 LO (normal load)"
                         + (f"; {base['detail_ok']}" if base.get("detail_ok") else "")})
+            continue
+        if r["kind"] == "smps":                           # part 5: SITOP, the number and ratings of the 24 V supplies
+            ps = [b for b in bom if b["group"] == "Control power"]
+            if not ps:
+                out.append({**base, "verdict": "not built", "detail": "no 24 V supply in this panel's BOM"})
+                continue
+            got = sorted(float(m[1]) for b in ps for _ in range(int(b["qty"]) if isinstance(b["qty"], (int, float)) else 1)
+                         if (m := re.search(r"power supply (\d+(?:\.\d+)?) A", b["description"])))
+            want = (q.get("ratings") or {}).get(panel)
+            diff = []
+            if q.get("make") == "Siemens" and not all(b["article"].startswith("Siemens 6EP") or b.get("make") == "Siemens" for b in ps):
+                diff.append("a 24 V supply that is not a Siemens SITOP")
+            if want and got != sorted(want):
+                diff.append(f"{', '.join(f'{x:g} A' for x in got)} offered, the client states {', '.join(f'{x:g} A' for x in sorted(want))} "
+                            "(the required current decides when it is larger — R-CP-09)")
+            out.append({**base, "verdict": "deviation" if diff else "complies",
+                        "detail": "; ".join(diff) or ", ".join(f"{b['article']} — {b['description']}" for b in ps)})
             continue
         if r["kind"] == "soft_starter":                   # part 4: 3RW52, display, communication; the RFQ's protection range
             ss = [b for b in bom if b["group"] == "Feeders" and b["article"].startswith("3RW5") and not b["article"].startswith("3RW59")]
@@ -289,11 +307,11 @@ def build(rid: str, panel: str) -> dict:
     from core import rfq_spec                      # the client's specification (owner 2026-10-20): its own lines, its checks
     for ln in rfq_spec.lines_for(rid, panel):
         bom.append({"group": "Client-specified", "article": "as specified by the client", "description": ln["description"],
-                    "make": "", "qty": 1, "unit": "set", "used_by": "panel", "source": ln["source"] + " — not engine-checked",
-                    "section": "Incoming & distribution"})
-    checks = client_checks(rfq_spec.requirements_for(rid, panel), bom, starter_of,
-                           [{"tag": f["tag"], "starter": f["starter"], "devices": f.get("devices"),
-                             "rfq_mpcb": rows[f["tag"]].get("mpcb_rating") if f["tag"] in rows else None} for f in v["feeders"]])
+                    "make": "", "qty": ln.get("qty", 1), "unit": ln.get("unit", "set"), "used_by": "panel",
+                    "source": ln["source"] + " — not engine-checked", "section": ln.get("section", "Incoming & distribution")})
+    checks = client_checks(rfq_spec.requirements_for(rid, panel), bom, starter_of, panel=panel, feeders=
+                           ([{"tag": f["tag"], "starter": f["starter"], "devices": f.get("devices"),
+                             "rfq_mpcb": rows[f["tag"]].get("mpcb_rating") if f["tag"] in rows else None} for f in v["feeders"]]))
     bom.sort(key=lambda b: SECTIONS.index(b["section"]))
     secs = []
     for s in SECTIONS:
