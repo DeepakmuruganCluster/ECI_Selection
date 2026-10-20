@@ -1,0 +1,19 @@
+# Siemens SITOP PSU6200 standard power supplies, 24 V DC (owner 2026-10-20, RFQ part 5: the client asks SITOP; family
+# PSU6200 chosen by the owner). Catalog KT 10.1 · 2022 (SIE-KT10-1-2022):
+#   1-phase: ordering data PDF p.73 (printed 3/9), technical specifications pp.76-77
+#   3-phase: ordering data PDF p.85 (printed 3/21), technical specifications pp.86-87
+# Rows read on the page images / page text; only the 5, 10 and 20 A types (the others' efficiency is not transcribed).
+# input_a: rated input current at 230 V (1-phase) / 400 V (3-phase); mains protection as printed (3-phase: p.86;
+# 1-phase: see p.76 — the column text interleaves, not transcribed).
+
+source:
+  ref: SIE-KT10-1-2022
+  section: "SITOP PSU6200 1-phase (3/9, 3/12-3/13) and 3-phase (3/21-3/23), 24 V DC"
+
+rows:
+  - {brand: Siemens, series: SITOP PSU6200, model: 6EP3333-7SB00-0AX0, input: AC, network: 1P+N, vin_min: 85, vin_max: 264, vout_min: 24, vout_max: 28, i_out_a: 5,  efficiency: 0.902, input_a: 1.1, page: 76}
+  - {brand: Siemens, series: SITOP PSU6200, model: 6EP3334-7SB00-3AX0, input: AC, network: 1P+N, vin_min: 85, vin_max: 264, vout_min: 24, vout_max: 28, i_out_a: 10, efficiency: 0.928, input_a: 1.2, page: 76}
+  - {brand: Siemens, series: SITOP PSU6200, model: 6EP3336-7SB00-3AX0, input: AC, network: 1P+N, vin_min: 85, vin_max: 264, vout_min: 24, vout_max: 28, i_out_a: 20, efficiency: 0.955, input_a: 2.3, page: 76}
+  - {brand: Siemens, series: SITOP PSU6200, model: 6EP3433-7SB00-0AX0, input: AC, network: 3P, vin_min: 323, vin_max: 576, vout_min: 24, vout_max: 28, i_out_a: 5,  efficiency: 0.912, input_a: 0.33, mains_protection: "three-pole coupled circuit breaker from 4 A characteristic C to 10 A, or 3RV2011-1EA10 (setting 4 A)", page: 86}
+  - {brand: Siemens, series: SITOP PSU6200, model: 6EP3434-7SB00-3AX0, input: AC, network: 3P, vin_min: 323, vin_max: 576, vout_min: 24, vout_max: 28, i_out_a: 10, efficiency: 0.954, input_a: 0.39, mains_protection: "three-pole coupled circuit breaker from 4 A characteristic C to 16 A, or 3RV2011-1EA10 (setting 4 A)", page: 86}
+  - {brand: Siemens, series: SITOP PSU6200, model: 6EP3436-7SB00-3AX0, input: AC, network: 3P, vin_min: 323, vin_max: 576, vout_min: 24, vout_max: 28, i_out_a: 20, efficiency: 0.959, input_a: 0.77, mains_protection: "three-pole coupled circuit breaker from 4 A characteristic C to 16 A, or 3RV2011-1EA10 (setting 4 A)", page: 86}

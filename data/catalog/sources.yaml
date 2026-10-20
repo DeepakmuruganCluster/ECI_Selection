@@ -66,7 +66,8 @@ manufacturer catalogue:
     title: SITOP power supplies, Catalog KT 10.1
     edition: Edition 2022, 304 pages
     file: pdf/manufacturer/siemens/SITOP_KT10-1_2022.pdf
-    tables: []
+    tables:
+    - data/makers/siemens/sitop_psu6200.yaml
   SIE-LV10-2026:
     title: Catalog LV 10 · 2026, Low-Voltage Power Distribution and Electrical Installation Technology (5SY MCB, 5SV RCCB, 5SD SPD, 3KD, 3VA …)
     edition: LV 10 · 2026 (file 2026-01-16), 1352 pages

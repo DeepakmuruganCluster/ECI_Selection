@@ -12,5 +12,7 @@ rules:
   R-CP-07: {authority: RULE, text: "Supplies with a network port (Omron S8VK-X …-EIP, EtherNet/IP) are taken exactly when communication is asked: only those when asked, none otherwise (CP-4)."}
   R-CP-06: {authority: OWN, text: "The series of the chosen supply must be marked verified in the AutoBOM Logsheet; otherwise warning (check the data sheet before ordering)."}
 
+  R-CP-08: {authority: MFR, text: "Owner 2026-10-20 (RFQ part 5): make Siemens = SITOP PSU6200 from catalogue KT 10.1 · 2022 (1-phase pp.3/9, 3/12-3/13; 3-phase pp.3/21-3/23): the smallest 5 / 10 / 20 A type of the input asked ≥ the required current, with its efficiency, input current and (3-phase) mains protection as printed. The AutoBOM verification (R-CP-06) does not apply to catalogue rows."}
+
 params:
   relay_coil_ref: {file: data/makers/finder/finder_s38.yaml, coil_code: "7.024"}

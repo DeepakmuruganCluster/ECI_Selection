@@ -52278,6 +52278,90 @@
   - ref: OWN-PROPEL-COST
     where: sheet 'QM LUB WITH PLC' row 39
     table: data/company/propel/propel_panel_kits.yaml
+6EP33337SB000AX0:
+  spellings:
+  - 6EP3333-7SB00-0AX0
+  make:
+  - Siemens
+  descriptions:
+  - 6EP3333-7SB00-0AX0
+  sap_code: null
+  used_by:
+  - control_power
+  sources:
+  - ref: SIE-KT10-1-2022
+    where: p.76
+    table: data/makers/siemens/sitop_psu6200.yaml
+6EP33347SB003AX0:
+  spellings:
+  - 6EP3334-7SB00-3AX0
+  make:
+  - Siemens
+  descriptions:
+  - 6EP3334-7SB00-3AX0
+  sap_code: null
+  used_by:
+  - control_power
+  sources:
+  - ref: SIE-KT10-1-2022
+    where: p.76
+    table: data/makers/siemens/sitop_psu6200.yaml
+6EP33367SB003AX0:
+  spellings:
+  - 6EP3336-7SB00-3AX0
+  make:
+  - Siemens
+  descriptions:
+  - 6EP3336-7SB00-3AX0
+  sap_code: null
+  used_by:
+  - control_power
+  sources:
+  - ref: SIE-KT10-1-2022
+    where: p.76
+    table: data/makers/siemens/sitop_psu6200.yaml
+6EP34337SB000AX0:
+  spellings:
+  - 6EP3433-7SB00-0AX0
+  make:
+  - Siemens
+  descriptions:
+  - 6EP3433-7SB00-0AX0
+  sap_code: null
+  used_by:
+  - control_power
+  sources:
+  - ref: SIE-KT10-1-2022
+    where: p.86
+    table: data/makers/siemens/sitop_psu6200.yaml
+6EP34347SB003AX0:
+  spellings:
+  - 6EP3434-7SB00-3AX0
+  make:
+  - Siemens
+  descriptions:
+  - 6EP3434-7SB00-3AX0
+  sap_code: null
+  used_by:
+  - control_power
+  sources:
+  - ref: SIE-KT10-1-2022
+    where: p.86
+    table: data/makers/siemens/sitop_psu6200.yaml
+6EP34367SB003AX0:
+  spellings:
+  - 6EP3436-7SB00-3AX0
+  make:
+  - Siemens
+  descriptions:
+  - 6EP3436-7SB00-3AX0
+  sap_code: null
+  used_by:
+  - control_power
+  sources:
+  - ref: SIE-KT10-1-2022
+    where: p.86
+    table: data/makers/siemens/sitop_psu6200.yaml
 6ES71316BF010BA0:
   spellings:
   - 6ES7131-6BF01-0BA0

@@ -48,4 +48,4 @@ fields:
   brand: {label: "Make", options: ["Omron", "Phoenix Contact", "Mean well", "Weidmueller"]}
 
 # the data tables this component reads (data/makers, data/company, projects/*/data)
-data_files: [data/company/dc/ab_smps.yaml, data/company/switchgear/own_calc_method.yaml]
+data_files: [data/company/dc/ab_smps.yaml, data/makers/siemens/sitop_psu6200.yaml, data/company/switchgear/own_calc_method.yaml]

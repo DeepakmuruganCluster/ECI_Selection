@@ -32,9 +32,22 @@ cases:
     oracle: "Phoenix series are not marked verified in the AutoBOM Logsheet (rows 13–15) → R-CP-06 warning"
   - id: C08
     in: {di: 64, relays: 32, plc_a: 1.5, brand: Siemens}
-    expect: {status: cannot_select, rule: R-CP-05}
-    oracle: "no Siemens supplies in the AutoBOM database (SITOP waits for KT 10.1)"
+    expect: {status: ok, smps: 6EP3333-7SB00-0AX0, smps_a: 5, required_a: 4.69}
+    oracle: "(was: refused, SITOP waiting for KT 10.1 — owner 2026-10-20, R-CP-08: KT 10.1 transcribed) 3.7528 A × 1.25 = 4.691 A → 1-phase PSU6200 5 A 6EP3333-7SB00-0AX0 (KT 10.1 p.3/9)"
   - id: C09
     in: {di: 64, relays: 32, plc_a: 1.5, communication: true}
     expect: {status: warning, smps: S8VK-X12024A-EIP}
     oracle: "R-CP-07 communication asked → only …-EIP supplies; 4.69 A → Omron sheet row 11 S8VK-X12024A-EIP 5 A (first 5 A port supply)"
+  # --- 2026-10-20 (owner, RFQ part 5): Siemens SITOP PSU6200 from catalogue KT 10.1, R-CP-08
+  - id: C10
+    in: {plc_a: 7.0, input: 3P, brand: Siemens}
+    expect: {status: ok, smps: 6EP3434-7SB00-3AX0, smps_a: 10, smps_input_a: 0.39}
+    oracle: "7 A × FOS 1.25 = 8.75 A → smallest 3-phase PSU6200 ≥ 8.75 A = 10 A 6EP3434-7SB00-3AX0 (KT 10.1 p.3/21), input 0.39 A at 400 V, efficiency 95.4 % (pp.86-87)"
+  - id: C11
+    in: {plc_a: 12.0, input: 1P+N, brand: Siemens}
+    expect: {status: ok, smps: 6EP3336-7SB00-3AX0, smps_a: 20, smps_efficiency: 0.955}
+    oracle: "12 × 1.25 = 15 A → 1-phase PSU6200 20 A 6EP3336-7SB00-3AX0 (p.3/9), efficiency 95.5 % (p.77)"
+  - id: C12
+    in: {plc_a: 17.0, input: 3P, brand: Siemens}
+    expect: {status: cannot_select, rule: R-CP-05}
+    oracle: "17 × 1.25 = 21.25 A > the largest PSU6200 transcribed (20 A): refused — several supplies (the panel splits the load)"

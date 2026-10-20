@@ -27,6 +27,13 @@ def _smps() -> dict:
                                                                "i_out_a", "sheet"))
 
 
+@lru_cache(maxsize=None)
+def _sitop() -> dict:
+    """Siemens SITOP PSU6200 from catalogue KT 10.1 (owner 2026-10-20, RFQ part 5) — make 'Siemens'."""
+    return load_sourced_table(data_file("sitop_psu6200.yaml"), ("brand", "series", "model", "network", "vout_min", "vout_max",
+                                                                  "i_out_a"))
+
+
 def _norm(s: str) -> str:
     return "".join(str(s).lower().split())
 
@@ -78,11 +85,13 @@ def select(di: int = 0, do: int = 0, relays: int = 0, plc_a: float | None = None
     fos = m["smps_fos"]["value"]
     need = load * fos
     res.add("R-CP-04", "required output = load × FOS", f"{load:.3f} A × {fos:g} = {need:.3f} A", INFO, src("smps_fos"))
-    rows = [r for r in _smps()["rows"] if _norm(r["brand"])[:6] == _norm(brand)[:6]]
+    siemens = _norm(brand)[:6] == "siemen"            # R-CP-08: SITOP from the Siemens catalogue, not the AutoBOM list
+    table = _sitop() if siemens else _smps()
+    rows = [r for r in table["rows"] if _norm(r["brand"])[:6] == _norm(brand)[:6]]
     if not rows:
         return res.refuse("R-CP-05", f"{brand} supplies in the database", "none (makes: Omron, Phoenix Contact, Mean Well, "
-                          "Weidmueller)", _smps()["source"]["ref"])
-    order = {id(r): i for i, r in enumerate(_smps()["rows"])}
+                          "Weidmueller; Siemens SITOP PSU6200 from KT 10.1)", _smps()["source"]["ref"])
+    order = {id(r): i for i, r in enumerate(table["rows"])}
     # R-CP-07: a network port (…-EIP) exactly when communication is asked
     rows = [r for r in rows if r["model"].upper().endswith("-EIP") == bool(communication)]
     res.add("R-CP-07", "network port on the supply", "asked: port supplies only" if communication
@@ -94,9 +103,14 @@ def select(di: int = 0, do: int = 0, relays: int = 0, plc_a: float | None = None
     best = min(fit, key=lambda r: (r["i_out_a"], order[id(r)]))
     res.add("R-CP-05", f"smallest {brand} {input} supply ≥ {need:.2f} A",
             f"{best['brand']} {best['model']} {best['i_out_a']:g} A", PASS,
-            f"OWN-AB-SMPS sheet {best['sheet']} row {best['row']}")
-    v = _verified(best)
-    if v and v["verified"]:
+            f"SIE-KT10-1-2022 p.{best['page']}" if siemens else f"OWN-AB-SMPS sheet {best['sheet']} row {best['row']}")
+    v = None if siemens else _verified(best)
+    if siemens:
+        res.add("R-CP-08", f"{best['series']} from the manufacturer's catalogue",
+                f"{best['model']}: {best['i_out_a']:g} A, efficiency {best['efficiency'] * 100:g} %, input {best['input_a']:g} A"
+                + (f"; mains protection: {best['mains_protection']}" if best.get("mains_protection") else ""),
+                PASS, f"SIE-KT10-1-2022 p.{best['page']}")
+    elif v and v["verified"]:
         res.add("R-CP-06", f"series {best['series']} verified in the AutoBOM log",
                 f"entered by {v['entered_by']}, verified ({v['verified'] if not v['verified'].replace('.', '').isdigit() else 'dated'})",
                 PASS, f"OWN-AB-SMPS Logsheet row {v['row']}")
@@ -104,9 +118,11 @@ def select(di: int = 0, do: int = 0, relays: int = 0, plc_a: float | None = None
         res.add("R-CP-06", f"series {best['series']} verified in the AutoBOM log",
                 "not verified: check the data sheet before ordering", WARN,
                 f"OWN-AB-SMPS Logsheet row {v['row']}" if v else "OWN-AB-SMPS Logsheet")
-    res.add("R-CP-05", "supply input current for its MCB", "not in the database: input MCB not sized", WARN)
+    if not siemens:
+        res.add("R-CP-05", "supply input current for its MCB", "not in the database: input MCB not sized", WARN)
     res.value = {"load_a": round(load, 4), "required_a": round(need, 4), "smps": best["model"], "smps_series": best["series"],
                  "smps_brand": best["brand"], "smps_a": best["i_out_a"], "smps_efficiency": best.get("efficiency"),
+                 "smps_input_a": best.get("input_a"),
                  "smps_input": f"{best['vin_min']:g} … "
                  f"{best['vin_max']:g} V AC {best['network']}"}
     res.basis = "own database + template method"
